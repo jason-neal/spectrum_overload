@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+
+from __future__ import division, print_function
+import pytest
+
+import sys
+# Add Spectrum location to path
+sys.path.append('../')
+import Spectrum
+
+# Test using hypothesis
+
+def test_spectrum_assigns_data():
+
+    x = [1,2,3,4,5,6]
+    y = [1,1,0.9,0.95,1,1]
+    spec = Spectrum(x, y)
+    assert spec.flux == y
+    assert spec.x == x
