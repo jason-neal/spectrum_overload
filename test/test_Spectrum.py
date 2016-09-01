@@ -14,6 +14,8 @@ def test_spectrum_assigns_data():
 
     x = [1,2,3,4,5,6]
     y = [1,1,0.9,0.95,1,1]
-    spec = Spectrum(x, y)
+    z = 2200*x
+    spec = Spectrum.Spectrum(x, y, z)
     assert spec.flux == y
-    assert spec.x == x
+    assert spec.pixel == x
+    assert spec.wavelength == z
