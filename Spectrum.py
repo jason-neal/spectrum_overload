@@ -22,18 +22,3 @@ class Spectrum:
 # Try using Spectrum 
 #if __name__ == __main__:
 
-x = [1,2,3,4,5,6]
-y = [1,1,0.9,0.95,1,1]
-
-test = Spectrum()
-print(test)
-print(test.pixel, test.flux)
-test.pixel = x
-test.flux = y
-print(test)
-print(test.pixel, test.flux, test.wavelength)
-
-test2 = Spectrum(x, flux=y)
-print(test2)
-print(test2.pixel, test.flux)
-print(test2.wavelength)
