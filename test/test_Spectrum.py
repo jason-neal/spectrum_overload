@@ -30,3 +30,21 @@ def test_spectrum_assigns_data():
     assert spec.flux == y
     assert spec.xaxis == x
     assert spec.calibrated == calib_val
+
+
+@given(st.lists(st.floats()), st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
+def test_wav_select(y, x, calib, wav_min, wav_max):
+    # Create specturm
+    spec = Spectrum.Spectrum(y, xaxis=x, calibrated=calib)
+    # Select wavelength values
+    spec.wav_select(wav_min, wav_max)
+
+    # All values in selected spectrum should be less than the max and greater than the min value.
+    if isinstance(spec.xaxis, list):
+        assert all([xval >= wav_min for xval in spec.xaxis])
+        assert all([xval <= wav_max for xval in spec.xaxis])
+    else:
+        assert all(spec.xaxis >= wav_min)
+        assert all(spec.xaxis <= wav_max)
+    ##Also need to test asignment!
+    # spec2 = spec.wav_selector()
