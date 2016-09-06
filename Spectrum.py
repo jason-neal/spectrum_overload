@@ -37,7 +37,19 @@ class Spectrum:
         self.xaxis = wav_sel
         self.flux = flux_sel
 
-
+    def doppler_shift(self, RV):
+        ''' Function to compute a wavelenght shift due to radial velocity
+        using RV / c = delta_lambda/lambda
+        RV - radial velocity (in km/s)
+        lambda_rest - rest wavelenght of the spectral line
+        delta_lambda - (lambda_final - lambda_rest)
+        '''
+        if self.calibrated:
+            c = 299792.458
+            lambdaShift = self.xaxis * (RV / c)
+            self.xaxis = self.xaxis + lambdaShift
+        else:
+            print("Attribute xaxis is not wavelength calibrated. Cannot perform doppler shift")
 # Try using Spectrum 
 #if __name__ == __main__:
 
