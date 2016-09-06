@@ -10,11 +10,11 @@ from __future__ import print_function, division
 class Spectrum:
     """ Spectrum class represents and manipulates astronomical spectra. """
     
-    def __init__(self, pixel=[], flux=[], wavelength=[]):
+    def __init__(self, flux=[], xaxis=[], calibrated=False):
         """ Create a empty spectra """
-        self.pixel = pixel
+        self.xaxis = xaxis
         self.flux = flux
-        self.wavelength = wavelength
+        self.calibrated = calibrated
 
 
 
