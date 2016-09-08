@@ -22,17 +22,13 @@ class Spectrum:
         If passed np arrays it will return arrays
     
         """
-        if isinstance(self.xaxis, list): # If passed lists
-            wav_sel = [wav_val for wav_val in self.xaxis if (wav_min < wav_val < wav_max)]
-            flux_sel = [flux_val for wav_val, flux_val in zip(self.xaxis, self.flux) if (wav_min < wav_val < wav_max)]
-        elif isinstance(self.xaxis, np.ndarray):
-            # Super Fast masking with numpy
+        try:
             mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
             wav_sel = self.xaxis[mask]
             flux_sel = self.flux[mask]
-        
-        else:
-              raise TypeError("Unsupported input wav type of type ", type(self.xaxis))
+        except TypeError:
+            print("Make sure your xaxis is an array")
+              raise
         # Set new spectra
         self.xaxis = wav_sel
         self.flux = flux_sel
