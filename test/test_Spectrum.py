@@ -23,15 +23,14 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
 
 def test_spectrum_assigns_data():
 
-    x = [1,2,3,4,5,6]
-    y = [1,1,0.9,0.95,1,1]
+    x = [1, 2, 3, 4, 5, 6]
+    y = [1, 1, 0.9, 0.95, 1, 1]
     calib_val = 0
 
     spec = Spectrum.Spectrum(y, x, calibrated=calib_val)
     assert spec.flux == y
     assert spec.xaxis == x
     assert spec.calibrated == calib_val
-
 
 @given(st.lists(st.floats()), st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
 def test_wav_select(y, x, calib, wav_min, wav_max):
@@ -47,8 +46,6 @@ def test_wav_select(y, x, calib, wav_min, wav_max):
     else:
         assert all(spec.xaxis >= wav_min)
         assert all(spec.xaxis <= wav_max)
-    ##Also need to test asignment!
-    # spec2 = spec.wav_selector()
 
 def test_wav_select_example():
     # Create specturm
@@ -59,13 +56,11 @@ def test_wav_select_example():
     # Select wavelength values
 
     spec.wav_select(5, 11)
-
     # All values in selected spectrum should be less than the max and greater than the min value.
     assert all(spec.xaxis >= 5)
     assert all(spec.xaxis <= 11)
     assert all(spec.xaxis == np.arange(6, 11))
     assert all(spec.flux == y[np.arange(6, 11)])
-
 
 
     ##Also need to test asignment!
