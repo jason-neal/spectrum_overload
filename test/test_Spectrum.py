@@ -15,14 +15,14 @@ import hypothesis.strategies as st
 
 @given(st.lists(st.floats()), st.lists(st.floats()), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
-
+    """Test that data was assigned to the correct attributes"""
     spec = Spectrum.Spectrum(y, x, z)
     assert spec.flux == y
     assert spec.xaxis == x
     assert spec.calibrated == z
 
 def test_spectrum_assigns_data():
-
+    """Test a manual example"""
     x = [1, 2, 3, 4, 5, 6]
     y = [1, 1, 0.9, 0.95, 1, 1]
     calib_val = 0
@@ -34,6 +34,7 @@ def test_spectrum_assigns_data():
 
 @given(st.lists(st.floats()), st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
 def test_wav_select(y, x, calib, wav_min, wav_max):
+    """Test some properties of wavelength selection"""
     # Create specturm
     spec = Spectrum.Spectrum(y, xaxis=x, calibrated=calib)
     # Select wavelength values
@@ -48,6 +49,7 @@ def test_wav_select(y, x, calib, wav_min, wav_max):
         assert all(spec.xaxis <= wav_max)
 
 def test_wav_select_example():
+    """Manual test of a wavelength selection"""
     # Create specturm
     y = 2*np.random.random(20)
     x = np.arange(20)
