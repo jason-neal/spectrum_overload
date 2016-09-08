@@ -12,8 +12,8 @@ class Spectrum:
     
     def __init__(self, flux=[], xaxis=[], calibrated=False):
         """ Create a empty spectra """
-        self.xaxis = xaxis
-        self.flux = flux
+        self.xaxis = np.asarray(xaxis)
+        self.flux = np.asarray(flux)
         self.calibrated = calibrated
 
     def wav_select(self, wav_min, wav_max):
