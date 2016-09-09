@@ -13,7 +13,7 @@ import Spectrum
 from hypothesis import given
 import hypothesis.strategies as st
 
-@given(st.lists(st.floats()), st.lists(st.floats()), st.booleans())
+@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes"""
     spec = Spectrum.Spectrum(y, x, z)
