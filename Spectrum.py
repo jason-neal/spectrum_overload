@@ -71,7 +71,11 @@ class Spectrum:
             self.calibrated = True
 
 
-    
+    def interpolate_to(self, spectrum):
+        """Interpolate wavelength solution to wavelength of spectrum
+        Think about weather this should be spectrum or sepctrum.xaxis (just the wavelength) 
+        """
+        pass
 
 
 
