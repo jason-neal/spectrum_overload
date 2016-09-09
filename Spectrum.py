@@ -51,7 +51,7 @@ class Spectrum:
             print("Warning the RV value given is very small (<0.1 mm/s).\n " 
                   "Not performing the doppler shift")
 
-        elif isnan(RV) or isinf(RV):
+        elif np.isnan(RV) or np.isinf(RV):
             print("Warning RV is infinity or Nan. "
                   "Not performing the doppler shift")
 
