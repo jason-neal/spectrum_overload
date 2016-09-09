@@ -67,3 +67,21 @@ def test_wav_select_example():
 
     ##Also need to test asignment!
     # spec2 = spec.wav_selector()
+@given(st.floats(), st.booleans())
+def test_doppler_shift_hypothesis(RV, calib):
+    x = np.arange(10)
+    y = np.random.random(10)
+    spec = Spectrum.Spectrum(y, x, calib)
+
+    spec.doppler_shift(RV)
+    if not calib:
+        assert all(spec.xaxis == x)
+    else:
+        # Issue doing doppler shift on integers !!!
+        if RV > 0:
+            assert all(spec.xaxis > x)
+        elif RV < 0:
+            assert all(spec.xaxis < x)
+        elif RV == 0:
+            assert all(spec.xaxis == x)
+            
