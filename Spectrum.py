@@ -64,7 +64,7 @@ class Spectrum:
         if self.calibrated:
             print("Spectrum already calibrated, Not Calibrating again.")
         else:
-            wavelength = np.polyval(wl_map, self.axis)   # Polynomail parameters
+            wavelength = np.polyval(wl_map, self.xaxis)   # Polynomail parameters
             self.xaxis = wavelength
             
             # Set calibrated True
