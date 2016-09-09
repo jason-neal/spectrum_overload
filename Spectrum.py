@@ -22,13 +22,16 @@ class Spectrum:
         If passed np arrays it will return arrays
     
         """
-        try:
-            mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
-            wav_sel = self.xaxis[mask]
-            flux_sel = self.flux[mask]
-        except TypeError:
-            print("Make sure your xaxis is an array")
-            raise
+        if len(self.xaxis) == 0:
+            print("No xaxis to select from")
+        else:
+            try:
+                mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
+                wav_sel = self.xaxis[mask]
+                flux_sel = self.flux[mask]
+            except TypeError:
+                print("Make sure your xaxis is an array")
+                raise
         # Set new spectra
         self.xaxis = wav_sel
         self.flux = flux_sel
