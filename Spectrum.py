@@ -66,9 +66,12 @@ class Spectrum:
         else:
             wavelength = np.polyval(wl_map, self.xaxis)   # Polynomail parameters
             self.xaxis = wavelength
-            
-            # Set calibrated True
-            self.calibrated = True
+            self.calibrated = True  # Set calibrated Flag 
+        
+        if np.any(self.xaxis <= 0):
+            print("Warning! The wavlength solution contains a value of zero. "
+                  "Please check your calibrations\nThis will not doppler "
+                  "shift correctly. This may raise an error in the future.")
 
 
     def interpolate_to(self, spectrum):
