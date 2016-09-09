@@ -13,12 +13,12 @@ import Spectrum
 from hypothesis import given
 import hypothesis.strategies as st
 
-@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.booleans())
+@given(st.lists(st.floats()), st.lists(st.floats()), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes"""
     spec = Spectrum.Spectrum(y, x, z)
-    assert np.all(spec.flux == np.asarray(y))
-    assert np.all(spec.xaxis == np.asarray(x))
+    assert spec.flux == y
+    assert spec.xaxis == x
     assert spec.calibrated == z
 
 def test_spectrum_assigns_data():
@@ -28,8 +28,8 @@ def test_spectrum_assigns_data():
     calib_val = 0
 
     spec = Spectrum.Spectrum(y, x, calibrated=calib_val)
-    assert np.all(spec.flux == y)
-    assert np.all(spec.xaxis == x)
+    assert spec.flux == y
+    assert spec.xaxis == x
     assert spec.calibrated == calib_val
 
 @given(st.lists(st.floats()), st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
@@ -38,9 +38,6 @@ def test_wav_select(y, x, calib, wav_min, wav_max):
     # Create specturm
     spec = Spectrum.Spectrum(y, xaxis=x, calibrated=calib)
     # Select wavelength values
-    # Swap if out of order
-    if wav_max < wav_min:
-        wav_min, wav_max = wav_max, wav_min
     spec.wav_select(wav_min, wav_max)
 
     # All values in selected spectrum should be less than the max and greater than the min value.
@@ -70,25 +67,25 @@ def test_wav_select_example():
 
     ##Also need to test asignment!
     # spec2 = spec.wav_selector()
-# @given(st.lists(st.floats(min_value=1e-2, allow_infinity=False), min_size=1), st.floats(allow_infinity=False, allow_nan=False), st.booleans())
-# def test_doppler_shift_with_hypothesis(x, RV, calib):
-#     x = np.asarray(x)
-#     y = np.random.random(len(x))
+@given(st.lists(st.floats(min_value=1e-2, allow_infinity=False), min_size=1), st.floats(allow_infinity=False, allow_nan=False), st.booleans())
+def test_doppler_shift_with_hypothesis(x, RV, calib):
+    x = np.asarray(x)
+    y = np.random.random(len(x))
 
-#     spec = Spectrum.Spectrum(y, x, calib)
-#     # Apply Doppler shift of RV km/s.
-#     spec.doppler_shift(RV)
+    spec = Spectrum.Spectrum(y, x, calib)
+    # Apply Doppler shift of RV km/s.
+    spec.doppler_shift(RV)
 
-#     if not spec.calibrated:
-#         assert np.allclose(spec.xaxis, x)
-#     else:
-#         tolerance = 1e-6
-#         if abs(RV) < tolerance:
-#             assert np.allclose(spec.xaxis, x)
-#         elif RV < 0:
-#             assert np.all(spec.xaxis < x)
-#         elif RV > 0:
-#             assert np.all(spec.xaxis > x)
+    if not spec.calibrated:
+        assert np.allclose(spec.xaxis, x)
+    else:
+        tolerance = 1e-6
+        if abs(RV) < tolerance:
+            assert np.allclose(spec.xaxis, x)
+        elif RV < 0:
+            assert np.all(spec.xaxis < x)
+        elif RV > 0:
+            assert np.all(spec.xaxis > x)
 
 
 def test_x_calibration_works():
