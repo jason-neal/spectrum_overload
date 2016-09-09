@@ -87,4 +87,23 @@ def test_doppler_shift_hypothesis(RV, calib):
             assert all(spec.xaxis < x)
         elif RV == 0:
             assert all(spec.xaxis == x)
-            
+
+
+def test_x_calibration_works():
+    """ Simple test to check that the calibration works """
+    "Setup the code "
+    x = [1,2,3,4,5,6,7,8,9,10]
+    x = [float(x_i) for x_i in x]
+    y = np.ones_like(x)
+    spec = Spectrum.Spectrum(y, x, False)
+
+    #Easy test
+    params = np.polyfit([1,5,10], [3,15,30], 1)
+
+    spec.calibrate_with(params)
+
+    assert spec.calibrated
+    assert np.allclose(spec.xaxis, np.asarray(x)*3)
+
+
+
