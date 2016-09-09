@@ -67,7 +67,7 @@ def test_wav_select_example():
 
     ##Also need to test asignment!
     # spec2 = spec.wav_selector()
-@given(st.lists(st.floats(min_value=1e-2, allow_infinity=False), min_size=1), st.floats(), st.booleans())
+@given(st.lists(st.floats(min_value=1e-2, allow_infinity=False), min_size=1), st.floats(allow_infinity=False, allow_nan=False), st.booleans())
 def test_doppler_shift_with_hypothesis(x, RV, calib):
     x = np.asarray(x)
     y = np.random.random(len(x))
@@ -76,8 +76,8 @@ def test_doppler_shift_with_hypothesis(x, RV, calib):
     # Apply Doppler shift of RV km/s.
     spec.doppler_shift(RV)
 
-    if not calib:
-        assert all(spec.xaxis == x)
+    if not spec.calibrated:
+        assert np.allclose(spec.xaxis, x)
     else:
         tolerance = 1e-6
         if abs(RV) < tolerance:
