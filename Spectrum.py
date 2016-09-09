@@ -88,7 +88,10 @@ class Spectrum:
     def interpolate_to(self, spectrum):
         """Interpolate wavelength solution to wavelength of spectrum
         Think about weather this should be spectrum or sepctrum.xaxis (just the wavelength) 
-        """
+        
+        A comment from ENAA 2016 regarded interpolation. 
+        Interpolation techniques need to be tested to acheive best
+        performance for low signal applications. i.e. direct exoplanet detection"""
         pass
 
 
