@@ -32,10 +32,11 @@ def test_spectrum_assigns_data():
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
 
-@given(st.lists(st.floats()), st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
-def test_wav_select(y, x, calib, wav_min, wav_max):
+@given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
+def test_wav_select(x, calib, wav_min, wav_max):
     """Test some properties of wavelength selection"""
     # Create specturm
+    y = np.copy(x)
     spec = Spectrum.Spectrum(y, xaxis=x, calibrated=calib)
     # Select wavelength values
     spec.wav_select(wav_min, wav_max)
