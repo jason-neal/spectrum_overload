@@ -68,6 +68,7 @@ def test_wav_select_example():
 
     ##Also need to test asignment!
     # spec2 = spec.wav_selector()
+@given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1), st.floats(), st.booleans())
 def test_doppler_shift_with_hypothesis(x, RV, calib):
     x = np.asarray(x)
     y = np.random.random(len(x))
