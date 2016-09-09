@@ -12,8 +12,8 @@ class Spectrum:
     
     def __init__(self, flux=[], xaxis=[], calibrated=False):
         """ Create a empty spectra """
-        self.xaxis = np.asarray(xaxis, dtype=np.float64)
-        self.flux = np.asarray(flux, dtype=np.float64)
+        self.xaxis = np.asarray(xaxis)
+        self.flux = np.asarray(flux)
         self.calibrated = calibrated
 
     def wav_select(self, wav_min, wav_max):
@@ -28,7 +28,7 @@ class Spectrum:
             flux_sel = self.flux[mask]
         except TypeError:
             print("Make sure your xaxis is an array")
-            raise TypeError
+              raise
         # Set new spectra
         self.xaxis = wav_sel
         self.flux = flux_sel
@@ -40,7 +40,7 @@ class Spectrum:
         lambda_rest - rest wavelenght of the spectral line
         delta_lambda - (lambda_final - lambda_rest)
         '''
-        if abs(RV) < 1e-5:
+        if abs(RV) < 1e-7:
             """ RV smaller then 0.1 mm/s"""
             print("Warning the RV value given is very small (<0.1 mm/s).\n " 
                   "Not performing the doppler shift")
