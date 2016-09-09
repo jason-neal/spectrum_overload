@@ -44,13 +44,11 @@ class Spectrum:
         lambda_rest - rest wavelenght of the spectral line
         delta_lambda - (lambda_final - lambda_rest)
         '''
-        if abs(RV) < 1e-6:
-            """ RV smaller then 1 mm/s"""
-            print("Warning the RV value given is very small (<1 mm/s).\n " 
-                "This will give a dopplershift near or less than the "
-                "floating point precision level.")
-
-        if self.calibrated:
+        if abs(RV) < 1e-7:
+            """ RV smaller then 0.1 mm/s"""
+            print("Warning the RV value given is very small (<0.1 mm/s).\n " 
+                "Not performing the doppler shift")
+        elif self.calibrated:
             c = 299792.458
             lambdaShift = self.xaxis * (RV / c)
             self.xaxis = self.xaxis + lambdaShift
