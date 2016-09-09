@@ -28,7 +28,7 @@ class Spectrum:
             flux_sel = self.flux[mask]
         except TypeError:
             print("Make sure your xaxis is an array")
-              raise
+            raise
         # Set new spectra
         self.xaxis = wav_sel
         self.flux = flux_sel
