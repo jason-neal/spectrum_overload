@@ -70,6 +70,14 @@ class Spectrum:
             # Set calibrated True
             self.calibrated = True
 
-# Try using Spectrum 
-#if __name__ == __main__:
 
+    
+
+
+
+## TO DO !
+#--------------------
+# Overrideopperators such 
+# e.g, plus, minus, subtract, divide
+
+# Interpolation in wavelength (before subtraction)
