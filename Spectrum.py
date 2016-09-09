@@ -47,7 +47,12 @@ class Spectrum:
         if abs(RV) < 1e-7:
             """ RV smaller then 0.1 mm/s"""
             print("Warning the RV value given is very small (<0.1 mm/s).\n " 
-                "Not performing the doppler shift")
+                  "Not performing the doppler shift")
+
+        elif isnan(RV) or isinf(RV):
+            print("Warning RV is infinity or Nan. "
+                  "Not performing the doppler shift")
+
         elif self.calibrated:
             c = 299792.458
             lambdaShift = self.xaxis * (RV / c)
