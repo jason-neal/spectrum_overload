@@ -13,7 +13,8 @@ import Spectrum
 from hypothesis import given
 import hypothesis.strategies as st
 
-@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.booleans())
+@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), 
+    st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes"""
     spec = Spectrum.Spectrum(y, x, z)
@@ -41,7 +42,8 @@ def test_wav_select(x, calib, wav_min, wav_max):
     # Select wavelength values
     spec.wav_select(wav_min, wav_max)
 
-    # All values in selected spectrum should be less than the max and greater than the min value.
+    # All values in selected spectrum should be less than the max and greater
+    # than the min value.
     if isinstance(spec.xaxis, list):
         assert all([xval >= wav_min for xval in spec.xaxis])
         assert all([xval <= wav_max for xval in spec.xaxis])
@@ -59,7 +61,8 @@ def test_wav_select_example():
     # Select wavelength values
 
     spec.wav_select(5, 11)
-    # All values in selected spectrum should be less than the max and greater than the min value.
+    # All values in selected spectrum should be less than the max and greater
+    # than the min value.
     assert all(spec.xaxis >= 5)
     assert all(spec.xaxis <= 11)
     assert all(spec.xaxis == np.arange(6, 11))
@@ -68,8 +71,11 @@ def test_wav_select_example():
 
     ##Also need to test asignment!
     # spec2 = spec.wav_selector()
-@given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1), st.floats(), st.booleans())
+@given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1),
+       st.floats(), st.booleans())
 def test_doppler_shift_with_hypothesis(x, RV, calib):
+    """Test doppler shift properties. 
+    Need to check values against pyastronomy separately """
     x = np.asarray(x)
     y = np.random.random(len(x))
 
