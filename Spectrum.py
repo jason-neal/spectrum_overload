@@ -22,19 +22,22 @@ class Spectrum:
         If passed np arrays it will return arrays
     
         """
+        x_org = self.xaxis
+        flux_org = self.flux
         if len(self.xaxis) == 0:
             print("No xaxis to select from")
         else:
             try:
                 mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
-                wav_sel = self.xaxis[mask]
-                flux_sel = self.flux[mask]
+                self.xaxis = self.xaxis[mask]
+                self.flux = self.flux[mask]
             except TypeError:
                 print("Make sure your xaxis is an array")
+                #Return to original values
+                self.xaxis = x_org
+                self.flux = flux_org
                 raise
-        # Set new spectra
-        self.xaxis = wav_sel
-        self.flux = flux_sel
+
 
     def doppler_shift(self, RV):
         ''' Function to compute a wavelenght shift due to radial velocity
