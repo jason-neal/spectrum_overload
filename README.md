@@ -1,4 +1,4 @@
-# Spectrum [![Build Status](https://travis-ci.org/jason-neal/Spectrum.svg)](https://travis-ci.org/jason-neal/Spectrum)]
+# Spectrum [![Build Status](https://travis-ci.org/jason-neal/Spectrum.svg)](https://travis-ci.org/jason-neal/Spectrum)
 
 Learn to use Classes by creating a Spectrum class to use in my Phd work.
 
