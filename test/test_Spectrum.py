@@ -115,3 +115,12 @@ def test_x_calibration_works():
 
 
 
+def test_header_attribute():
+    """Test header attribute is accessable as a dict"""
+    header = {"Date":"20120601", "Exptime":180}
+    spec = Spectrum.Spectrum(header=header)
+    # Some simple assignment tests
+    assert spec.header["Exptime"] == 180
+    assert spec.header["Date"] == "20120601"
+
+    assert Spectrum.Spectrum().header == None
