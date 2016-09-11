@@ -7,20 +7,21 @@ import numpy as np
 # Jason Neal
 
 
-class Spectrum:
+class Spectrum(object):
     """ Spectrum class represents and manipulates astronomical spectra. """
     
-    def __init__(self, flux=[], xaxis=[], calibrated=False):
-        """ Create a empty spectra """
+    def __init__(self, flux=[], xaxis=[], header=None, calibrated=False):
+        """ Initalise a Spectrum object """
         self.xaxis = np.asarray(xaxis)
         self.flux = np.asarray(flux)
         self.calibrated = calibrated
+        # Astropy Header object or a python dictionary 
+        # Acess with a dictionary call.
+        self.header = header    
 
     def wav_select(self, wav_min, wav_max):
-        """ Fast Wavelength selector between wav_min and wav_max values 
-        If passed lists it will return lists.
-        If passed np arrays it will return arrays
-    
+        """ Select the spectrum between wav_min and wav_max values 
+            Uses numpy slicing for high speed.
         """
         x_org = self.xaxis
         flux_org = self.flux
