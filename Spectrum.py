@@ -7,7 +7,7 @@ import numpy as np
 # Jason Neal
 
 
-class Spectrum:
+class Spectrum(object):
     """ Spectrum class represents and manipulates astronomical spectra. """
     
     def __init__(self, flux=[], xaxis=[], calibrated=False):
