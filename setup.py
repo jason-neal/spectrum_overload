@@ -13,6 +13,8 @@ from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 from codecs import open
 from os import path
+
+
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
@@ -89,6 +91,7 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
+    test_suite='spectrum.test.test_Spectrum',
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
     #   py_modules=["my_module"],
