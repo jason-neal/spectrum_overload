@@ -9,6 +9,7 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 from codecs import open
 from os import path
@@ -19,6 +20,19 @@ here = path.abspath(path.dirname(__file__))
 #with open(path.join(here, 'README.md')) as f:
 #    long_description = f.read()
 long_description = " "
+
+#Allow "python setup.py test" to work
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        errcode = pytest.main(self.test_args)
+        sys.exit(errcode)
+
 
 setup(
     name='Spectrum',
@@ -92,7 +106,7 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['coverage','pytest','hypothesis'],
+        'test': ['coverage', 'pytest', 'hypothesis'],
     },
 
     # If there are data files included in your packages that need to be
