@@ -3,6 +3,7 @@
 from __future__ import division, print_function
 import pytest
 import numpy as np
+from astropy.io import fits
 
 import sys
 # Add Spectrum location to path
@@ -122,5 +123,12 @@ def test_header_attribute():
     # Some simple assignment tests
     assert spec.header["Exptime"] == 180
     assert spec.header["Date"] == "20120601"
+
+    # Try with a Astropy header object
+    fitshdr = fits.getheader("test/test_data_1.fits")
+    spec2 = Spectrum.Spectrum(header=fitshdr)
+
+    assert spec2.header["OBJECT"] == fitshdr["OBJECT"]
+    assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
     assert Spectrum.Spectrum().header == None
