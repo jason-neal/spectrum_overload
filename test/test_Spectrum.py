@@ -17,7 +17,7 @@ import hypothesis.strategies as st
     st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes"""
-    spec = Spectrum.Spectrum(y, x, z)
+    spec = Spectrum.Spectrum(y, x, calibrated=z)
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == z
