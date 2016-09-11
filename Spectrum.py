@@ -20,10 +20,8 @@ class Spectrum(object):
         self.header = header    
 
     def wav_select(self, wav_min, wav_max):
-        """ Fast Wavelength selector between wav_min and wav_max values 
-        If passed lists it will return lists.
-        If passed np arrays it will return arrays
-    
+        """ Select the spectrum between wav_min and wav_max values 
+            Uses numpy slicing for high speed.
         """
         x_org = self.xaxis
         flux_org = self.flux
