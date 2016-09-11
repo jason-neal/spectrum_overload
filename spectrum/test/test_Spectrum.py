@@ -7,8 +7,8 @@ from astropy.io import fits
 
 import sys
 # Add Spectrum location to path
-sys.path.append('../')
-import Spectrum
+#sys.path.append('../')
+from spectrum import Spectrum
 
 # Test using hypothesis
 from hypothesis import given

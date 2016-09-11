@@ -1,2 +1,2 @@
 
-from Spectrum import Spectrum
+from spectrum import Spectrum
