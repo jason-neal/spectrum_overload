@@ -4,7 +4,7 @@ from __future__ import division, print_function
 import pytest
 import numpy as np
 from astropy.io import fits
-
+from pkg_resources import resource_filename
 import sys
 # Add Spectrum location to path
 #sys.path.append('../')
@@ -125,7 +125,8 @@ def test_header_attribute():
     assert spec.header["Date"] == "20120601"
 
     # Try with a Astropy header object
-    fitshdr = fits.getheader("test/test_data_1.fits")
+    test_file = resource_filename('spectrum', 'data/spec_1.fits')
+    fitshdr = fits.getheader(test_file)
     spec2 = Spectrum.Spectrum(header=fitshdr)
 
     assert spec2.header["OBJECT"] == fitshdr["OBJECT"]
