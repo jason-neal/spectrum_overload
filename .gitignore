@@ -1,5 +1,5 @@
 #notebook and html
-*.ipynb
+#*.ipynb
 *.html
 
 # Byte-compiled / optimized / DLL files
