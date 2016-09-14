@@ -9,9 +9,12 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 from codecs import open
 from os import path
+
+
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
@@ -20,13 +23,26 @@ here = path.abspath(path.dirname(__file__))
 #    long_description = f.read()
 long_description = " "
 
+#Allow "python setup.py test" to work
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        errcode = pytest.main(self.test_args)
+        sys.exit(errcode)
+
+
 setup(
     name='Spectrum',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.1',
+    version="0.1",
 
     description='A python class for Spectra',
     long_description=long_description,
@@ -75,10 +91,11 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
+    test_suite='spectrum.test.test_Spectrum',
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
     #   py_modules=["my_module"],
-    py_modules=["Spectrum"],
+    #py_modules=["spectrum/Spectrum"],
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
@@ -92,13 +109,13 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['coverage','pytest','hypothesis'],
+        'test': ['coverage', 'pytest', 'hypothesis'],
     },
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_data={},
+    package_data={"spectrum":["data/*.fits"]},
     #    'sample': ['package_data.dat'],
     #},
 
