@@ -131,6 +131,9 @@ class Spectrum(object):
 
 
 
+    def __len__(self):
+        # Give the length of the spectrum:
+        return len(Spectrum.flux)
 
 ## TO DO !
 #--------------------
