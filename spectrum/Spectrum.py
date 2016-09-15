@@ -99,7 +99,7 @@ class Spectrum(object):
     #######################################################
 
 
-    def ___truediv___(self, other):
+    def __truediv__(self, other):
         """Overload truedivision (/) to divide two specta """
         if self.calibrated != other.calibrated:
             """Checking the Spectra are of same calibration state"""
