@@ -4,11 +4,11 @@ from __future__ import division, print_function
 import pytest
 import numpy as np
 from astropy.io import fits
-
+from pkg_resources import resource_filename
 import sys
 # Add Spectrum location to path
-sys.path.append('../')
-import Spectrum
+#sys.path.append('../')
+from spectrum import Spectrum
 
 # Test using hypothesis
 from hypothesis import given
@@ -125,10 +125,67 @@ def test_header_attribute():
     assert spec.header["Date"] == "20120601"
 
     # Try with a Astropy header object
-    fitshdr = fits.getheader("test/test_data_1.fits")
+    test_file = resource_filename('spectrum', 'data/spec_1.fits')
+    fitshdr = fits.getheader(test_file)
     spec2 = Spectrum.Spectrum(header=fitshdr)
 
     assert spec2.header["OBJECT"] == fitshdr["OBJECT"]
     assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
     assert Spectrum.Spectrum().header == None
+
+
+#######################################################
+#    Overloading Operators
+#######################################################
+
+
+#Try just with integers
+@given(st.lists(st.integers(min_value=-100000, max_value=100000), min_size=1),
+ st.integers(min_value=-1000000, max_value=1000000), 
+ st.integers(min_value=-1000000, max_value=1000000), st.booleans())
+def test_overload_add_integers_with_same_xaxis(x1, y1, y2 ,calib):
+    x1 = np.asarray(x1)
+    y1 *= x1
+    y2 *= x1
+
+    spec1 = Spectrum.Spectrum(flux=y1, xaxis=x1, calibrated=calib)
+    spec2 = Spectrum.Spectrum(flux=y2, xaxis=x1, calibrated=calib)
+    
+    spec3 = spec1+spec2
+    spec4 = sum([spec1, spec2])
+    spec5 = sum([spec1, spec2, spec3, spec4])
+    summed = np.asarray(y1) + np.asarray(y2)
+    npsummed = np.asarray(y1) + np.asarray(y2)
+    # Assert the flux values are summed togther
+    assert np.all(spec3.flux == summed)
+    assert np.all(spec3.flux == spec4.flux)
+    assert np.all(spec4.flux == summed)
+    assert np.all(spec4.flux == npsummed)
+    assert np.all(spec5.flux == 3*summed)
+    
+    # Assert calibration has stayed the same.
+    assert np.allclose(spec4.calibrated, spec1.calibrated)
+    assert np.allclose(spec4.calibrated, spec3.calibrated)
+    assert np.allclose(spec3.calibrated, spec2.calibrated)
+
+#Try with floats
+@given(st.lists(st.floats(min_value=1e-3, allow_infinity=False), min_size=1,), st.floats(min_value=1e-3), st.floats(min_value=1e-3),st.booleans())
+def test_overload_add_with_same_xaxis(x1, y1, y2 ,calib):
+    x1 = np.asarray(x1)
+    y1 *= x1
+    y2 *= x1
+    spec1 = Spectrum.Spectrum(flux=y1, xaxis=x1, calibrated=calib)
+    spec2 = Spectrum.Spectrum(flux=y2, xaxis=x1, calibrated=calib)
+    
+    spec3 = spec1+spec2
+    spec4 = sum([spec1, spec2])
+    # Assert the flux values are summed togther
+    assert np.allclose(spec3.flux, np.asarray(y1) + np.asarray(y2))
+    assert np.allclose(spec3.flux, spec4.flux)
+    
+    # Assert calibration has stayed the same.
+    assert np.allclose(spec4.calibrated, spec1.calibrated)
+    assert np.allclose(spec4.calibrated, spec3.calibrated)
+    assert np.allclose(spec3.calibrated, spec2.calibrated)
+    # Need to also check on xaxis after the calibraion has been performed.
