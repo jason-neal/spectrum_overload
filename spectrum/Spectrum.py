@@ -129,6 +129,16 @@ class Spectrum(object):
 
 
 
+    def __mul__(self, other):
+        if self.calibrated != other.calibrated:
+            """Checking the Spectra are of same calibration state"""
+            raise SpectrumCalibrationError("The Spectra are not of the same calibration state.")
+        # Only for equal xaxis
+        if np.all(self.xaxis == other.xaxis):
+            # Easiest condition in which xaxis of both are the same
+            new_flux = self.flux * other.flux
+            return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+
 
     def __pow__ (self, other):  # [, modulo]  extra parameter to be able to use pow() function
         # Overlaod to use power to scale the flux of the spectra
