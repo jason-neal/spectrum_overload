@@ -127,6 +127,16 @@ class Spectrum(object):
         new_flux = self.flux + other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
+    
+    def __sub__(self, other):
+        if self.calibrated != other.calibrated:
+            """Checking the Spectra are of same calibration state"""
+            raise SpectrumCalibrationError("The Spectra are not of the same calibration state.")
+        # Only for equal xaxis
+        if np.all(self.xaxis == other.xaxis):
+            # Easiest condition in which xaxis of both are the same
+            new_flux = self.flux - other.flux
+            return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
 
     def __mul__(self, other):
