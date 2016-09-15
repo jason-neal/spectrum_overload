@@ -130,6 +130,17 @@ class Spectrum(object):
 
 
 
+    def __pow__ (self, other):  # [, modulo]  extra parameter to be able to use pow() function
+        # Overlaod to use power to scale the flux of the spectra
+        if len(other) > 1 :
+            raise ValueError("Spectrum can only be raised to the power of one number not {}".format(len(other)))
+        try:
+            new_flux = self.flux ** other
+            return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+        except :
+            #Tpye error or value error are likely
+            raise 
+
 
     def __len__(self):
         # Give the length of the spectrum:
