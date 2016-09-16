@@ -171,15 +171,19 @@ class Spectrum(object):
         # Give the length of the spectrum:
         return len(self.flux)
 
+
+
+
 ## TO DO !
 #--------------------
-# Overrideopperators such 
-# e.g, plus, minus, subtract, divide
+# Add an interpolation
+# Incorporate interpolation into all overloaded operators
+
+# Setter /getter for xaxis and flux to turn into np.asarrays
 
 
 
 
 
-# Interpolation in wavelength (before subtraction)
 class SpectrumError(Exception):
     pass
