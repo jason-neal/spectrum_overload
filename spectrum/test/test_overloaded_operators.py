@@ -176,6 +176,32 @@ def test_overload_pow():
         spec3 = spec1 ** np.array([1,2])
 
 
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7, allow_infinity=False), min_size=1,), st.floats(min_value=1e-3, max_value=1e7, allow_infinity=False), st.floats(min_value=1e-7, max_value=1e10, allow_infinity=False), st.integers(min_value=1, max_value=int(1e5)))
+def test_add_sub_mult_divide_by_numbers(x, y, float1, int1):
+    y *= np.array(x)   # turn to array for operations
+    spec = Spectrum.Spectrum(flux=y, xaxis=x)
+    # Add by a float 
+    spec_add = spec + float1
+    spec_add_int = spec + int1
+    assert np.all(spec_add.flux == y + float1)
+    assert np.all(spec_add_int.flux == y + int1)
+    # Subtract by an int
+    spec_sub = spec - float1
+    spec_sub_int = spec - int1
+    assert np.all(spec_sub.flux == y - float1)
+    assert np.all(spec_sub_int.flux == y - int1)
+    # Multiply by an int
+    spec_mul = spec * float1
+    spec_mul_int = spec * int1
+    assert np.all(spec_mul.flux == y * float1)
+    assert np.all(spec_mul_int.flux == y * int1)
+    # Divide by an int
+    spec_truediv = spec / float1
+    spec_truediv_int = spec / int1
+    assert np.all(spec_truediv.flux == y / float1)
+    assert np.all(spec_truediv_int.flux == y / int1)
+
+
 def test_unitary_operators():
     """ Test __pos__ and __neg__ operators"""
     a = np.array([1,2,-3,4])
