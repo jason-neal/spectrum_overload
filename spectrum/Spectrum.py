@@ -157,6 +157,7 @@ class Spectrum(object):
         try:
             new_flux = self.flux ** other
             return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+        
         except :
             #Tpye error or value error are likely
             raise 
@@ -164,7 +165,7 @@ class Spectrum(object):
 
     def __len__(self):
         # Give the length of the spectrum:
-        return len(Spectrum.flux)
+        return len(self.flux)
 
 ## TO DO !
 #--------------------
