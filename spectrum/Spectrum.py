@@ -106,11 +106,16 @@ class Spectrum(object):
                 """Checking the Spectra are of same calibration state"""
                 raise SpectrumError("The Spectra are not of the same calibration state.")
         
-        if np.all(self.xaxis == other.xaxis):
-            # Easiest condition in which xaxis of both are the same
-            new_flux = self.flux / other.flux
-            return Spectrum(flux=new_flux, xaxis=self.xaxis, calibrated=self.calibrated)
-
+            if np.all(self.xaxis == other.xaxis):
+                # Easiest condition in which xaxis of both are the same
+                try:
+                    new_flux = self.flux / other.flux
+                except ZeroDivisionError:
+                    print("Some of the spectrum was zero. Replacing with Nans")
+                    nand_other = other.flux
+                    nand_other[nand_other == 0] = np.nan()
+                    new_flux = self.flux / other.flux
+           
         else:
             new_flux = self.flux / other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, calibrated=self.calibrated)
