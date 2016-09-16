@@ -174,3 +174,28 @@ def test_overload_pow():
         spec3 = spec1 ** [1,2] # This should fail
     with pytest.raises(ValueError):
         spec3 = spec1 ** np.array([1,2])
+
+
+def test_unitary_operators():
+    """ Test __pos__ and __neg__ operators"""
+    a = np.array([1,2,-3,4])
+    b = np.array([1,2,3,4])
+    spec = Spectrum.Spectrum(a ,b)
+    spec1 = +spec
+    assert np.all(spec1.flux == a)
+    assert np.all(spec1.flux == spec.flux)
+    spec2 = -spec
+    assert np.all(spec2.flux == -a)
+    assert np.all(spec2.flux == -spec1.flux)
+    
+
+def test_abs_operator():
+    """ Test absolute value of flux"""
+    spec = Spectrum.Spectrum([-1,2,-3.2,4], [2,3,4,5])
+    abs_spec = abs(spec)
+    abs_spec2 = abs(abs_spec)
+    assert np.all(abs_spec.flux == np.array([1,2,3.2,4]))
+    assert np.all(abs_spec.flux == abs_spec2.flux)
+
+
+    

@@ -173,11 +173,24 @@ class Spectrum(object):
 
 
     def __len__(self):
-        # Give the length of the spectrum:
+        """ Return length of flux Spectrum"""
         return len(self.flux)
 
-
-
+    def __neg__ (self):
+        """ Take negative flux """
+        negflux = -self.flux
+        return Spectrum(flux=negflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+      
+    def __pos__ (self):
+        """ Take positive flux """
+        posflux = +self.flux
+        return Spectrum(flux=posflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+  
+    def __abs__ (self):
+        """ Take absolute flux """
+        absflux = abs(self.flux)
+        return Spectrum(flux=absflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+  
 
 ## TO DO !
 #--------------------
