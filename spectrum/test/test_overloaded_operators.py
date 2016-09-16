@@ -139,19 +139,21 @@ def test_len_works():
     spec1 = Spectrum.Spectrum([1,2,3,4,5],[1,2,3,4,5])
     assert len(spec1) == 5
 
-#def test_for_raise_die_to_calibration_mismatch():
+
+from spectrum.Spectrum import SpectrumError
+def test_for_raise_die_to_calibration_mismatch():
     #Try catch my raise
-    # s1 = Spectrum.Spectrum([1], [2], calibrated=True)
-    # s2 = Spectrum.Spectrum([1], [2], calibrated=False)
-    # # This will fail untill I work out errors more
-    # with pytest.raises(SpectrumCalibrationError):
-    #     s1 + s2
-    # with pytest.raises(SpectrumCalibrationError):
-    #     s1 - s2
-    # with pytest.raises(SpectrumCalibrationError):
-    #     s1 * s2
-    # with pytest.raises(SpectrumCalibrationError):
-    #     s1 / s2
+    s1 = Spectrum.Spectrum([1], [2], calibrated=True)
+    s2 = Spectrum.Spectrum([1], [2], calibrated=False)
+     # This will fail untill I work out errors more
+    with pytest.raises(SpectrumError):
+         s1 + s2
+    with pytest.raises(SpectrumError):
+         s1 - s2
+    with pytest.raises(SpectrumError):
+         s1 * s2
+    with pytest.raises(SpectrumError):
+         s1 / s2
 
 
 def test_overload_pow():
@@ -159,7 +161,7 @@ def test_overload_pow():
     z = 2
     spec1 = Spectrum.Spectrum([1,2,3,4], [2,3,4,5], None, True)
     spec2 = Spectrum.Spectrum([1,2,3,4], [1,3,1,4], None, True)
-    
+    # Can test when things are not suposed to work :)
     with pytest.raises(TypeError):
         spec3 = spec1 ** spec2
     with pytest.raises(ValueError):

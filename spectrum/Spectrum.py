@@ -118,7 +118,7 @@ class Spectrum(object):
     def __add__(self, other):
         if self.calibrated != other.calibrated:
             """Checking the Spectra are of same calibration state"""
-            raise SpectrumCalibrationError("The Spectra are not of the same calibration state.")
+            raise SpectrumError("The Spectra are not of the same calibration state.")
         
         if np.all(self.xaxis == other.xaxis):
             # Easiest condition in which xaxis of both are the same
@@ -135,7 +135,7 @@ class Spectrum(object):
     def __sub__(self, other):
         if self.calibrated != other.calibrated:
             """Checking the Spectra are of same calibration state"""
-            raise SpectrumCalibrationError("The Spectra are not of the same calibration state.")
+            raise SpectrumError("The Spectra are not of the same calibration state.")
         # Only for equal xaxis
         if np.all(self.xaxis == other.xaxis):
             # Easiest condition in which xaxis of both are the same
@@ -146,7 +146,7 @@ class Spectrum(object):
     def __mul__(self, other):
         if self.calibrated != other.calibrated:
             """Checking the Spectra are of same calibration state"""
-            raise SpectrumCalibrationError("The Spectra are not of the same calibration state.")
+            raise SpectrumError("The Spectra are not of the same calibration state.")
         # Only for equal xaxis
         if np.all(self.xaxis == other.xaxis):
             # Easiest condition in which xaxis of both are the same
@@ -176,4 +176,10 @@ class Spectrum(object):
 # Overrideopperators such 
 # e.g, plus, minus, subtract, divide
 
+
+
+
+
 # Interpolation in wavelength (before subtraction)
+class SpectrumError(Exception):
+    pass
