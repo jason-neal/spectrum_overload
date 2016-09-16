@@ -128,12 +128,18 @@ def test_overload_truediv_with_same_xaxis(x1, y1, y2 ,calib):
     assert spec_truediv.calibrated == spec2.calibrated
     assert spec_truediv.header == spec1.header     # Might not want this later. May want to record the transformation in the header
     
-
-
-
-
-
+def test_truediv_with_number():
+    # To test if can divide flux by a number
+    number = 0.3
+    flux_arr = np.array([1,2,3,2.3,4.5])
+    spec1 = Spectrum.Spectrum(flux=flux_arr, xaxis=[1,1.1,1.2,2.1], calibrated=True)
     
+    spec_truediv = spec1 / number
+    
+    assert np.all(spec_truediv.flux == flux_arr/number)
+
+
+
 def test_len_works():
     #Test len works
     spec1 = Spectrum.Spectrum([1,2,3,4,5],[1,2,3,4,5])
