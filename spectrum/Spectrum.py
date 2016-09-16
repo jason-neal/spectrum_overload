@@ -101,15 +101,19 @@ class Spectrum(object):
 
     def __truediv__(self, other):
         """Overload truedivision (/) to divide two specta """
-        if self.calibrated != other.calibrated:
-            """Checking the Spectra are of same calibration state"""
-            raise SpectrumCalibrationError("The Spectra are not of the same calibration state.")
+        if isinstance(other, Spectrum):
+            if self.calibrated != other.calibrated:
+                """Checking the Spectra are of same calibration state"""
+                raise SpectrumError("The Spectra are not of the same calibration state.")
         
         if np.all(self.xaxis == other.xaxis):
             # Easiest condition in which xaxis of both are the same
             new_flux = self.flux / other.flux
             return Spectrum(flux=new_flux, xaxis=self.xaxis, calibrated=self.calibrated)
 
+        else:
+            new_flux = self.flux / other
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, calibrated=self.calibrated)
     
     def __add__(self, other):
         if self.calibrated != other.calibrated:
