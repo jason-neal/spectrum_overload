@@ -24,6 +24,11 @@ class Spectrum(object):
 
     @xaxis.setter 
     def xaxis(self, value):
+        #print("xaxis value = ", value)
+        if isinstance(value, str): 
+            #Try to catch some bad assignments 
+            # Yes a list of strings will not be caught
+            raise TypeError("Cannot assign {} to the xaxis attribute".format(type(value)))
             self._xaxis = np.asarray(value)
     
     @property
@@ -32,6 +37,11 @@ class Spectrum(object):
 
     @flux.setter
     def flux(self, value):
+        if isinstance(value, str): 
+            #Try to catch some bad assignments 
+            # Yes a list of strings will not be caught
+                raise TypeError("Cannot assign {} to the flux attribute".format(type(value)))
+
         print("Turning flux input into np array")
         self._flux = np.asarray(value)
 

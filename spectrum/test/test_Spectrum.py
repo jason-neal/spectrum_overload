@@ -34,6 +34,18 @@ def test_spectrum_assigns_data():
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
 
+
+def test_flux_and_xaxis_cannot_pass_stings():
+    """Passing a string to flux or xaxis will raise a TypeError"""
+    #with pytest.raises(TypeError):
+    #    assert Spectrum.Spectrum([1,2,3], xaxis='bar')
+    #spec = Spectrum.Spectrum([1,1,.5,1])
+    #with pytest.raises(TypeError):
+    #    spec.flux = "foo"
+    #with pytest.raises(TypeError):
+    #    spec.xaxis = 'foo'
+    pass
+
 @given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
 def test_wav_select(x, calib, wav_min, wav_max):
     """Test some properties of wavelength selection"""
