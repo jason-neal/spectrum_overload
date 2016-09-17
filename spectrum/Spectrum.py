@@ -180,27 +180,40 @@ class Spectrum(object):
     #######################################################
 
 
-    def ___truediv___(self, other):
+    def __truediv__(self, other):
         """Overload truedivision (/) to divide two specta """
-        if self.calibrated != other.calibrated:
-            """Checking the Spectra are of same calibration state"""
-            raise SpectrumCalibrationError("The Spectra are not of the same calibration state.")
+        if isinstance(other, Spectrum):
+            if self.calibrated != other.calibrated:
+                """Checking the Spectra are of same calibration state"""
+                raise SpectrumError("The Spectra are not of the same calibration state.")
         
-        if np.all(self.xaxis == other.xaxis):
-            # Easiest condition in which xaxis of both are the same
-            new_flux = self.flux / other.flux
-            return Spectrum(flux=new_flux, xaxis=self.xaxis, calibrated=self.calibrated)
-
+            if np.all(self.xaxis == other.xaxis):
+                # Easiest condition in which xaxis of both are the same
+                try:
+                    new_flux = self.flux / other.flux
+                except ZeroDivisionError:
+                    print("Some of the spectrum was zero. Replacing with Nans")
+                    nand_other = other.flux
+                    nand_other[nand_other == 0] = np.nan()
+                    new_flux = self.flux / other.flux
+           
+        else:
+            new_flux = self.flux / other
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, calibrated=self.calibrated)
     
     def __add__(self, other):
-        if self.calibrated != other.calibrated:
-            """Checking the Spectra are of same calibration state"""
-            raise SpectrumCalibrationError("The Spectra are not of the same calibration state.")
+        if isinstance(other, Spectrum):
+            if self.calibrated != other.calibrated:
+                """Checking the Spectra are of same calibration state"""
+                raise SpectrumError("The Spectra are not of the same calibration state.")
+            
+            if np.all(self.xaxis == other.xaxis):
+                # Easiest condition in which xaxis of both are the same
+                new_flux = self.flux + other.flux
+        else:
+            new_flux = self.flux + other
         
-        if np.all(self.xaxis == other.xaxis):
-            # Easiest condition in which xaxis of both are the same
-            new_flux = self.flux + other.flux
-            return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
     def __radd__(self, other):
         # E.g. for first Item in Sum  0  + Spectrum fails.
@@ -208,14 +221,80 @@ class Spectrum(object):
         new_flux = self.flux + other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
+    
+    def __sub__(self, other):
+        if isinstance(other, Spectrum):
+            if self.calibrated != other.calibrated:
+                """Checking the Spectra are of same calibration state"""
+                raise SpectrumError("The Spectra are not of the same calibration state.")
+            # Only for equal xaxis
+            if np.all(self.xaxis == other.xaxis):
+                # Easiest condition in which xaxis of both are the same
+                new_flux = self.flux - other.flux
+        else:
+            new_flux = self.flux - other
+
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
 
+    def __mul__(self, other):
+        if isinstance(other, Spectrum):
+            if self.calibrated != other.calibrated:
+                """Checking the Spectra are of same calibration state"""
+                raise SpectrumError("The Spectra are not of the same calibration state.")
+            # Only for equal xaxis
+            if np.all(self.xaxis == other.xaxis):
+                # Easiest condition in which xaxis of both are the same
+                new_flux = self.flux * other.flux
+        else:
+            new_flux = self.flux * other
+
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
 
+    def __pow__ (self, other):
+        # Overlaod to use power to scale the flux of the spectra
+        #if len(other) > 1 :
+        #    raise ValueError("Spectrum can only be raised to the power of one number not {}".format(len(other)))
+        try:
+            new_flux = self.flux ** other
+            return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+        
+        except :
+            #Tpye error or value error are likely
+            raise 
+
+
+    def __len__(self):
+        """ Return length of flux Spectrum"""
+        return len(self.flux)
+
+    def __neg__ (self):
+        """ Take negative flux """
+        negflux = -self.flux
+        return Spectrum(flux=negflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+      
+    def __pos__ (self):
+        """ Take positive flux """
+        posflux = +self.flux
+        return Spectrum(flux=posflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+  
+    def __abs__ (self):
+        """ Take absolute flux """
+        absflux = abs(self.flux)
+        return Spectrum(flux=absflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+  
 
 ## TO DO !
 #--------------------
-# Overrideopperators such 
-# e.g, plus, minus, subtract, divide
+# Add an interpolation
+# Incorporate interpolation into all overloaded operators
 
-# Interpolation in wavelength (before subtraction)
+# Setter /getter for xaxis and flux to turn into np.asarrays
+
+
+
+
+
+class SpectrumError(Exception):
+    pass
