@@ -17,6 +17,25 @@ class Spectrum(object):
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
 
+    @property
+    def xaxis(self):
+        #print("Getting xaxis property")
+        return self._xaxis 
+
+    @xaxis.setter 
+    def xaxis(self, value):
+            self._xaxis = np.asarray(value)
+    
+    @property
+    def flux(self):
+        return self._flux
+
+    @flux.setter
+    def flux(self, value):
+        print("Turning flux input into np array")
+        self._flux = np.asarray(value)
+
+
     def wav_select(self, wav_min, wav_max):
         """ Select the spectrum between wav_min and wav_max values 
             Uses numpy slicing for high speed.
