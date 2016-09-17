@@ -38,12 +38,6 @@ class Spectrum(object):
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
     
-    def length_check():
-        """ Check lenght of xaxis and flux are equal.
-        Raise error if they are not """
-        if len(self._flux) != len(self._xaxis):
-            raise ValueError("The length of xaxis and flux must be the same")
-
     @property
     def xaxis(self):
         #print("Getting xaxis property")
@@ -83,6 +77,18 @@ class Spectrum(object):
 
         print("Turning flux input into np array")
         self._flux = np.asarray(value)
+
+    def length_check(self):
+        """ Check length of xaxis and flux are equal.
+        Raise error if they are not 
+        If everyting is ok then there is no response/output"""
+        if (self._flux is None) and (self._xaxis is None):
+            # Can't measure lenght of none
+            pass
+        elif (self._flux is None) or (self._xaxis is None):
+            pass
+        elif len(self._flux) != len(self._xaxis):
+            raise ValueError("The length of xaxis and flux must be the same")
 
 
     def wav_select(self, wav_min, wav_max):
