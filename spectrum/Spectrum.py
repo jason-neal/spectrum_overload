@@ -75,8 +75,11 @@ class Spectrum(object):
             # Yes a list of strings will not be caught
                 raise TypeError("Cannot assign {} to the flux attribute".format(type(value)))
 
-        print("Turning flux input into np array")
-        self._flux = np.asarray(value)
+        if value is not None:
+            print("Turning flux input into np array")
+            self._flux = np.asarray(value)
+        else:
+            self._flux = value 
 
     def length_check(self):
         """ Check length of xaxis and flux are equal.
