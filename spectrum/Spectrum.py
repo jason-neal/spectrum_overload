@@ -14,6 +14,11 @@ class Spectrum(object):
         """ Initalise a Spectrum object """
         self.xaxis = np.asarray(xaxis)
         self.flux = np.asarray(flux)
+        # Some checks before creating class
+        if isinstance(flux, str):
+            raise TypeError("Cannot assign {} to the flux attribute".format(type(flux)))
+        elif isinstance(xaxis, str):
+            raise TypeError("Cannot assign {} to the xaxis attribute".format(type(xaxis)))
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
 
