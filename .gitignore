@@ -1,6 +1,7 @@
 #notebook and html
 #*.ipynb
-#*.html
+*.html
+Docs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

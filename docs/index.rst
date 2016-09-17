@@ -11,7 +11,15 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+.. automodule:: spectrum
 
+Spectrum Class 
+==============
+
+A python class to contain a spectrum. The operators have been overloaded so that you can easily combine spectra.
+
+.. autoclass:: spectrum.Spectrum
+   :members:
 
 Indices and tables
 ==================
