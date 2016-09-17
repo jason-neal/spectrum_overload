@@ -14,17 +14,20 @@ from spectrum import Spectrum
 from hypothesis import given
 import hypothesis.strategies as st
 
-@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), 
-    st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.booleans())
+@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes"""
+    # Use one hypotheseis list they need to have the same lenght
+    # multiply by a random int to mix it up a little.
+    x = x * np.array(y)
     spec = Spectrum.Spectrum(y, x, calibrated=z)
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == z
 
 def test_spectrum_assigns_data():
-    """Test a manual example"""
+    """Test a manual example 
+    Lenghts of x and y need to be the same"""
     x = [1, 2, 3, 4, 5, 6]
     y = [1, 1, 0.9, 0.95, 1, 1]
     calib_val = 0
@@ -33,6 +36,43 @@ def test_spectrum_assigns_data():
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
+
+def test_setters_for_flux_and_xaxis():
+    pass
+
+def test_flux_and_xaxis_cannot_pass_stings():
+    """Passing a string to flux or xaxis will raise a TypeError"""
+    with pytest.raises(TypeError):
+        Spectrum.Spectrum([1,2,3], xaxis='bar')
+    with pytest.raises(TypeError):
+        Spectrum.Spectrum("foo", [1.2,3,4,5])
+    with pytest.raises(TypeError):
+        Spectrum.Spectrum("foo","bar")
+    spec = Spectrum.Spectrum([1,1,.5,1])
+    with pytest.raises(TypeError):
+        spec.flux = "foo"
+    with pytest.raises(TypeError):
+        spec.xaxis = 'bar'
+    
+def test_auto_genration_of_xaxis_if_None():
+    spec = Spectrum.Spectrum([1,1,.5,1])
+    assert np.all(spec.xaxis == np.arange(4))
+    spec2 = Spectrum.Spectrum([1,1,.5,1],[100,110,160,200])
+    spec2.xaxis = None  # reset xaxis
+    assert np.all(spec2.xaxis == np.arange(4))
+
+def test_length_of_flux_and_xaxis_equal():
+    """ Try assign a mismatched xaxis it should raise a ValueError"""
+    with pytest.raises(ValueError):
+        Spectrum.Spectrum([1,2,3],[1,2])
+    with pytest.raises(ValueError):
+        Spectrum.Spectrum([1,2,3],[])
+    with pytest.raises(ValueError):
+        Spectrum.Spectrum([],[1,2])
+    spec = Spectrum.Spectrum([1,2,3],[1,2,3])
+    with pytest.raises(ValueError):
+        spec.xaxis = [1,2]
+
 
 @given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
 def test_wav_select(x, calib, wav_min, wav_max):
@@ -133,3 +173,4 @@ def test_header_attribute():
     assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
     assert Spectrum.Spectrum().header == None
+
