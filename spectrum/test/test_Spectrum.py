@@ -34,6 +34,8 @@ def test_spectrum_assigns_data():
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
 
+def test_setters_for_flux_and_xaxis():
+    pass
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError"""
@@ -46,6 +48,12 @@ def test_flux_and_xaxis_cannot_pass_stings():
     #    spec.xaxis = 'foo'
     pass
 
+def test_auto_genration_of_xaxis_if_None():
+    spec = Spectrum.Spectrum([1,1,.5,1])
+    assert spec.xaxis == np.arange(4)
+    spec2 = Spectrum.Spectrum([1,1,.5,1],[100,110,160,200])
+    spec2.xaxis = None  # reset xaxis
+    assert spec2.xaxis == np.arange(4)
 
 def test_length_of_flux_and_xaxis_equal():
     """ Try assign a mismatched xaxis it should raise a ValueError"""

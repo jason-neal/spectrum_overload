@@ -12,15 +12,25 @@ class Spectrum(object):
     
     def __init__(self, flux=None, xaxis=None, header=None, calibrated=False):
         """ Initalise a Spectrum object """
-        self.xaxis = np.asarray(xaxis)
-        self.flux = np.asarray(flux)
         # Some checks before creating class
         if isinstance(flux, str):
             raise TypeError("Cannot assign {} to the flux attribute".format(type(flux)))
         elif isinstance(xaxis, str):
             raise TypeError("Cannot assign {} to the xaxis attribute".format(type(xaxis)))
-        #Check assigned lenghts
-        self.length_check()
+     
+        self._flux = np.asarray(flux)   # Still need asarray as setter is not used here
+        if xaxis is None and flux is not None:
+            # Applying range to xaxis of equal length as flux 
+            try:
+                # Try to assign arange the length of flux
+                self._xaxis = np.arange(len(flux))
+            except TypeError: 
+                self._xaxis = None
+        else:
+            self._xaxis = np.asarray(xaxis) # Still need asarray as setter is not used here
+        
+        # Check assigned lenghts
+        self.length_check() 
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
     
@@ -42,6 +52,18 @@ class Spectrum(object):
             #Try to catch some bad assignments 
             # Yes a list of strings will not be caught
             raise TypeError("Cannot assign {} to the xaxis attribute".format(type(value)))
+        if value is None:
+            try:
+                # Try to assign arange the length of flux
+                self._xaxis = np.arange(len(self._flux))
+            except TypeError: 
+                # if self._flux is None then it has no length.
+                self._xaxis = None
+            #print("assigning xaxis the same length of _flux")
+            
+        # Add any other checks in here if nessary
+        else:
+            print("Turning input into np array")
             self._xaxis = np.asarray(value)
     
     @property
