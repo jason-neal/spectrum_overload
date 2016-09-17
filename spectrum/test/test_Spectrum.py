@@ -60,15 +60,15 @@ def test_auto_genration_of_xaxis_if_None():
 
 def test_length_of_flux_and_xaxis_equal():
     """ Try assign a mismatched xaxis it should raise a ValueError"""
-    #with pytest.raises
-    #    assert Spectrum.Spectrum([1,2,3],[1,2])
-    #with pytest.raises
-    #    assert Spectrum.Spectrum([1,2,3],[])
-    #with pytest.raises
-    #    assert Spectrum.Spectrum([],[1,2])
-    #spec = Spectrum.Spectrum([1,2,3],[1,2,3])
-    #with pytest.raises
-    #    assert spec.xaxis = [1,2]
+    with pytest.raises(ValueError):
+        Spectrum.Spectrum([1,2,3],[1,2])
+    with pytest.raises(ValueError):
+        Spectrum.Spectrum([1,2,3],[])
+    with pytest.raises(ValueError):
+        Spectrum.Spectrum([],[1,2])
+    spec = Spectrum.Spectrum([1,2,3],[1,2,3])
+    with pytest.raises(ValueError):
+        spec.xaxis = [1,2]
 
 
 @given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())

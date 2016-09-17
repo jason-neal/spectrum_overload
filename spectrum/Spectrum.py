@@ -50,7 +50,7 @@ class Spectrum(object):
             #Try to catch some bad assignments 
             # Yes a list of strings will not be caught
             raise TypeError("Cannot assign {} to the xaxis attribute".format(type(value)))
-        if value is None:
+        elif value is None:
             try:
                 # Try to assign arange the length of flux
                 self._xaxis = np.arange(len(self._flux))
@@ -60,9 +60,11 @@ class Spectrum(object):
             #print("assigning xaxis the same length of _flux")
             
         # Add any other checks in here if nessary
-        else:
-            print("Turning input into np array")
-            self._xaxis = np.asarray(value)
+        elif self._flux is not None:
+            if len(value) != len(self._flux):
+                raise ValueError("Lenght of xaxis does not match the length of flux ")
+            else:
+                self._xaxis = np.asarray(value)
     
     @property
     def flux(self):
@@ -77,6 +79,8 @@ class Spectrum(object):
 
         if value is not None:
             print("Turning flux input into np array")
+            #Not checking to make sure it equals the xaxis
+            # If changing flux and xaxis set the flux first
             self._flux = np.asarray(value)
         else:
             self._flux = value 
@@ -105,13 +109,13 @@ class Spectrum(object):
         else:
             try:
                 mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
+                self.flux = self.flux[mask]    # change flux first
                 self.xaxis = self.xaxis[mask]
-                self.flux = self.flux[mask]
             except TypeError:
                 print("Make sure your xaxis is an array")
                 #Return to original values
+                self.flux = flux_org           # change flux first
                 self.xaxis = x_org
-                self.flux = flux_org
                 raise
 
 
