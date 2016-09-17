@@ -24,7 +24,8 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
     assert spec.calibrated == z
 
 def test_spectrum_assigns_data():
-    """Test a manual example"""
+    """Test a manual example 
+    Lenghts of x and y need to be the same"""
     x = [1, 2, 3, 4, 5, 6]
     y = [1, 1, 0.9, 0.95, 1, 1]
     calib_val = 0
@@ -50,10 +51,10 @@ def test_flux_and_xaxis_cannot_pass_stings():
 
 def test_auto_genration_of_xaxis_if_None():
     spec = Spectrum.Spectrum([1,1,.5,1])
-    assert spec.xaxis == np.arange(4)
+    assert np.all(spec.xaxis == np.arange(4))
     spec2 = Spectrum.Spectrum([1,1,.5,1],[100,110,160,200])
     spec2.xaxis = None  # reset xaxis
-    assert spec2.xaxis == np.arange(4)
+    assert np.all(spec2.xaxis == np.arange(4))
 
 def test_length_of_flux_and_xaxis_equal():
     """ Try assign a mismatched xaxis it should raise a ValueError"""
