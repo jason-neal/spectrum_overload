@@ -14,10 +14,12 @@ from spectrum import Spectrum
 from hypothesis import given
 import hypothesis.strategies as st
 
-@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), 
-    st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.booleans())
+@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes"""
+    # Use one hypotheseis list they need to have the same lenght
+    # multiply by a random int to mix it up a little.
+    x = x * np.array(y)
     spec = Spectrum.Spectrum(y, x, calibrated=z)
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
