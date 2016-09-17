@@ -132,7 +132,7 @@ def test_truediv_with_number():
     # To test if can divide flux by a number
     number = 0.3
     flux_arr = np.array([1,2,3,2.3,4.5])
-    spec1 = Spectrum.Spectrum(flux=flux_arr, xaxis=[1,1.1,1.2,2.1], calibrated=True)
+    spec1 = Spectrum.Spectrum(flux=flux_arr, xaxis=[1,1.1,1.2,2.1,4], calibrated=True)
     
     spec_truediv = spec1 / number
     
