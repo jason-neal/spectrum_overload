@@ -17,8 +17,12 @@ class Spectrum(object):
             raise TypeError("Cannot assign {} to the flux attribute".format(type(flux)))
         elif isinstance(xaxis, str):
             raise TypeError("Cannot assign {} to the xaxis attribute".format(type(xaxis)))
-     
-        self._flux = np.asarray(flux)   # Still need asarray as setter is not used here
+        
+        if flux is not None:
+            self._flux = np.asarray(flux)
+        else:
+            self._flux = flux
+
         if xaxis is None and flux is not None:
             # Applying range to xaxis of equal length as flux 
             try:
