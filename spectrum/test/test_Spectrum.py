@@ -42,15 +42,18 @@ def test_setters_for_flux_and_xaxis():
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError"""
-    #with pytest.raises(TypeError):
-    #    assert Spectrum.Spectrum([1,2,3], xaxis='bar')
-    #spec = Spectrum.Spectrum([1,1,.5,1])
-    #with pytest.raises(TypeError):
-    #    spec.flux = "foo"
-    #with pytest.raises(TypeError):
-    #    spec.xaxis = 'foo'
-    pass
-
+    with pytest.raises(TypeError):
+        Spectrum.Spectrum([1,2,3], xaxis='bar')
+    with pytest.raises(TypeError):
+        Spectrum.Spectrum("foo", [1.2,3,4,5])
+    with pytest.raises(TypeError):
+        Spectrum.Spectrum("foo","bar")
+    spec = Spectrum.Spectrum([1,1,.5,1])
+    with pytest.raises(TypeError):
+        spec.flux = "foo"
+    with pytest.raises(TypeError):
+        spec.xaxis = 'bar'
+    
 def test_auto_genration_of_xaxis_if_None():
     spec = Spectrum.Spectrum([1,1,.5,1])
     assert np.all(spec.xaxis == np.arange(4))
