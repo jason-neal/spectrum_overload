@@ -46,6 +46,20 @@ def test_flux_and_xaxis_cannot_pass_stings():
     #    spec.xaxis = 'foo'
     pass
 
+
+def test_length_of_flux_and_xaxis_equal():
+    """ Try assign a mismatched xaxis it should raise a ValueError"""
+    #with pytest.raises
+    #    assert Spectrum.Spectrum([1,2,3],[1,2])
+    #with pytest.raises
+    #    assert Spectrum.Spectrum([1,2,3],[])
+    #with pytest.raises
+    #    assert Spectrum.Spectrum([],[1,2])
+    #spec = Spectrum.Spectrum([1,2,3],[1,2,3])
+    #with pytest.raises
+    #    assert spec.xaxis = [1,2]
+
+
 @given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
 def test_wav_select(x, calib, wav_min, wav_max):
     """Test some properties of wavelength selection"""

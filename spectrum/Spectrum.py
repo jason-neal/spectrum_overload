@@ -19,8 +19,16 @@ class Spectrum(object):
             raise TypeError("Cannot assign {} to the flux attribute".format(type(flux)))
         elif isinstance(xaxis, str):
             raise TypeError("Cannot assign {} to the xaxis attribute".format(type(xaxis)))
+        #Check assigned lenghts
+        self.length_check()
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
+    
+    def length_check():
+        """ Check lenght of xaxis and flux are equal.
+        Raise error if they are not """
+        if len(self._flux) != len(self._xaxis):
+            raise ValueError("The length of xaxis and flux must be the same")
 
     @property
     def xaxis(self):
