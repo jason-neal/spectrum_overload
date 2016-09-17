@@ -12,10 +12,91 @@ class Spectrum(object):
     
     def __init__(self, flux=None, xaxis=None, header=None, calibrated=False):
         """ Initalise a Spectrum object """
-        self.xaxis = np.asarray(xaxis)
-        self.flux = np.asarray(flux)
+        # Some checks before creating class
+        if isinstance(flux, str):
+            raise TypeError("Cannot assign {} to the flux attribute".format(type(flux)))
+        elif isinstance(xaxis, str):
+            raise TypeError("Cannot assign {} to the xaxis attribute".format(type(xaxis)))
+        
+        if flux is not None:
+            self._flux = np.asarray(flux)
+        else:
+            self._flux = flux
+
+        if xaxis is None and flux is not None:
+            # Applying range to xaxis of equal length as flux 
+            try:
+                # Try to assign arange the length of flux
+                self._xaxis = np.arange(len(flux))
+            except TypeError: 
+                self._xaxis = None
+        else:
+            self._xaxis = np.asarray(xaxis) # Still need asarray as setter is not used here
+        
+        # Check assigned lenghts
+        self.length_check() 
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
+    
+    @property
+    def xaxis(self):
+        #print("Getting xaxis property")
+        return self._xaxis 
+
+    @xaxis.setter 
+    def xaxis(self, value):
+        #print("xaxis value = ", value)
+        if isinstance(value, str): 
+            #Try to catch some bad assignments 
+            # Yes a list of strings will not be caught
+            raise TypeError("Cannot assign {} to the xaxis attribute".format(type(value)))
+        elif value is None:
+            try:
+                # Try to assign arange the length of flux
+                self._xaxis = np.arange(len(self._flux))
+            except TypeError: 
+                # if self._flux is None then it has no length.
+                self._xaxis = None
+            #print("assigning xaxis the same length of _flux")
+            
+        # Add any other checks in here if nessary
+        elif self._flux is not None:
+            if len(value) != len(self._flux):
+                raise ValueError("Lenght of xaxis does not match the length of flux ")
+            else:
+                self._xaxis = np.asarray(value)
+    
+    @property
+    def flux(self):
+        return self._flux
+
+    @flux.setter
+    def flux(self, value):
+        if isinstance(value, str): 
+            #Try to catch some bad assignments 
+            # Yes a list of strings will not be caught
+                raise TypeError("Cannot assign {} to the flux attribute".format(type(value)))
+
+        if value is not None:
+            print("Turning flux input into np array")
+            #Not checking to make sure it equals the xaxis
+            # If changing flux and xaxis set the flux first
+            self._flux = np.asarray(value)
+        else:
+            self._flux = value 
+
+    def length_check(self):
+        """ Check length of xaxis and flux are equal.
+        Raise error if they are not 
+        If everyting is ok then there is no response/output"""
+        if (self._flux is None) and (self._xaxis is None):
+            # Can't measure lenght of none
+            pass
+        elif (self._flux is None) or (self._xaxis is None):
+            pass
+        elif len(self._flux) != len(self._xaxis):
+            raise ValueError("The length of xaxis and flux must be the same")
+
 
     def wav_select(self, wav_min, wav_max):
         """ Select the spectrum between wav_min and wav_max values 
@@ -28,13 +109,13 @@ class Spectrum(object):
         else:
             try:
                 mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
+                self.flux = self.flux[mask]    # change flux first
                 self.xaxis = self.xaxis[mask]
-                self.flux = self.flux[mask]
             except TypeError:
                 print("Make sure your xaxis is an array")
                 #Return to original values
+                self.flux = flux_org           # change flux first
                 self.xaxis = x_org
-                self.flux = flux_org
                 raise
 
 
