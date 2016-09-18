@@ -7,7 +7,10 @@ python:
   - "nightly" # currently points to 3.6-dev
 # command to install dependencies
 #install: "pip install -r requirements.txt"
-install:  python setup.py install  # Try this first
+install:  
+  - python setup.py install  # Try this first
+  - pip install python-coveralls
+  - pip install pytest-cov
 # install:  
 #  -  pip install numpy
 #  -  pip install tox
@@ -15,4 +18,9 @@ install:  python setup.py install  # Try this first
 #  -  pip install hypothesis
 
 # command to run tests
-script: py.test
+script: 
+  #- py.test -cov coveralls --cov-report term-missing
+  - py.test --cov=spectrum_overload test/ --cov-report term-missing
+
+after_success:
+  - coveralls
