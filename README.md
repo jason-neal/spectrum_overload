@@ -1,5 +1,4 @@
-# Spectrum [![Build Status](https://travis-ci.org/jason-neal/spectrum_overload.svg)](https://travis-ci.org/jason-neal/spectrum_overload) 
-[![Coverage Status](https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=master)](https://coveralls.io/github/jason-neal/spectrum_overload?branch=master)
+# spectrum_overload [![Build Status](https://travis-ci.org/jason-neal/spectrum_overload.svg)](https://travis-ci.org/jason-neal/spectrum_overload) [![Coverage Status](https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=master)](https://coveralls.io/github/jason-neal/spectrum_overload?branch=master)
 Learn to use Classes by creating a Spectrum class to use in my Phd work.
 
 

@@ -1,4 +1,4 @@
-"""Spectrum Setup.py
+"""spectrum_overload Setup.py
 My first atempt at a setup.py file. It is based off 
 
 A setuptools based setup module.
@@ -37,18 +37,18 @@ long_description = " "
 
 
 setup(
-    name='Spectrum',
+    name='spectrum_overload',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
     version="0.1",
 
-    description='A python class for Spectra',
+    description='Spectrum class that overloads operators.',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/jason-neal/Spectrum',
+    url='https://github.com/jason-neal/spectrum_overload',
 
     # Author details
     author='Jason Neal',
@@ -117,7 +117,7 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_data={"spectrum":["data/*.fits"]},
+    package_data={"spectrum_overload":["data/*.fits"]},
     #    'sample': ['package_data.dat'],
     #},
 
@@ -135,7 +135,7 @@ setup(
     #    'console_scripts': [
     #        'sample=sample:main',
         'console_scripts': [
-            'spectrum=Spectrum:main',
+            'spectrum_overload=Spectrum:main',
         ],
     },
 )

@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Spectrum's documentation!
+Welcome to spectrum_overload's documentation!
 ====================================
 .. image:: https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=master
     :target: https://travis-ci.org/jason-neal/spectrum_overload
@@ -17,14 +17,14 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: spectrum
+.. automodule:: spectrum_overload
 
 Spectrum Class 
 ==============
 
 A python class to contain a spectrum. The operators have been overloaded so that you can easily combine spectra.
 
-.. autoclass:: spectrum.Spectrum
+.. autoclass:: spectrum_overload.Spectrum
    :members:
 
 Indices and tables
