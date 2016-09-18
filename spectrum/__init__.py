@@ -1,2 +1,0 @@
-
-from spectrum import Spectrum

@@ -8,7 +8,8 @@ from pkg_resources import resource_filename
 import sys
 # Add Spectrum location to path
 #sys.path.append('../')
-from spectrum import Spectrum
+from spectrum_overload import Spectrum
+from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
 from hypothesis import given
@@ -146,7 +147,7 @@ def test_len_works():
     assert len(spec1) == 5
 
 
-from spectrum.Spectrum import SpectrumError
+
 def test_for_raise_die_to_calibration_mismatch():
     #Try catch my raise
     s1 = Spectrum.Spectrum([1], [2], calibrated=True)

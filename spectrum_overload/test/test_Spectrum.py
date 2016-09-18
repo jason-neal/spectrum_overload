@@ -8,7 +8,8 @@ from pkg_resources import resource_filename
 import sys
 # Add Spectrum location to path
 #sys.path.append('../')
-from spectrum import Spectrum
+from spectrum_overload import Spectrum
+from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
 from hypothesis import given
@@ -165,7 +166,7 @@ def test_header_attribute():
     assert spec.header["Date"] == "20120601"
 
     # Try with a Astropy header object
-    test_file = resource_filename('spectrum', 'data/spec_1.fits')
+    test_file = resource_filename('spectrum_overload', 'data/spec_1.fits')
     fitshdr = fits.getheader(test_file)
     spec2 = Spectrum.Spectrum(header=fitshdr)
 
