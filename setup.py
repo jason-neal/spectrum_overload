@@ -102,14 +102,16 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['numpy', 'hypothesis', 'astropy'], #'matplotlib'
-
+    
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['coverage', 'pytest', 'hypothesis'],
+        'test': ['coverage', 'pytest', 'pytest-cov', 'python-coveralls', 'hypothesis'],
     },
 
     # If there are data files included in your packages that need to be
