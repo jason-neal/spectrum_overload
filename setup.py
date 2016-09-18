@@ -9,7 +9,7 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
+# from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 from codecs import open
 from os import path
@@ -24,16 +24,16 @@ here = path.abspath(path.dirname(__file__))
 long_description = " "
 
 #Allow "python setup.py test" to work
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
+# class PyTest(TestCommand):
+#     def finalize_options(self):
+#         TestCommand.finalize_options(self)
+#         self.test_args = []
+#         self.test_suite = True
 
-    def run_tests(self):
-        import pytest
-        errcode = pytest.main(self.test_args)
-        sys.exit(errcode)
+#     def run_tests(self):
+#         import pytest
+#         errcode = pytest.main(self.test_args)
+#         sys.exit(errcode)
 
 
 setup(
@@ -91,7 +91,7 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
-    test_suite='spectrum.test.test_Spectrum',
+    ######test_suite=['spectrum_overload.test.test_Spectrum','spectrum_overload.test.test_overloaded_operators'],
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
     #   py_modules=["my_module"],
