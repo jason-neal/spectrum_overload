@@ -5,6 +5,12 @@
 
 Welcome to Spectrum's documentation!
 ====================================
+.. image:: https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=master
+    :target: https://travis-ci.org/jason-neal/spectrum_overload
+    
+.. image:: https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=master
+:target: https://coveralls.io/github/jason-neal/spectrum_overload?branch=master
+
 
 Contents:
 
