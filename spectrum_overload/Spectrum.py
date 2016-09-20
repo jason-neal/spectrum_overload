@@ -14,9 +14,11 @@ class Spectrum(object):
         """ Initalise a Spectrum object """
         # Some checks before creating class
         if isinstance(flux, str):
-            raise TypeError("Cannot assign {} to the flux attribute".format(type(flux)))
+            raise TypeError("Cannot assign {} to the flux attribute".format(
+                type(flux)))
         elif isinstance(xaxis, str):
-            raise TypeError("Cannot assign {} to the xaxis attribute".format(type(xaxis)))
+            raise TypeError("Cannot assign {} to the xaxis attribute".format(
+                type(xaxis)))
 
         if flux is not None:
             self._flux = np.asarray(flux)
@@ -31,7 +33,7 @@ class Spectrum(object):
             except TypeError:
                 self._xaxis = None
         else:
-            self._xaxis = np.asarray(xaxis)  # Still need asarray as setter is not used here
+            self._xaxis = np.asarray(xaxis)  # Setter not used - need asarray
 
         # Check assigned lenghts
         self.length_check()
@@ -49,7 +51,8 @@ class Spectrum(object):
         if isinstance(value, str):
             # Try to catch some bad assignments
             # Yes a list of strings will not be caught
-            raise TypeError("Cannot assign {} to the xaxis attribute".format(type(value)))
+            raise TypeError("Cannot assign {} to the xaxis attribute".format(
+                type(value)))
         elif value is None:
             try:
                 # Try to assign arange the length of flux
@@ -62,7 +65,7 @@ class Spectrum(object):
         # Add any other checks in here if nessary
         elif self._flux is not None:
             if len(value) != len(self._flux):
-                raise ValueError("Lenght of xaxis does not match the length of flux ")
+                raise ValueError("Lenght of xaxis does not match flux length")
             else:
                 self._xaxis = np.asarray(value)
 
@@ -75,7 +78,8 @@ class Spectrum(object):
         if isinstance(value, str):
             # Try to catch some bad assignments
             # Yes a list of strings will not be caught
-                raise TypeError("Cannot assign {} to the flux attribute".format(type(value)))
+            raise TypeError("Cannot assign {} to the flux attribute".format(
+                type(value)))
 
         if value is not None:
             print("Turning flux input into np array")
@@ -138,12 +142,13 @@ class Spectrum(object):
             lambdaShift = self.xaxis * (RV / c)
             self.xaxis = self.xaxis + lambdaShift
         else:
-            print("Attribute xaxis is not wavelength calibrated. Cannot perform doppler shift")
+            print("Attribute xaxis is not wavelength calibrated."
+                  " Cannot perform doppler shift")
 
     def calibrate_with(self, wl_map):
         """ Calibrate with polynomial with parameters wl_map.
         Input:
-            wl_map - Polynomial cooeficients that take the form expected by np.poylval()
+            wl_map - Polynomial cooeficients of form expected by np.poylval()
         Output:
             self.xaxis is replaced with the calibrated spectrum
             self.calibrated is set to True
@@ -152,7 +157,7 @@ class Spectrum(object):
         if self.calibrated:
             print("Spectrum already calibrated, Not Calibrating again.")
         else:
-            wavelength = np.polyval(wl_map, self.xaxis)   # Polynomail parameters
+            wavelength = np.polyval(wl_map, self.xaxis)   # Polynomial params
             self.xaxis = wavelength
             self.calibrated = True  # Set calibrated Flag
 
@@ -163,11 +168,12 @@ class Spectrum(object):
 
     def interpolate_to(self, spectrum):
         """Interpolate wavelength solution to wavelength of spectrum
-        Think about weather this should be spectrum or sepctrum.xaxis (just the wavelength)
+        Think about weather this should be spectrum or sepctrum.xaxis
 
         A comment from ENAA 2016 regarded interpolation.
         Interpolation techniques need to be tested to acheive best
-        performance for low signal applications. i.e. direct exoplanet detection"""
+        performance for low signal applications. i.e. direct exoplanet
+        detection"""
         pass
 
     #######################################################
@@ -179,27 +185,28 @@ class Spectrum(object):
         if isinstance(other, Spectrum):
             if self.calibrated != other.calibrated:
                 """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("The Spectra are not of the same calibration state.")
+                raise SpectrumError("Spectra are not calibrated similarly.")
 
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
                 try:
                     new_flux = self.flux / other.flux
                 except ZeroDivisionError:
-                    print("Some of the spectrum was zero. Replacing with Nans")
+                    print("Some of the spectrum was zero. Replaced with Nans")
                     nand_other = other.flux
                     nand_other[nand_other == 0] = np.nan()
                     new_flux = self.flux / other.flux
 
         else:
             new_flux = self.flux / other
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, calibrated=self.calibrated)
+        return Spectrum(flux=new_flux, xaxis=self.xaxis,
+                        calibrated=self.calibrated)
 
     def __add__(self, other):
         if isinstance(other, Spectrum):
             if self.calibrated != other.calibrated:
                 """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("The Spectra are not of the same calibration state.")
+                raise SpectrumError("Spectra are not calibrated similarly.")
 
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
@@ -207,19 +214,21 @@ class Spectrum(object):
         else:
             new_flux = self.flux + other
 
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
 
     def __radd__(self, other):
         # E.g. for first Item in Sum  0  + Spectrum fails.
 
         new_flux = self.flux + other
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
 
     def __sub__(self, other):
         if isinstance(other, Spectrum):
             if self.calibrated != other.calibrated:
                 """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("The Spectra are not of the same calibration state.")
+                raise SpectrumError("Spectra are not calibrated similarly.")
             # Only for equal xaxis
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
@@ -227,13 +236,14 @@ class Spectrum(object):
         else:
             new_flux = self.flux - other
 
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
 
     def __mul__(self, other):
         if isinstance(other, Spectrum):
             if self.calibrated != other.calibrated:
                 """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("The Spectra are not of the same calibration state.")
+                raise SpectrumError("Spectra are not calibrated similarly.")
             # Only for equal xaxis
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
@@ -241,15 +251,18 @@ class Spectrum(object):
         else:
             new_flux = self.flux * other
 
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
 
     def __pow__(self, other):
         # Overlaod to use power to scale the flux of the spectra
         # if len(other) > 1 :
-        #    raise ValueError("Spectrum can only be raised to the power of one number not {}".format(len(other)))
+        #    raise ValueError("Spectrum can only be raised to the power of
+        # one number not {}".format(len(other)))
         try:
             new_flux = self.flux ** other
-            return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
+            return Spectrum(flux=new_flux, xaxis=self.xaxis,
+                            header=self.header, calibrated=self.calibrated)
 
         except:
             # Tpye error or value error are likely
@@ -262,17 +275,20 @@ class Spectrum(object):
     def __neg__(self):
         """ Take negative flux """
         negflux = -self.flux
-        return Spectrum(flux=negflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+        return Spectrum(flux=negflux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
 
     def __pos__(self):
         """ Take positive flux """
         posflux = +self.flux
-        return Spectrum(flux=posflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+        return Spectrum(flux=posflux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
 
     def __abs__(self):
         """ Take absolute flux """
         absflux = abs(self.flux)
-        return Spectrum(flux=absflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
+        return Spectrum(flux=absflux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
 
 # TO DO !
 # --------------------
