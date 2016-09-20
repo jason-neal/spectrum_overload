@@ -31,7 +31,7 @@ class Spectrum(object):
             except TypeError:
                 self._xaxis = None
         else:
-            self._xaxis = np.asarray(xaxis) # Still need asarray as setter is not used here
+            self._xaxis = np.asarray(xaxis)  # Still need asarray as setter is not used here
 
         # Check assigned lenghts
         self.length_check()
@@ -40,14 +40,14 @@ class Spectrum(object):
 
     @property
     def xaxis(self):
-        #print("Getting xaxis property")
+        # print("Getting xaxis property")
         return self._xaxis
 
     @xaxis.setter
     def xaxis(self, value):
-        #print("xaxis value = ", value)
+        # print("xaxis value = ", value)
         if isinstance(value, str):
-            #Try to catch some bad assignments
+            # Try to catch some bad assignments
             # Yes a list of strings will not be caught
             raise TypeError("Cannot assign {} to the xaxis attribute".format(type(value)))
         elif value is None:
@@ -57,7 +57,7 @@ class Spectrum(object):
             except TypeError:
                 # if self._flux is None then it has no length.
                 self._xaxis = None
-            #print("assigning xaxis the same length of _flux")
+            # print("assigning xaxis the same length of _flux")
 
         # Add any other checks in here if nessary
         elif self._flux is not None:
@@ -73,13 +73,13 @@ class Spectrum(object):
     @flux.setter
     def flux(self, value):
         if isinstance(value, str):
-            #Try to catch some bad assignments
+            # Try to catch some bad assignments
             # Yes a list of strings will not be caught
                 raise TypeError("Cannot assign {} to the flux attribute".format(type(value)))
 
         if value is not None:
             print("Turning flux input into np array")
-            #Not checking to make sure it equals the xaxis
+            # Not checking to make sure it equals the xaxis
             # If changing flux and xaxis set the flux first
             self._flux = np.asarray(value)
         else:
@@ -113,7 +113,7 @@ class Spectrum(object):
                 self.xaxis = self.xaxis[mask]
             except TypeError:
                 print("Make sure your xaxis is an array")
-                #Return to original values
+                # Return to original values
                 self.flux = flux_org           # change flux first
                 self.xaxis = x_org
                 raise
@@ -176,7 +176,7 @@ class Spectrum(object):
 
 
     #######################################################
-    #Overloading Operators
+    # Overloading Operators
     #######################################################
 
 
@@ -254,14 +254,14 @@ class Spectrum(object):
 
     def __pow__(self, other):
         # Overlaod to use power to scale the flux of the spectra
-        #if len(other) > 1 :
+        # if len(other) > 1 :
         #    raise ValueError("Spectrum can only be raised to the power of one number not {}".format(len(other)))
         try:
             new_flux = self.flux ** other
             return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
         except:
-            #Tpye error or value error are likely
+            # Tpye error or value error are likely
             raise
 
 
@@ -285,8 +285,8 @@ class Spectrum(object):
         return Spectrum(flux=absflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
 
 
-## TO DO !
-#--------------------
+# TO DO !
+# --------------------
 # Add an interpolation
 # Incorporate interpolation into all overloaded operators
 
