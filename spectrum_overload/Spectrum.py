@@ -6,7 +6,6 @@ import numpy as np
 # Begun August 2016
 # Jason Neal
 
-
 class Spectrum(object):
     """ Spectrum class represents and manipulates astronomical spectra. """
 
@@ -97,7 +96,6 @@ class Spectrum(object):
         elif len(self._flux) != len(self._xaxis):
             raise ValueError("The length of xaxis and flux must be the same")
 
-
     def wav_select(self, wav_min, wav_max):
         """ Select the spectrum between wav_min and wav_max values
             Uses numpy slicing for high speed.
@@ -117,7 +115,6 @@ class Spectrum(object):
                 self.flux = flux_org           # change flux first
                 self.xaxis = x_org
                 raise
-
 
     def doppler_shift(self, RV):
         ''' Function to compute a wavelenght shift due to radial velocity
@@ -142,7 +139,6 @@ class Spectrum(object):
         else:
             print("Attribute xaxis is not wavelength calibrated. Cannot perform doppler shift")
 
-
     def calibrate_with(self, wl_map):
         """ Calibrate with polynomial with parameters wl_map.
         Input:
@@ -164,7 +160,6 @@ class Spectrum(object):
                   "Please check your calibrations\nThis will not doppler "
                   "shift correctly. This may raise an error in the future.")
 
-
     def interpolate_to(self, spectrum):
         """Interpolate wavelength solution to wavelength of spectrum
         Think about weather this should be spectrum or sepctrum.xaxis (just the wavelength)
@@ -174,11 +169,9 @@ class Spectrum(object):
         performance for low signal applications. i.e. direct exoplanet detection"""
         pass
 
-
     #######################################################
     # Overloading Operators
     #######################################################
-
 
     def __truediv__(self, other):
         """Overload truedivision (/) to divide two specta """
@@ -221,7 +214,6 @@ class Spectrum(object):
         new_flux = self.flux + other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
-
     def __sub__(self, other):
         if isinstance(other, Spectrum):
             if self.calibrated != other.calibrated:
@@ -235,7 +227,6 @@ class Spectrum(object):
             new_flux = self.flux - other
 
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
-
 
     def __mul__(self, other):
         if isinstance(other, Spectrum):
@@ -251,7 +242,6 @@ class Spectrum(object):
 
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
-
     def __pow__(self, other):
         # Overlaod to use power to scale the flux of the spectra
         # if len(other) > 1 :
@@ -263,7 +253,6 @@ class Spectrum(object):
         except:
             # Tpye error or value error are likely
             raise
-
 
     def __len__(self):
         """ Return length of flux Spectrum"""
@@ -284,17 +273,12 @@ class Spectrum(object):
         absflux = abs(self.flux)
         return Spectrum(flux=absflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
 
-
 # TO DO !
 # --------------------
 # Add an interpolation
 # Incorporate interpolation into all overloaded operators
 
 # Setter /getter for xaxis and flux to turn into np.asarrays
-
-
-
-
 
 class SpectrumError(Exception):
     pass
