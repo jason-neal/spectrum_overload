@@ -6,6 +6,7 @@ import numpy as np
 # Begun August 2016
 # Jason Neal
 
+
 class Spectrum(object):
     """ Spectrum class represents and manipulates astronomical spectra. """
 
@@ -279,6 +280,7 @@ class Spectrum(object):
 # Incorporate interpolation into all overloaded operators
 
 # Setter /getter for xaxis and flux to turn into np.asarrays
+
 
 class SpectrumError(Exception):
     pass
