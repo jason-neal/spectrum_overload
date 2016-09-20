@@ -24,37 +24,37 @@ class Spectrum(object):
             self._flux = flux
 
         if xaxis is None and flux is not None:
-            # Applying range to xaxis of equal length as flux 
+            # Applying range to xaxis of equal length as flux
             try:
                 # Try to assign arange the length of flux
                 self._xaxis = np.arange(len(flux))
-            except TypeError: 
+            except TypeError:
                 self._xaxis = None
         else:
             self._xaxis = np.asarray(xaxis) # Still need asarray as setter is not used here
 
         # Check assigned lenghts
-        self.length_check() 
+        self.length_check()
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
 
     @property
     def xaxis(self):
         #print("Getting xaxis property")
-        return self._xaxis 
+        return self._xaxis
 
-    @xaxis.setter 
+    @xaxis.setter
     def xaxis(self, value):
         #print("xaxis value = ", value)
-        if isinstance(value, str): 
-            #Try to catch some bad assignments 
+        if isinstance(value, str):
+            #Try to catch some bad assignments
             # Yes a list of strings will not be caught
             raise TypeError("Cannot assign {} to the xaxis attribute".format(type(value)))
         elif value is None:
             try:
                 # Try to assign arange the length of flux
                 self._xaxis = np.arange(len(self._flux))
-            except TypeError: 
+            except TypeError:
                 # if self._flux is None then it has no length.
                 self._xaxis = None
             #print("assigning xaxis the same length of _flux")
@@ -72,8 +72,8 @@ class Spectrum(object):
 
     @flux.setter
     def flux(self, value):
-        if isinstance(value, str): 
-            #Try to catch some bad assignments 
+        if isinstance(value, str):
+            #Try to catch some bad assignments
             # Yes a list of strings will not be caught
                 raise TypeError("Cannot assign {} to the flux attribute".format(type(value)))
 
@@ -83,11 +83,11 @@ class Spectrum(object):
             # If changing flux and xaxis set the flux first
             self._flux = np.asarray(value)
         else:
-            self._flux = value 
+            self._flux = value
 
     def length_check(self):
         """ Check length of xaxis and flux are equal.
-        Raise error if they are not 
+        Raise error if they are not
         If everyting is ok then there is no response/output"""
         if (self._flux is None) and (self._xaxis is None):
             # Can't measure lenght of none
@@ -99,7 +99,7 @@ class Spectrum(object):
 
 
     def wav_select(self, wav_min, wav_max):
-        """ Select the spectrum between wav_min and wav_max values 
+        """ Select the spectrum between wav_min and wav_max values
             Uses numpy slicing for high speed.
         """
         x_org = self.xaxis
@@ -128,7 +128,7 @@ class Spectrum(object):
         '''
         if abs(RV) < 1e-7:
             """ RV smaller then 0.1 mm/s"""
-            print("Warning the RV value given is very small (<0.1 mm/s).\n " 
+            print("Warning the RV value given is very small (<0.1 mm/s).\n "
                   "Not performing the doppler shift")
 
         elif np.isnan(RV) or np.isinf(RV):
@@ -157,7 +157,7 @@ class Spectrum(object):
         else:
             wavelength = np.polyval(wl_map, self.xaxis)   # Polynomail parameters
             self.xaxis = wavelength
-            self.calibrated = True  # Set calibrated Flag 
+            self.calibrated = True  # Set calibrated Flag
 
         if np.any(self.xaxis <= 0):
             print("Warning! The wavlength solution contains a value of zero. "
@@ -167,9 +167,9 @@ class Spectrum(object):
 
     def interpolate_to(self, spectrum):
         """Interpolate wavelength solution to wavelength of spectrum
-        Think about weather this should be spectrum or sepctrum.xaxis (just the wavelength) 
-        
-        A comment from ENAA 2016 regarded interpolation. 
+        Think about weather this should be spectrum or sepctrum.xaxis (just the wavelength)
+
+        A comment from ENAA 2016 regarded interpolation.
         Interpolation techniques need to be tested to acheive best
         performance for low signal applications. i.e. direct exoplanet detection"""
         pass
@@ -252,7 +252,7 @@ class Spectrum(object):
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
 
-    def __pow__ (self, other):
+    def __pow__(self, other):
         # Overlaod to use power to scale the flux of the spectra
         #if len(other) > 1 :
         #    raise ValueError("Spectrum can only be raised to the power of one number not {}".format(len(other)))
@@ -260,26 +260,26 @@ class Spectrum(object):
             new_flux = self.flux ** other
             return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
-        except :
+        except:
             #Tpye error or value error are likely
-            raise 
+            raise
 
 
     def __len__(self):
         """ Return length of flux Spectrum"""
         return len(self.flux)
 
-    def __neg__ (self):
+    def __neg__(self):
         """ Take negative flux """
         negflux = -self.flux
         return Spectrum(flux=negflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
 
-    def __pos__ (self):
+    def __pos__(self):
         """ Take positive flux """
         posflux = +self.flux
         return Spectrum(flux=posflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
 
-    def __abs__ (self):
+    def __abs__(self):
         """ Take absolute flux """
         absflux = abs(self.flux)
         return Spectrum(flux=absflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
