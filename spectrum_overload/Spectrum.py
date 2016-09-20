@@ -9,7 +9,7 @@ import numpy as np
 
 class Spectrum(object):
     """ Spectrum class represents and manipulates astronomical spectra. """
-    
+
     def __init__(self, flux=None, xaxis=None, header=None, calibrated=False):
         """ Initalise a Spectrum object """
         # Some checks before creating class
@@ -17,7 +17,7 @@ class Spectrum(object):
             raise TypeError("Cannot assign {} to the flux attribute".format(type(flux)))
         elif isinstance(xaxis, str):
             raise TypeError("Cannot assign {} to the xaxis attribute".format(type(xaxis)))
-        
+
         if flux is not None:
             self._flux = np.asarray(flux)
         else:
@@ -32,12 +32,12 @@ class Spectrum(object):
                 self._xaxis = None
         else:
             self._xaxis = np.asarray(xaxis) # Still need asarray as setter is not used here
-        
+
         # Check assigned lenghts
         self.length_check() 
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
-    
+
     @property
     def xaxis(self):
         #print("Getting xaxis property")
@@ -58,14 +58,14 @@ class Spectrum(object):
                 # if self._flux is None then it has no length.
                 self._xaxis = None
             #print("assigning xaxis the same length of _flux")
-            
+
         # Add any other checks in here if nessary
         elif self._flux is not None:
             if len(value) != len(self._flux):
                 raise ValueError("Lenght of xaxis does not match the length of flux ")
             else:
                 self._xaxis = np.asarray(value)
-    
+
     @property
     def flux(self):
         return self._flux
@@ -158,7 +158,7 @@ class Spectrum(object):
             wavelength = np.polyval(wl_map, self.xaxis)   # Polynomail parameters
             self.xaxis = wavelength
             self.calibrated = True  # Set calibrated Flag 
-        
+
         if np.any(self.xaxis <= 0):
             print("Warning! The wavlength solution contains a value of zero. "
                   "Please check your calibrations\nThis will not doppler "
@@ -186,7 +186,7 @@ class Spectrum(object):
             if self.calibrated != other.calibrated:
                 """Checking the Spectra are of same calibration state"""
                 raise SpectrumError("The Spectra are not of the same calibration state.")
-        
+
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
                 try:
@@ -196,32 +196,32 @@ class Spectrum(object):
                     nand_other = other.flux
                     nand_other[nand_other == 0] = np.nan()
                     new_flux = self.flux / other.flux
-           
+
         else:
             new_flux = self.flux / other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, calibrated=self.calibrated)
-    
+
     def __add__(self, other):
         if isinstance(other, Spectrum):
             if self.calibrated != other.calibrated:
                 """Checking the Spectra are of same calibration state"""
                 raise SpectrumError("The Spectra are not of the same calibration state.")
-            
+
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux + other.flux
         else:
             new_flux = self.flux + other
-        
+
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
     def __radd__(self, other):
         # E.g. for first Item in Sum  0  + Spectrum fails.
-        
+
         new_flux = self.flux + other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
 
-    
+
     def __sub__(self, other):
         if isinstance(other, Spectrum):
             if self.calibrated != other.calibrated:
@@ -259,7 +259,7 @@ class Spectrum(object):
         try:
             new_flux = self.flux ** other
             return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header, calibrated=self.calibrated)
-        
+
         except :
             #Tpye error or value error are likely
             raise 
@@ -273,17 +273,17 @@ class Spectrum(object):
         """ Take negative flux """
         negflux = -self.flux
         return Spectrum(flux=negflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
-      
+
     def __pos__ (self):
         """ Take positive flux """
         posflux = +self.flux
         return Spectrum(flux=posflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
-  
+
     def __abs__ (self):
         """ Take absolute flux """
         absflux = abs(self.flux)
         return Spectrum(flux=absflux, xaxis=self.xaxis, calibrated=self.calibrated, header=self.header)
-  
+
 
 ## TO DO !
 #--------------------
