@@ -15,7 +15,9 @@ from spectrum_overload import Spectrum
 from hypothesis import given
 import hypothesis.strategies as st
 
-@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.integers(), st.booleans())
+
+@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)),
+       st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes"""
     # Use one hypotheseis list they need to have the same lenght
@@ -25,6 +27,7 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == z
+
 
 def test_spectrum_assigns_data():
     """Test a manual example
@@ -38,8 +41,10 @@ def test_spectrum_assigns_data():
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
 
+
 def test_setters_for_flux_and_xaxis():
     pass
+
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError"""
@@ -55,12 +60,14 @@ def test_flux_and_xaxis_cannot_pass_stings():
     with pytest.raises(TypeError):
         spec.xaxis = 'bar'
 
+
 def test_auto_genration_of_xaxis_if_None():
     spec = Spectrum.Spectrum([1, 1, .5, 1])
     assert np.all(spec.xaxis == np.arange(4))
     spec2 = Spectrum.Spectrum([1, 1, .5, 1], [100, 110, 160, 200])
     spec2.xaxis = None  # reset xaxis
     assert np.all(spec2.xaxis == np.arange(4))
+
 
 def test_length_of_flux_and_xaxis_equal():
     """ Try assign a mismatched xaxis it should raise a ValueError"""
@@ -93,6 +100,7 @@ def test_wav_select(x, calib, wav_min, wav_max):
         assert all(spec.xaxis >= wav_min)
         assert all(spec.xaxis <= wav_max)
 
+
 def test_wav_select_example():
     """Manual test of a wavelength selection"""
     # Create specturm
@@ -109,10 +117,10 @@ def test_wav_select_example():
     assert all(spec.xaxis <= 11)
     assert all(spec.xaxis == np.arange(6, 11))
     assert all(spec.flux == y[np.arange(6, 11)])
-
-
     # Also need to test asignment!
     # spec2 = spec.wav_selector()
+
+
 @given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1),
        st.floats(), st.booleans())
 def test_doppler_shift_with_hypothesis(x, RV, calib):
@@ -154,7 +162,6 @@ def test_x_calibration_works():
 
     assert spec.calibrated
     assert np.allclose(spec.xaxis, np.asarray(x)*3)
-
 
 
 def test_header_attribute():
