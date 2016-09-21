@@ -27,7 +27,7 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
     assert spec.calibrated == z
 
 def test_spectrum_assigns_data():
-    """Test a manual example 
+    """Test a manual example
     Lenghts of x and y need to be the same"""
     x = [1, 2, 3, 4, 5, 6]
     y = [1, 1, 0.9, 0.95, 1, 1]
@@ -54,7 +54,7 @@ def test_flux_and_xaxis_cannot_pass_stings():
         spec.flux = "foo"
     with pytest.raises(TypeError):
         spec.xaxis = 'bar'
-    
+
 def test_auto_genration_of_xaxis_if_None():
     spec = Spectrum.Spectrum([1,1,.5,1])
     assert np.all(spec.xaxis == np.arange(4))
@@ -116,7 +116,7 @@ def test_wav_select_example():
 @given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1),
        st.floats(), st.booleans())
 def test_doppler_shift_with_hypothesis(x, RV, calib):
-    """Test doppler shift properties. 
+    """Test doppler shift properties.
     Need to check values against pyastronomy separately """
     x = np.asarray(x)
     y = np.random.random(len(x))
