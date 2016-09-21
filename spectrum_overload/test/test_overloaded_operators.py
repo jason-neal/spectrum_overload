@@ -3,11 +3,11 @@
 from __future__ import division, print_function
 import pytest
 import numpy as np
-#from astropy.io import fits
-#from pkg_resources import resource_filename
-#import sys
+# from astropy.io import fits
+# from pkg_resources import resource_filename
+# import sys
 # Add Spectrum location to path
-#sys.path.append('../')
+# sys.path.append('../')
 from spectrum_overload import Spectrum
 from spectrum_overload.Spectrum import SpectrumError
 
@@ -19,7 +19,7 @@ import hypothesis.strategies as st
 #    Overloading Operators
 #######################################################
 
-#Try just with integers
+# Try just with integers
 
 
 @given(st.lists(st.integers(min_value=-100000, max_value=100000), min_size=1),
@@ -85,7 +85,7 @@ def test_overload_sub_with_same_xaxis(x1, y1, y2, calib):
 
     assert np.allclose(spec_sub.flux, np.asarray(y1) - np.asarray(y2))
 
-    #Testing some other random things between them
+    # Testing some other random things between them
     assert np.all(spec_sub.xaxis == spec2.xaxis)
     assert np.all(spec_sub.xaxis == spec1.xaxis)
     assert spec_sub.calibrated == spec1.calibrated 
@@ -104,7 +104,7 @@ def test_overload_mul_with_same_xaxis(x1, y1, y2, calib):
 
     assert np.allclose(spec_mul.flux, np.asarray(y1) * np.asarray(y2))
 
-    #Testing some other random things between them
+    # Testing some other random things between them
     assert np.all(spec_mul.xaxis == spec2.xaxis)
     assert np.all(spec_mul.xaxis == spec1.xaxis)
     assert spec_mul.calibrated == spec1.calibrated
@@ -123,7 +123,7 @@ def test_overload_truediv_with_same_xaxis(x1, y1, y2, calib):
 
     assert np.allclose(spec_truediv.flux, np.asarray(y1) / np.asarray(y2))
 
-    #Testing some other random things between them
+    # Testing some other random things between them
     assert np.all(spec_truediv.xaxis == spec2.xaxis)
     assert np.all(spec_truediv.xaxis == spec1.xaxis)
     assert spec_truediv.calibrated == spec1.calibrated
@@ -143,16 +143,16 @@ def test_truediv_with_number():
 
 
 def test_len_works():
-    #Test len works
+    # Test len works
     spec1 = Spectrum.Spectrum([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
     assert len(spec1) == 5
 
 
 def test_for_raise_die_to_calibration_mismatch():
-    #Try catch my raise
+    # Try catch my raise
     s1 = Spectrum.Spectrum([1], [2], calibrated=True)
     s2 = Spectrum.Spectrum([1], [2], calibrated=False)
-     # This will fail untill I work out errors more
+    # This will fail untill I work out errors more
     with pytest.raises(SpectrumError):
         s1 + s2
     with pytest.raises(SpectrumError):
@@ -177,7 +177,7 @@ def test_overload_pow():
         spec1 ** np.array([1, 2])
     # Should also test that something works
     spec4 = spec1 ** power
-    assert np.all(spec4.flux == np.array([1, 4, 9, 16])) # flux is squared
+    assert np.all(spec4.flux == np.array([1, 4, 9, 16]))  # flux is squared
     assert np.all(spec4.xaxis == spec1.xaxis)  # xaxis stays the same
 
 
