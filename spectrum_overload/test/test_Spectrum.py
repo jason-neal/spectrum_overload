@@ -5,17 +5,19 @@ import pytest
 import numpy as np
 from astropy.io import fits
 from pkg_resources import resource_filename
-import sys
+# import sys
 # Add Spectrum location to path
-#sys.path.append('../')
+# sys.path.append('../')
 from spectrum_overload import Spectrum
-from spectrum_overload.Spectrum import SpectrumError
+# from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
 from hypothesis import given
 import hypothesis.strategies as st
 
-@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)), st.integers(), st.booleans())
+
+@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)),
+       st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes"""
     # Use one hypotheseis list they need to have the same lenght
@@ -26,8 +28,9 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == z
 
+
 def test_spectrum_assigns_data():
-    """Test a manual example 
+    """Test a manual example
     Lenghts of x and y need to be the same"""
     x = [1, 2, 3, 4, 5, 6]
     y = [1, 1, 0.9, 0.95, 1, 1]
@@ -38,41 +41,45 @@ def test_spectrum_assigns_data():
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
 
+
 def test_setters_for_flux_and_xaxis():
     pass
+
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError"""
     with pytest.raises(TypeError):
-        Spectrum.Spectrum([1,2,3], xaxis='bar')
+        Spectrum.Spectrum([1, 2, 3], xaxis='bar')
     with pytest.raises(TypeError):
-        Spectrum.Spectrum("foo", [1.2,3,4,5])
+        Spectrum.Spectrum("foo", [1.2, 3, 4, 5])
     with pytest.raises(TypeError):
-        Spectrum.Spectrum("foo","bar")
-    spec = Spectrum.Spectrum([1,1,.5,1])
+        Spectrum.Spectrum("foo", "bar")
+    spec = Spectrum.Spectrum([1, 1, .5, 1])
     with pytest.raises(TypeError):
         spec.flux = "foo"
     with pytest.raises(TypeError):
         spec.xaxis = 'bar'
-    
+
+
 def test_auto_genration_of_xaxis_if_None():
-    spec = Spectrum.Spectrum([1,1,.5,1])
+    spec = Spectrum.Spectrum([1, 1, .5, 1])
     assert np.all(spec.xaxis == np.arange(4))
-    spec2 = Spectrum.Spectrum([1,1,.5,1],[100,110,160,200])
+    spec2 = Spectrum.Spectrum([1, 1, .5, 1], [100, 110, 160, 200])
     spec2.xaxis = None  # reset xaxis
     assert np.all(spec2.xaxis == np.arange(4))
+
 
 def test_length_of_flux_and_xaxis_equal():
     """ Try assign a mismatched xaxis it should raise a ValueError"""
     with pytest.raises(ValueError):
-        Spectrum.Spectrum([1,2,3],[1,2])
+        Spectrum.Spectrum([1, 2, 3], [1, 2])
     with pytest.raises(ValueError):
-        Spectrum.Spectrum([1,2,3],[])
+        Spectrum.Spectrum([1, 2, 3], [])
     with pytest.raises(ValueError):
-        Spectrum.Spectrum([],[1,2])
-    spec = Spectrum.Spectrum([1,2,3],[1,2,3])
+        Spectrum.Spectrum([], [1, 2])
+    spec = Spectrum.Spectrum([1, 2, 3], [1, 2, 3])
     with pytest.raises(ValueError):
-        spec.xaxis = [1,2]
+        spec.xaxis = [1, 2]
 
 
 @given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
@@ -93,6 +100,7 @@ def test_wav_select(x, calib, wav_min, wav_max):
         assert all(spec.xaxis >= wav_min)
         assert all(spec.xaxis <= wav_max)
 
+
 def test_wav_select_example():
     """Manual test of a wavelength selection"""
     # Create specturm
@@ -109,14 +117,14 @@ def test_wav_select_example():
     assert all(spec.xaxis <= 11)
     assert all(spec.xaxis == np.arange(6, 11))
     assert all(spec.flux == y[np.arange(6, 11)])
-
-
-    ##Also need to test asignment!
+    # Also need to test asignment!
     # spec2 = spec.wav_selector()
+
+
 @given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1),
        st.floats(), st.booleans())
 def test_doppler_shift_with_hypothesis(x, RV, calib):
-    """Test doppler shift properties. 
+    """Test doppler shift properties.
     Need to check values against pyastronomy separately """
     x = np.asarray(x)
     y = np.random.random(len(x))
@@ -142,13 +150,13 @@ def test_doppler_shift_with_hypothesis(x, RV, calib):
 def test_x_calibration_works():
     """ Simple test to check that the calibration works """
     "Setup the code "
-    x = [1,2,3,4,5,6,7,8,9,10]
+    x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     x = [float(x_i) for x_i in x]
     y = np.ones_like(x)
     spec = Spectrum.Spectrum(y, x, False)
 
-    #Easy test
-    params = np.polyfit([1,5,10], [3,15,30], 1)
+    # Easy test
+    params = np.polyfit([1, 5, 10], [3, 15, 30], 1)
 
     spec.calibrate_with(params)
 
@@ -156,10 +164,9 @@ def test_x_calibration_works():
     assert np.allclose(spec.xaxis, np.asarray(x)*3)
 
 
-
 def test_header_attribute():
     """Test header attribute is accessable as a dict"""
-    header = {"Date":"20120601", "Exptime":180}
+    header = {"Date": "20120601", "Exptime": 180}
     spec = Spectrum.Spectrum(header=header)
     # Some simple assignment tests
     assert spec.header["Exptime"] == 180
@@ -173,5 +180,4 @@ def test_header_attribute():
     assert spec2.header["OBJECT"] == fitshdr["OBJECT"]
     assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
-    assert Spectrum.Spectrum().header == None
-
+    assert Spectrum.Spectrum().header is None  # unassign header is None
