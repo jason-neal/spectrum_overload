@@ -5,11 +5,11 @@ import pytest
 import numpy as np
 from astropy.io import fits
 from pkg_resources import resource_filename
-import sys
+# import sys
 # Add Spectrum location to path
-#sys.path.append('../')
+# sys.path.append('../')
 from spectrum_overload import Spectrum
-from spectrum_overload.Spectrum import SpectrumError
+# from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
 from hypothesis import given
@@ -111,7 +111,7 @@ def test_wav_select_example():
     assert all(spec.flux == y[np.arange(6, 11)])
 
 
-    ##Also need to test asignment!
+    # Also need to test asignment!
     # spec2 = spec.wav_selector()
 @given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1),
        st.floats(), st.booleans())
@@ -147,7 +147,7 @@ def test_x_calibration_works():
     y = np.ones_like(x)
     spec = Spectrum.Spectrum(y, x, False)
 
-    #Easy test
+    # Easy test
     params = np.polyfit([1, 5, 10], [3, 15, 30], 1)
 
     spec.calibrate_with(params)
