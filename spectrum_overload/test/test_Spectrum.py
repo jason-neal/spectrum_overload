@@ -180,4 +180,4 @@ def test_header_attribute():
     assert spec2.header["OBJECT"] == fitshdr["OBJECT"]
     assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
-    assert Spectrum.Spectrum().header == None
+    assert Spectrum.Spectrum().header is None  # unassign header is None
