@@ -8,7 +8,7 @@ from pkg_resources import resource_filename
 # import sys
 # Add Spectrum location to path
 # sys.path.append('../')
-from spectrum_overload import Spectrum
+from spectrum_overload.Spectrum import Spectrum
 # from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
@@ -23,7 +23,7 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
     # Use one hypotheseis list they need to have the same lenght
     # multiply by a random int to mix it up a little.
     x = x * np.array(y)
-    spec = Spectrum.Spectrum(y, x, calibrated=z)
+    spec = Spectrum(y, x, calibrated=z)
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == z
@@ -36,7 +36,7 @@ def test_spectrum_assigns_data():
     y = [1, 1, 0.9, 0.95, 1, 1]
     calib_val = 0
 
-    spec = Spectrum.Spectrum(y, x, calibrated=calib_val)
+    spec = Spectrum(y, x, calibrated=calib_val)
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
@@ -49,12 +49,12 @@ def test_setters_for_flux_and_xaxis():
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError"""
     with pytest.raises(TypeError):
-        Spectrum.Spectrum([1, 2, 3], xaxis='bar')
+        Spectrum([1, 2, 3], xaxis='bar')
     with pytest.raises(TypeError):
-        Spectrum.Spectrum("foo", [1.2, 3, 4, 5])
+        Spectrum("foo", [1.2, 3, 4, 5])
     with pytest.raises(TypeError):
-        Spectrum.Spectrum("foo", "bar")
-    spec = Spectrum.Spectrum([1, 1, .5, 1])
+        Spectrum("foo", "bar")
+    spec = Spectrum([1, 1, .5, 1])
     with pytest.raises(TypeError):
         spec.flux = "foo"
     with pytest.raises(TypeError):
@@ -62,9 +62,9 @@ def test_flux_and_xaxis_cannot_pass_stings():
 
 
 def test_auto_genration_of_xaxis_if_None():
-    spec = Spectrum.Spectrum([1, 1, .5, 1])
+    spec = Spectrum([1, 1, .5, 1])
     assert np.all(spec.xaxis == np.arange(4))
-    spec2 = Spectrum.Spectrum([1, 1, .5, 1], [100, 110, 160, 200])
+    spec2 = Spectrum([1, 1, .5, 1], [100, 110, 160, 200])
     spec2.xaxis = None  # reset xaxis
     assert np.all(spec2.xaxis == np.arange(4))
 
@@ -72,12 +72,12 @@ def test_auto_genration_of_xaxis_if_None():
 def test_length_of_flux_and_xaxis_equal():
     """ Try assign a mismatched xaxis it should raise a ValueError"""
     with pytest.raises(ValueError):
-        Spectrum.Spectrum([1, 2, 3], [1, 2])
+        Spectrum([1, 2, 3], [1, 2])
     with pytest.raises(ValueError):
-        Spectrum.Spectrum([1, 2, 3], [])
+        Spectrum([1, 2, 3], [])
     with pytest.raises(ValueError):
-        Spectrum.Spectrum([], [1, 2])
-    spec = Spectrum.Spectrum([1, 2, 3], [1, 2, 3])
+        Spectrum([], [1, 2])
+    spec = Spectrum([1, 2, 3], [1, 2, 3])
     with pytest.raises(ValueError):
         spec.xaxis = [1, 2]
 
@@ -87,7 +87,7 @@ def test_wav_select(x, calib, wav_min, wav_max):
     """Test some properties of wavelength selection"""
     # Create specturm
     y = np.copy(x)
-    spec = Spectrum.Spectrum(y, xaxis=x, calibrated=calib)
+    spec = Spectrum(y, xaxis=x, calibrated=calib)
     # Select wavelength values
     spec.wav_select(wav_min, wav_max)
 
@@ -107,7 +107,7 @@ def test_wav_select_example():
     y = 2*np.random.random(20)
     x = np.arange(20)
     calib = False
-    spec = Spectrum.Spectrum(y, xaxis=x, calibrated=calib)
+    spec = Spectrum(y, xaxis=x, calibrated=calib)
     # Select wavelength values
 
     spec.wav_select(5, 11)
@@ -129,7 +129,7 @@ def test_doppler_shift_with_hypothesis(x, RV, calib):
     x = np.asarray(x)
     y = np.random.random(len(x))
 
-    spec = Spectrum.Spectrum(y, x, calib)
+    spec = Spectrum(y, x, calib)
     # Apply Doppler shift of RV km/s.
     spec.doppler_shift(RV)
 
@@ -153,7 +153,7 @@ def test_x_calibration_works():
     x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     x = [float(x_i) for x_i in x]
     y = np.ones_like(x)
-    spec = Spectrum.Spectrum(y, x, False)
+    spec = Spectrum(y, x, False)
 
     # Easy test
     params = np.polyfit([1, 5, 10], [3, 15, 30], 1)
@@ -167,7 +167,7 @@ def test_x_calibration_works():
 def test_header_attribute():
     """Test header attribute is accessable as a dict"""
     header = {"Date": "20120601", "Exptime": 180}
-    spec = Spectrum.Spectrum(header=header)
+    spec = Spectrum(header=header)
     # Some simple assignment tests
     assert spec.header["Exptime"] == 180
     assert spec.header["Date"] == "20120601"
@@ -175,9 +175,9 @@ def test_header_attribute():
     # Try with a Astropy header object
     test_file = resource_filename('spectrum_overload', 'data/spec_1.fits')
     fitshdr = fits.getheader(test_file)
-    spec2 = Spectrum.Spectrum(header=fitshdr)
+    spec2 = Spectrum(header=fitshdr)
 
     assert spec2.header["OBJECT"] == fitshdr["OBJECT"]
     assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
-    assert Spectrum.Spectrum().header is None  # unassign header is None
+    assert Spectrum().header is None  # unassign header is None
