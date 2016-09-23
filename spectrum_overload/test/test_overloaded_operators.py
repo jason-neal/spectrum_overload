@@ -8,7 +8,7 @@ import numpy as np
 # import sys
 # Add Spectrum location to path
 # sys.path.append('../')
-from spectrum_overload import Spectrum
+from spectrum_overload.Spectrum import Spectrum
 from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
@@ -30,8 +30,8 @@ def test_overload_add_integers_with_same_xaxis(x1, y1, y2, calib):
     y1 *= x1
     y2 *= x1
 
-    spec1 = Spectrum.Spectrum(flux=y1, xaxis=x1, calibrated=calib)
-    spec2 = Spectrum.Spectrum(flux=y2, xaxis=x1, calibrated=calib)
+    spec1 = Spectrum(flux=y1, xaxis=x1, calibrated=calib)
+    spec2 = Spectrum(flux=y2, xaxis=x1, calibrated=calib)
 
     spec3 = spec1+spec2
     spec4 = sum([spec1, spec2])
@@ -60,8 +60,8 @@ def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
     y1 *= x1
     y2 *= x1
-    spec1 = Spectrum.Spectrum(flux=y1, xaxis=x1, calibrated=calib)
-    spec2 = Spectrum.Spectrum(flux=y2, xaxis=x1, calibrated=calib)
+    spec1 = Spectrum(flux=y1, xaxis=x1, calibrated=calib)
+    spec2 = Spectrum(flux=y2, xaxis=x1, calibrated=calib)
 
     spec3 = spec1+spec2
     spec4 = sum([spec1, spec2])
@@ -84,8 +84,8 @@ def test_overload_sub_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
     y1 *= x1
     y2 *= x1
-    spec1 = Spectrum.Spectrum(flux=y1, xaxis=x1, calibrated=calib)
-    spec2 = Spectrum.Spectrum(flux=y2, xaxis=x1, calibrated=calib)
+    spec1 = Spectrum(flux=y1, xaxis=x1, calibrated=calib)
+    spec2 = Spectrum(flux=y2, xaxis=x1, calibrated=calib)
     spec_sub = spec1 - spec2
 
     assert np.allclose(spec_sub.flux, np.asarray(y1) - np.asarray(y2))
@@ -107,8 +107,8 @@ def test_overload_mul_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
     y1 *= x1
     y2 *= x1
-    spec1 = Spectrum.Spectrum(flux=y1, xaxis=x1, calibrated=calib)
-    spec2 = Spectrum.Spectrum(flux=y2, xaxis=x1, calibrated=calib)
+    spec1 = Spectrum(flux=y1, xaxis=x1, calibrated=calib)
+    spec2 = Spectrum(flux=y2, xaxis=x1, calibrated=calib)
     spec_mul = spec1 * spec2
 
     assert np.allclose(spec_mul.flux, np.asarray(y1) * np.asarray(y2))
@@ -130,8 +130,8 @@ def test_overload_truediv_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
     y1 *= x1
     y2 *= x1
-    spec1 = Spectrum.Spectrum(flux=y1, xaxis=x1, calibrated=calib)
-    spec2 = Spectrum.Spectrum(flux=y2, xaxis=x1, calibrated=calib)
+    spec1 = Spectrum(flux=y1, xaxis=x1, calibrated=calib)
+    spec2 = Spectrum(flux=y2, xaxis=x1, calibrated=calib)
     spec_truediv = spec1 / spec2
 
     assert np.allclose(spec_truediv.flux, np.asarray(y1) / np.asarray(y2))
@@ -149,7 +149,7 @@ def test_truediv_with_number():
     # To test if can divide flux by a number
     number = 0.3
     flux_arr = np.array([1, 2, 3, 2.3, 4.5])
-    spec1 = Spectrum.Spectrum(flux=flux_arr, xaxis=[1, 1.1, 1.2, 2.1, 4],
+    spec1 = Spectrum(flux=flux_arr, xaxis=[1, 1.1, 1.2, 2.1, 4],
                               calibrated=True)
 
     spec_truediv = spec1 / number
@@ -159,14 +159,14 @@ def test_truediv_with_number():
 
 def test_len_works():
     # Test len works
-    spec1 = Spectrum.Spectrum([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+    spec1 = Spectrum([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
     assert len(spec1) == 5
 
 
 def test_for_raise_die_to_calibration_mismatch():
     # Try catch my raise
-    s1 = Spectrum.Spectrum([1], [2], calibrated=True)
-    s2 = Spectrum.Spectrum([1], [2], calibrated=False)
+    s1 = Spectrum([1], [2], calibrated=True)
+    s2 = Spectrum([1], [2], calibrated=False)
     # This will fail untill I work out errors more
     with pytest.raises(SpectrumError):
         s1 + s2
@@ -181,8 +181,8 @@ def test_for_raise_die_to_calibration_mismatch():
 def test_overload_pow():
     # Trying to catch error with raises
     power = 2
-    spec1 = Spectrum.Spectrum([1, 2, 3, 4], [2, 3, 4, 5], None, True)
-    spec2 = Spectrum.Spectrum([1, 2, 3, 4], [1, 3, 1, 4], None, True)
+    spec1 = Spectrum([1, 2, 3, 4], [2, 3, 4, 5], None, True)
+    spec2 = Spectrum([1, 2, 3, 4], [1, 3, 1, 4], None, True)
     # Can test when things are not suposed to work :)
     with pytest.raises(TypeError):
         spec1 ** spec2
@@ -203,7 +203,7 @@ def test_overload_pow():
        max_value=int(1e5)))
 def test_add_sub_mult_divide_by_numbers(x, y, float1, int1):
     y *= np.array(x)   # turn to array for operations
-    spec = Spectrum.Spectrum(flux=y, xaxis=x)
+    spec = Spectrum(flux=y, xaxis=x)
     # Add by a float
     spec_add = spec + float1
     spec_add_int = spec + int1
@@ -230,7 +230,7 @@ def test_unitary_operators():
     """ Test __pos__ and __neg__ operators"""
     a = np.array([1, 2, -3, 4])
     b = np.array([1, 2, 3, 4])
-    spec = Spectrum.Spectrum(a, b)
+    spec = Spectrum(a, b)
     spec1 = +spec
     assert np.all(spec1.flux == a)
     assert np.all(spec1.flux == spec.flux)
@@ -241,7 +241,7 @@ def test_unitary_operators():
 
 def test_abs_operator():
     """ Test absolute value of flux"""
-    spec = Spectrum.Spectrum([-1, 2, -3.2, 4], [2, 3, 4, 5])
+    spec = Spectrum([-1, 2, -3.2, 4], [2, 3, 4, 5])
     abs_spec = abs(spec)
     abs_spec2 = abs(abs_spec)
     assert np.all(abs_spec.flux == np.array([1, 2, 3.2, 4]))
