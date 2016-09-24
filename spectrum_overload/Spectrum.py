@@ -11,7 +11,7 @@ from scipy.interpolate import interp1d
 class Spectrum(object):
     """ Spectrum class represents and manipulates astronomical spectra. """
 
-    def __init__(self, flux=None, xaxis=None, header=None, calibrated=False):
+    def __init__(self, flux=None, xaxis=None, calibrated=False, header=None):
         """ Initalise a Spectrum object """
         # Some checks before creating class
         if isinstance(flux, str):
