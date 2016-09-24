@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from __future__ import print_function, division
 import numpy as np
+from scipy.interpolate import interp1d
 # Spectrum Class
 
 # Begun August 2016
@@ -166,15 +167,33 @@ class Spectrum(object):
                   "Please check your calibrations\nThis will not doppler "
                   "shift correctly. This may raise an error in the future.")
 
-    def interpolate_to(self, spectrum):
-        """Interpolate wavelength solution to wavelength of spectrum
-        Think about weather this should be spectrum or sepctrum.xaxis
+    def interpolate_to(self, reference, kind="cubic", bounds_error=False,
+                       fill_value=np.nan):
 
         A comment from ENAA 2016 regarded interpolation.
         Interpolation techniques need to be tested to acheive best
         performance for low signal applications. i.e. direct exoplanet
         detection"""
-        pass
+
+        # Create scipy interpolation function from self
+        interp_function = interp1d(self.xaxis, self.flux, kind=kind,
+                                   fill_value=fill_value,
+                                   bounds_error=bounds_error)
+
+        # Determine the flux at the new locations given by reference
+        if isinstance(reference, Spectrum):      # Spectrum type 
+            new_flux = interp_function(reference.xaxis)
+            self.flux = new_flux                 # Flux needs to change first
+            self.xaxis = reference.xaxis
+        elif isinstance(reference, np.ndarray):  # Numpy type
+            new_flux = interp_function(reference)
+            self.flux = new_flux                 # Flux needs to change first
+            self.xaxis = reference
+        else:
+            # print("Interpolate was not give a valid type")
+            raise TypeError("Cannot interpolate with the given object of type"
+                            " {}".format(type(reference)))
+        
 
     #######################################################
     # Overloading Operators
