@@ -11769,7 +11769,7 @@ September 2016</p>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">Spectrum</span> 
+<span class="kn">from</span> <span class="nn">spectrum_overload.Spectrum</span> <span class="k">import</span> <span class="n">Spectrum</span>
 
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
@@ -11791,7 +11791,7 @@ September 2016</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
 <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Extracted_DRACS&quot;</span><span class="p">]</span>
-<span class="n">HD30501_1</span> <span class="o">=</span> <span class="n">Spectrum</span><span class="o">.</span><span class="n">Spectrum</span><span class="p">(</span><span class="n">flux</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Extracted_DRACS&quot;</span><span class="p">],</span> <span class="n">xaxis</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Wavelength&quot;</span><span class="p">],</span> <span class="n">calibrated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">HD30501_1</span> <span class="o">=</span> <span class="n">Spectrum</span><span class="p">(</span><span class="n">flux</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Extracted_DRACS&quot;</span><span class="p">],</span> <span class="n">xaxis</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Wavelength&quot;</span><span class="p">],</span> <span class="n">calibrated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1">#HD30501_1_org = Spectrum.Spectrum(flux=data[&quot;Extracted_DRACS&quot;], xaxis=data[&quot;Wavelength&quot;], calibrated=True)</span>
 </pre></div>
 
@@ -11837,11 +11837,12 @@ September 2016</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Test Calibration polynomial</span>
+<span class="n">orginal_axis</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="n">Spectrum</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="n">orginal_axis</span><span class="p">,</span> <span class="n">calibrated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">calibrate_with</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">xaxis</span><span class="p">)</span>
 
-<span class="n">spec</span> <span class="o">=</span> <span class="n">Spectrum</span><span class="o">.</span><span class="n">Spectrum</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">calibrated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">spec</span><span class="o">.</span><span class="n">calibrate_with</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">spec</span><span class="o">.</span><span class="n">xaxis</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">orginal_axis</span><span class="p">,</span> <span class="n">spec</span><span class="o">.</span><span class="n">xaxis</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Test Wavelenght mapping&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Old xaxis&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;New xaxis&quot;</span><span class="p">)</span>
@@ -11853,12 +11854,43 @@ September 2016</p>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Testing-Interpolation">Testing Interpolation<a class="anchor-link" href="#Testing-Interpolation">&#182;</a></h1><p>Looks to be working ok</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">HD30501_1_interp</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">HD30501_1</span><span class="p">)</span>
+<span class="n">HD30501_1_upsampled</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">HD30501_1</span><span class="p">)</span>
+<span class="n">HD30501_1_linear</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">HD30501_1</span><span class="p">)</span>
+<span class="n">HD30501_1_interp</span><span class="o">.</span><span class="n">interpolate_to</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">HD30501_1</span><span class="o">.</span><span class="n">xaxis</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">HD30501_1</span><span class="o">.</span><span class="n">xaxis</span><span class="p">),</span> <span class="mi">500</span><span class="p">))</span>
+<span class="n">HD30501_1_upsampled</span><span class="o">.</span><span class="n">interpolate_to</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">HD30501_1</span><span class="o">.</span><span class="n">xaxis</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">HD30501_1</span><span class="o">.</span><span class="n">xaxis</span><span class="p">),</span> <span class="mi">2000</span><span class="p">))</span>
+<span class="n">HD30501_1_linear</span><span class="o">.</span><span class="n">interpolate_to</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">HD30501_1</span><span class="o">.</span><span class="n">xaxis</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">HD30501_1</span><span class="o">.</span><span class="n">xaxis</span><span class="p">),</span> <span class="mi">2000</span><span class="p">),</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">HD30501_1</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">HD30501_1</span><span class="o">.</span><span class="n">flux</span><span class="p">,</span> <span class="s1">&#39;.-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;orginal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">HD30501_1_interp</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">HD30501_1_interp</span><span class="o">.</span><span class="n">flux</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;interp&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">HD30501_1_upsampled</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">HD30501_1_upsampled</span><span class="o">.</span><span class="n">flux</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;upsampled&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">HD30501_1_linear</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">HD30501_1_linear</span><span class="o">.</span><span class="n">flux</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mf">2118.6</span><span class="p">,</span><span class="mf">2118.7</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1">#plt difference between llinear and default (cubic)</span>
+<span class="n">Diff</span> <span class="o">=</span>  <span class="n">HD30501_1_upsampled</span> <span class="o">-</span> <span class="n">HD30501_1_linear</span>   <span class="c1"># use overloaded operators</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">HD30501_1_upsampled</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">Diff</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Difference between cubic and linear interpolation&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 </div>
