@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 from __future__ import division, print_function
+import copy
 import pytest
 import numpy as np
 from astropy.io import fits
 from pkg_resources import resource_filename
+
 # import sys
 # Add Spectrum location to path
 # sys.path.append('../')
@@ -181,3 +183,45 @@ def test_header_attribute():
     assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
     assert Spectrum().header is None  # unassign header is None
+
+
+
+def test_interpolation():
+    # Test the interpolation function some how
+    # simple examples?
+    # simple linear case
+    x1 = [1., 2., 3., 4., 5.]
+    y1 = [2., 4., 6., 8., 10]
+    x2 = [1.5, 2, 3.5, 4]
+    y2 = [1., 2.,1., 2.]
+    S1 = Spectrum(y1, x1)
+    S2 = Spectrum(y2, x2)
+    S_lin = copy.copy(S1)
+    S_lin.interpolate_to(S2, kind='linear')
+
+    assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
+    # test linear interpoation matches numpy interp
+    assert np.allclose(S_lin.flux, np.interp(x2, x1, y1))
+
+    S_same = copy.copy(S1)
+    # Interpolation to itself should be the same
+    S_same.interpolate_to(S1)
+    assert np.allclose(S_same.flux, S1.flux)
+    assert np.allclose(S_same.xaxis, S1.xaxis)
+
+    # need to test that if boundserror  is set True that a value error is raised
+    with pytest.raises(ValueError):
+        S2.interpolate_to(S1, bounds_error=True)
+    with pytest.raises(ValueError):
+        S2.interpolate_to(S1, kind='linear', bounds_error=True)
+    with pytest.raises(TypeError):
+        S2.interpolate_to(x1, bounds_error=True)
+    with pytest.raises(ValueError):
+        S2.interpolate_to(np.asarray(x1), bounds_error=True)
+    with pytest.raises(TypeError):
+        S2.interpolate_to([1,2,3,4])
+    with pytest.raises(TypeError):
+       S2.interpolate_to("string")
+    # Need to write better tests!
+
+                
