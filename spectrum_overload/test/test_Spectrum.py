@@ -127,7 +127,7 @@ def test_doppler_shift_with_hypothesis(x, RV, calib):
     x = np.asarray(x)
     y = np.random.random(len(x))
 
-    spec = Spectrum(y, x, calib)
+    spec = Spectrum(y, x, calibrated=calib)
     # Apply Doppler shift of RV km/s.
     spec.doppler_shift(RV)
 
@@ -220,4 +220,6 @@ def test_interpolation():
        S2.interpolate_to("string")
     # Need to write better tests!
 
-                
+
+# test_doppler_shift_with_hypothesis()
+   
