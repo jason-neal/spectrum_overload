@@ -169,11 +169,43 @@ class Spectrum(object):
 
     def interpolate_to(self, reference, kind="cubic", bounds_error=False,
                        fill_value=np.nan):
+        """Interpolate wavelength solution to the  reference wavelength.
+        Using scipy interpolation so the optional parameters are passed to scipy.
+        See scipy.interolate.interp1d for more details
+        https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d
 
-        A comment from ENAA 2016 regarded interpolation.
-        Interpolation techniques need to be tested to acheive best
-        performance for low signal applications. i.e. direct exoplanet
-        detection"""
+        Inputs:
+        reference : Spectrum or numpy.ndarray
+        The reference to interpolate the xaxis to. Can either be a Spectrum type or a numpy.ndarray
+
+        kind : str or int, optional
+        Specifies the kind of interpolation as a string (‘linear’, ‘nearest’,
+        ‘zero’, ‘slinear’, ‘quadratic, ‘cubic’ where ‘slinear’, ‘quadratic’
+        and ‘cubic’ refer to a spline interpolation of first, second or
+        third order) or as an integer specifying the order of the spline
+        interpolator to use. Default is ‘spline’.
+
+        bounds_error : bool, optional
+        If True, a ValueError is raised any time interpolation is attempted
+        on a value outside of the range of x (where extrapolation is
+        necessary). If False, out of bounds values are assigned fill_value.
+        By default, an error is raised unless fill_value=”extrapolate”.
+
+        fill_value : array-like or (array-like, array_like) or “extrapolate”,
+        optional  (default : NaN)
+        if a ndarray (or float), this value will be used to fill in for
+        requested points outside of the data range. If not provided, then the
+        default is NaN. The array-like must broadcast properly to the
+        dimensions of the non-interpolation axes.
+        If a two-element tuple, then the first element is used as a fill value
+        for x_new < x[0] and the second element is used for x_new > x[-1].
+        Anything that is not a 2-element tuple (e.g., list or ndarray,
+        regardless of shape) is taken to be a single array-like argument meant
+        to be used for both bounds as below, above = fill_value, fill_value.
+        If “extrapolate”, then points outside the data range will be
+        extrapolated. (“nearest” and “linear” kinds only.)
+
+        """
 
         # Create scipy interpolation function from self
         interp_function = interp1d(self.xaxis, self.flux, kind=kind,
