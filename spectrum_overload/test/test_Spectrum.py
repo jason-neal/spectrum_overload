@@ -95,12 +95,8 @@ def test_wav_select(x, calib, wav_min, wav_max):
 
     # All values in selected spectrum should be less than the max and greater
     # than the min value.
-    if isinstance(spec.xaxis, list):
-        assert all([xval >= wav_min for xval in spec.xaxis])
-        assert all([xval <= wav_max for xval in spec.xaxis])
-    else:
-        assert all(spec.xaxis >= wav_min)
-        assert all(spec.xaxis <= wav_max)
+    assert all(spec.xaxis >= wav_min)
+    assert all(spec.xaxis <= wav_max)
 
 
 def test_wav_select_example():
