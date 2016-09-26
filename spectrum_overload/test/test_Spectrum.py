@@ -43,13 +43,16 @@ def test_spectrum_assigns_data():
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
 
+
 def test_empty_call_is_nones():
-    # Check empty Spectrum is implmented with Nones not Nones in an array (!=None)
-    s= Spectrum()
+    # Check empty Spectrum is implmented with Nones
+    # and not Nones in an array (!=None)
+    s = Spectrum()
     assert s.flux is None
     assert s.xaxis is None
     assert s.header is None
     assert s.calibrated is False
+
 
 def test_setters_for_flux_and_xaxis():
     s = Spectrum()
@@ -59,11 +62,12 @@ def test_setters_for_flux_and_xaxis():
     s.xaxis = [1, 2, 3, 4]
 
     s.flux = [2, 2.1, 2.2, 2.1]
-    #Spectrum(False,False)
-    #Spectrum(False,None)
-    #Spectrum(False,False)
-    #Spectrum(None,False)
+    # Spectrum(False,False)
+    # Spectrum(False,None)
+    # Spectrum(False,False)
+    # Spectrum(None,False)
     pass
+
 
 def test_length_checking():
     s = Spectrum(flux=None, xaxis=None)
@@ -74,7 +78,7 @@ def test_length_checking():
     # Run length check when flux is None and xaxis is not
     s.length_check()
     s.flux = [2, 2.1, 2.2, 2.1]
-    
+
     # Create new empty spectrum
     s = Spectrum(flux=None, xaxis=None)
     s.flux = [2, 2.1, 2.2, 2.1]
@@ -84,8 +88,9 @@ def test_length_checking():
     s.length_check()
 
     with pytest.raises(ValueError):
-        # Wrong lenght should fail
-        Spectrum([1,2,3,4,5],[2,1])
+        # Wrong length should fail
+        Spectrum([1, 4, 5], [2, 1])
+
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError"""
@@ -227,7 +232,7 @@ def test_interpolation():
     x1 = [1., 2., 3., 4., 5.]
     y1 = [2., 4., 6., 8., 10]
     x2 = [1.5, 2, 3.5, 4]
-    y2 = [1., 2.,1., 2.]
+    y2 = [1., 2., 1., 2.]
     S1 = Spectrum(y1, x1)
     S2 = Spectrum(y2, x2)
     S_lin = copy.copy(S1)
@@ -243,7 +248,7 @@ def test_interpolation():
     assert np.allclose(S_same.flux, S1.flux)
     assert np.allclose(S_same.xaxis, S1.xaxis)
 
-    # need to test that if boundserror  is set True that a value error is raised
+    # Need to test that if boundserror is True a ValueError is raised
     with pytest.raises(ValueError):
         S2.interpolate_to(S1, bounds_error=True)
     with pytest.raises(ValueError):
@@ -253,9 +258,9 @@ def test_interpolation():
     with pytest.raises(ValueError):
         S2.interpolate_to(np.asarray(x1), bounds_error=True)
     with pytest.raises(TypeError):
-        S2.interpolate_to([1,2,3,4])
+        S2.interpolate_to([1, 2, 3, 4])
     with pytest.raises(TypeError):
-       S2.interpolate_to("string")
+        S2.interpolate_to("string")
     # Need to write better tests!
 
 
