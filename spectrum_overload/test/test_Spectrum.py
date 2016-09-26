@@ -45,8 +45,43 @@ def test_spectrum_assigns_data():
 
 
 def test_setters_for_flux_and_xaxis():
+    s = Spectrum()
+    # Try set flux to None
+    s.flux = None
+    # Try set xaxis when flux is None
+    s.xaxis = [1, 2, 3, 4]
+
+    s.flux = [2, 2.1, 2.2, 2.1]
+    #Spectrum(False,False)
+    #Spectrum(False,None)
+    #Spectrum(False,False)
+    #Spectrum(None,False)
     pass
 
+def test_length_checking():
+    s = Spectrum(flux=None, xaxis=None)
+    # Length check when both None
+    s.length_check()
+    # Try set xaxis when flux is None
+    s.xaxis = [1, 2, 3, 4]
+    # Run length check when flux is None and xaxis is not
+    s.length_check()
+    s.flux = [2, 2.1, 2.2, 2.1]
+    
+    # Create new empty spectrum
+    s = Spectrum(flux=None, xaxis=None)
+    s.flux = [2, 2.1, 2.2, 2.1]
+    # Run length check when xaxis is None and flux is not
+    print(s.xaxis)
+    print(s.flux)
+    s.length_check()
+
+    with pytest.raises(ValueError):
+        # Wrong lenght should fail
+        Spectrum([1,2,3,4,5],[2,1])
+
+    
+    
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError"""
