@@ -88,7 +88,7 @@ class Spectrum(object):
                 type(value)))
 
         if value is not None:
-            print("Turning flux input into np array")
+            # print("Turning flux input into np array")
             # Not checking to make sure it equals the xaxis
             # If changing flux and xaxis set the flux first
             self._flux = np.asarray(value)
