@@ -26,11 +26,11 @@ class Spectrum(object):
         else:
             self._flux = flux
 
-        if xaxis is None: 
+        if xaxis is None:
             if flux is None:
                 self._xaxis = None
             else:
-            # Applying range to xaxis of equal length of flux
+                # Applying range to xaxis of equal length of flux
                 try:
                     self._xaxis = np.arange(len(flux))
                 except TypeError:
@@ -175,13 +175,15 @@ class Spectrum(object):
     def interpolate_to(self, reference, kind="cubic", bounds_error=False,
                        fill_value=np.nan):
         """Interpolate wavelength solution to the  reference wavelength.
-        Using scipy interpolation so the optional parameters are passed to scipy.
+        Using scipy interpolation so the optional parameters are passed to
+        scipy.
         See scipy.interolate.interp1d for more details
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d
 
         Inputs:
         reference : Spectrum or numpy.ndarray
-        The reference to interpolate the xaxis to. Can either be a Spectrum type or a numpy.ndarray
+        The reference to interpolate the xaxis to. Can either be a
+        Spectrum type or a numpy.ndarray
 
         kind : str or int, optional
         Specifies the kind of interpolation as a string (‘linear’, ‘nearest’,
@@ -218,7 +220,7 @@ class Spectrum(object):
                                    bounds_error=bounds_error)
 
         # Determine the flux at the new locations given by reference
-        if isinstance(reference, Spectrum):      # Spectrum type 
+        if isinstance(reference, Spectrum):      # Spectrum type
             new_flux = interp_function(reference.xaxis)
             self.flux = new_flux                 # Flux needs to change first
             self.xaxis = reference.xaxis
@@ -230,7 +232,6 @@ class Spectrum(object):
             # print("Interpolate was not give a valid type")
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
-        
 
     #######################################################
     # Overloading Operators
