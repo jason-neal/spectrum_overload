@@ -26,13 +26,15 @@ class Spectrum(object):
         else:
             self._flux = flux
 
-        if xaxis is None and flux is not None:
-            # Applying range to xaxis of equal length as flux
-            try:
-                # Try to assign arange the length of flux
-                self._xaxis = np.arange(len(flux))
-            except TypeError:
+        if xaxis is None: 
+            if flux is None:
                 self._xaxis = None
+            else:
+            # Applying range to xaxis of equal length of flux
+                try:
+                    self._xaxis = np.arange(len(flux))
+                except TypeError:
+                    self._xaxis = None
         else:
             self._xaxis = np.asarray(xaxis)  # Setter not used - need asarray
 
@@ -63,12 +65,15 @@ class Spectrum(object):
                 self._xaxis = None
             # print("assigning xaxis the same length of _flux")
 
-        # Add any other checks in here if nessary
+        # Add any other checks in here if necessary
         elif self._flux is not None:
             if len(value) != len(self._flux):
                 raise ValueError("Lenght of xaxis does not match flux length")
             else:
                 self._xaxis = np.asarray(value)
+        else:
+            # If flux is None
+            self._xaxis = value
 
     @property
     def flux(self):
