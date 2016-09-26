@@ -43,6 +43,13 @@ def test_spectrum_assigns_data():
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
 
+def test_empty_call_is_nones():
+    # Check empty Spectrum is implmented with Nones not Nones in an array (!=None)
+    s= Spectrum()
+    assert s.flux is None
+    assert s.xaxis is None
+    assert s.header is None
+    assert s.calibrated is False
 
 def test_setters_for_flux_and_xaxis():
     s = Spectrum()
@@ -79,9 +86,6 @@ def test_length_checking():
     with pytest.raises(ValueError):
         # Wrong lenght should fail
         Spectrum([1,2,3,4,5],[2,1])
-
-    
-    
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError"""
@@ -216,7 +220,6 @@ def test_header_attribute():
     assert Spectrum().header is None  # unassign header is None
 
 
-
 def test_interpolation():
     # Test the interpolation function some how
     # simple examples?
@@ -257,4 +260,3 @@ def test_interpolation():
 
 
 # test_doppler_shift_with_hypothesis()
-   
