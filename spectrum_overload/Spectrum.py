@@ -412,6 +412,28 @@ class Spectrum(object):
         return Spectrum(flux=absflux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
 
+    def _prepare_other(self, other):
+        if isinstance(other, Spectrum):
+            if self.calibrated != other.calibrated:
+                """Checking the Spectra are of same calibration state"""
+                raise SpectrumError("Spectra are not calibrated similarly.")
+            if np.all(self.xaxis == other.xaxis): # Only for equal xaxis
+                # Easiest condition in which xaxis of both are the same
+                return copy.copy(other.flux)
+            else:  # Uneven length xaxis need to be interpolated
+                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
+                    (np.max(self.xaxis) < np.min(other.xaxis))):
+                        raise ValueError("The xaxis do not overlap so cannot"
+                                         " be interpolated")
+                else:
+                    other_copy = copy.copy(other)
+                    other_copy.interpolate_to(self)
+                    return other_copy.flux
+        elif isinstance(other, (int, float, np.ndarray)):
+            return copy.copy(other)
+        else:
+            raise TypeError("Unexpected type {} given".format(type(other)))
+
 # TO DO !
 # --------------------
 # Add an interpolation
