@@ -231,31 +231,6 @@ class Spectrum(object):
     # Overloading Operators
     # ######################################################
 
-    def __truediv__(self, other):
-        """ Overloaded truedivision (/) method for Spectrum
-
-        If there is truedivision between two Spectrum objects which have
-        difference xaxis values then the second Spectrum is interpolated
-        to the xaxis of the first Spectum
-
-        e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
-        then if len(a / b) = 10 and len(b / a) = 15.
-
-        This makes (a / b) != (1/b) / (1/a)
-
-        """
-        # Checks for type errors and size. It interpolates other if needed.
-        prepared_other = self._prepare_other(other)
-        try:
-            new_flux = self.flux / prepared_other
-        except ZeroDivisionError:
-            print("Warning some of the spectrum was zero. Replaced zeros with"
-                  " Nans to avoid ZeroDivisionError")
-            prepared_other[prepared_other == 0] = np.nan
-            new_flux = self.flux / prepared_other
-        return Spectrum(flux=new_flux, xaxis=self.xaxis,
-                        calibrated=self.calibrated)
-
     def __add__(self, other):
         """ Overloaded addition method for Spectrum
 
@@ -318,6 +293,31 @@ class Spectrum(object):
         prepared_other = self._prepare_other(other)
         new_flux = self.flux * prepared_other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
+
+    def __truediv__(self, other):
+        """ Overloaded truedivision (/) method for Spectrum
+
+        If there is truedivision between two Spectrum objects which have
+        difference xaxis values then the second Spectrum is interpolated
+        to the xaxis of the first Spectum
+
+        e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
+        then if len(a / b) = 10 and len(b / a) = 15.
+
+        This makes (a / b) != (1/b) / (1/a)
+
+        """
+        # Checks for type errors and size. It interpolates other if needed.
+        prepared_other = self._prepare_other(other)
+        try:
+            new_flux = self.flux / prepared_other
+        except ZeroDivisionError:
+            print("Warning some of the spectrum was zero. Replaced zeros with"
+                  " Nans to avoid ZeroDivisionError")
+            prepared_other[prepared_other == 0] = np.nan
+            new_flux = self.flux / prepared_other
+        return Spectrum(flux=new_flux, xaxis=self.xaxis,
                         calibrated=self.calibrated)
 
     def __pow__(self, other):
