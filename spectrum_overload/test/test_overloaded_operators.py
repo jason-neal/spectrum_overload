@@ -405,7 +405,8 @@ def test_truedivision_with_interpolation():
     # with pytest.raises(NotImplementedError):
     #     s * t
 
-#@pytest.mark.xfail
+
+# @pytest.mark.xfail
 def test_valueerror_when_spectra_dont_overlap():
     s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
     u = Spectrum([1, 2, 1, 2], [50, 51, 52, 53])
@@ -419,13 +420,14 @@ def test_valueerror_when_spectra_dont_overlap():
     with pytest.raises(ValueError):
         s * u
 
+
 def test_operators_with_bad_types():
     s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
     test_str = "Test String"
     test_list = [1, 2, 3, 4, 5]
     test_list2 = [2, 3, "4"]
     test_tup = (1, 2, "3")
-    test_dict = {"1":1, "2":2, "3":3}
+    test_dict = {"1": 1, "2": 2, "3": 3}
     test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
     tests = [test_str, test_list, test_list2, test_tup, test_dict, test_set]
     for test in tests:
@@ -438,21 +440,22 @@ def test_operators_with_bad_types():
         with pytest.raises(TypeError):
             s / test
 
+
 @pytest.mark.xfail
 def test_assignment_with_bad_types():
     # Need to improve checking of what can pass into spectrum
     test_str = "Test String"
     test_tup = (1, 2, "3")
-    test_dict = {"1":1, "2":2, "3":3}
+    test_dict = {"1": 1, "2": 2, "3": 3}
     test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
     tests = [test_str, test_tup, test_dict, test_set]
     for test in tests:
-        #print(test)
+        # print(test)
         with pytest.raises(TypeError):
             Spectrum(None, test)
         with pytest.raises(TypeError):
             Spectrum(test)
-        
+
 
 def test_spectra_stay_the_same_after_operations():
     """ After a operation of two spectra e.g. a/b both a and b should
