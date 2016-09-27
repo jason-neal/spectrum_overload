@@ -186,10 +186,16 @@ def test_overload_pow():
     # Can test when things are not suposed to work :)
     with pytest.raises(TypeError):
         spec1 ** spec2
+    with pytest.raises(TypeError):
+        # Does not accept lists
+        spec1 ** [1]  # This should fail
+    with pytest.raises(TypeError):
+        spec1 ** [1,2]  # This should fail also
+    with pytest.raises(TypeError):
+        # Does not accept lists
+        spec1 ** (2,)  # This should fail as it is a tuple
     with pytest.raises(ValueError):
-        spec1 ** [1, 2]  # This should fail
-    with pytest.raises(ValueError):
-        spec1 ** np.array([1, 2])
+        spec1 ** np.array([1, 2]) # too many values
     # Should also test that something works
     spec4 = spec1 ** power
     assert np.all(spec4.flux == np.array([1, 4, 9, 16]))  # flux is squared
