@@ -252,3 +252,35 @@ def test_abs_operator():
     abs_spec2 = abs(abs_spec)
     assert np.all(abs_spec.flux == np.array([1, 2, 3.2, 4]))
     assert np.all(abs_spec.flux == abs_spec2.flux)
+def test_subtraction_with_interpolation():
+    s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
+    x = np.array([1, 5, 7, 8, 12])
+    s2 = Spectrum([1, 2, 1, 2, 1], x)
+    d1 = s1 - s2
+    d2 = s2 - s1
+    assert np.all(d2.xaxis == x)  # d has axis of t
+    assert np.all(d1.xaxis == s1.xaxis)
+    assert np.all(d2.xaxis == s2.xaxis)
+    assert len(d1) != len(d2)   # due to different length of s1 and s2
+
+    # Values in one that are outside range are filled with nans
+    s3 = Spectrum([1, 2, 1, 2, 1, 2], [3, 4, 5, 6, 7, 8])
+    s4 = Spectrum([1, 2, 1, 2, 1, 2, 1], [4, 5, 6, 7, 8, 9, 10])
+    d3 = s3 - s4
+    d4 = s4 - s3
+    assert np.all(d3.xaxis == s3.xaxis)
+    assert np.all(d4.xaxis == s4.xaxis)
+    # Difficult to get nans to equal so using isnan inverted
+    d3notnan = np.invert(np.isnan(d3.flux))
+    assert np.allclose(d3.flux[d3notnan],
+                       np.array([np.nan, 1, -1, 1, -1, 1])[d3notnan])
+    d4notnan = np.invert(np.isnan(d4.flux))
+    assert np.allclose(d4.flux[d4notnan],
+                       np.array([-1, 1, -1, 1, -1, np.nan, np.nan])[d4notnan])
+    s5 = Spectrum([1, 2, 1, 2, 1], [50, 51, 52, 53, 54])
+    # xaxis of both Spectrum do not overlap
+    with pytest.raises(ValueError):
+        s5 - s1
+    with pytest.raises(ValueError):
+        s1 - s5
+
