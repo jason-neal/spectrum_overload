@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from __future__ import print_function, division
 import numpy as np
+import copy
 from scipy.interpolate import interp1d
 # Spectrum Class
 
@@ -288,16 +289,34 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __sub__(self, other):
+        """ Overloaded subtraction method for Spectrum
+
+        If there is subtraction between two Spectrum objects which have
+        difference xaxis values then the second Spectrum is interpolated
+        to the xaxis of the first Spectum
+
+        e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
+        then if len(a - b) = 10 and len(b - a) = 15.
+
+        Also becasue of this a - b != -b + a
+        """
         if isinstance(other, Spectrum):
+            # When other is a Spectrum object
             if self.calibrated != other.calibrated:
                 """Checking the Spectra are of same calibration state"""
                 raise SpectrumError("Spectra are not calibrated similarly.")
-            # Only for equal xaxis
-            if np.all(self.xaxis == other.xaxis):
+            if np.all(self.xaxis == other.xaxis):  # Equal xaxis
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux - other.flux
-            else:  # Uneven legnth xaxis need to interpolate
-                raise NotImplemented
+            else:  # Uneven length xaxis need to be interpolated
+                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
+                    (np.max(self.xaxis) < np.min(other.xaxis))):
+                        raise ValueError("The xaxis do not overlap so cannot"
+                                         " be interpolated")
+                else:
+                    o_copy = copy.copy(other)
+                    o_copy.interpolate_to(self)
+                    new_flux = self.flux - o_copy.flux
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux - other
         else:
