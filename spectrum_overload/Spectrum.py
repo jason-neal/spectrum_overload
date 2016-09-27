@@ -247,9 +247,14 @@ class Spectrum(object):
                     nand_other = other.flux
                     nand_other[nand_other == 0] = np.nan()
                     new_flux = self.flux / other.flux
+            else:
+                raise NotImplemented
 
-        else:
+        elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux / other
+        else:
+            raise TypeError("Unexpected type {} given for addition".format(type(other)))
+
         return Spectrum(flux=new_flux, xaxis=self.xaxis,
                         calibrated=self.calibrated)
 
@@ -262,8 +267,13 @@ class Spectrum(object):
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux + other.flux
-        else:
+            else:
+                raise NotImplemented
+
+        elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux + other
+        else:
+            raise TypeError("Unexpected type {} given for addition".format(type(other)))
 
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
@@ -284,8 +294,12 @@ class Spectrum(object):
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux - other.flux
-        else:
+            else:  # Uneven legnth xaxis need to interpolate
+                raise NotImplemented
+        elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux - other
+        else:
+            raise TypeError("Unexpected type {} given for subtraction".format(type(other)))
 
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
@@ -299,8 +313,13 @@ class Spectrum(object):
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux * other.flux
-        else:
+            else:
+                raise NotImplemented
+        elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux * other
+        else:
+            raise TypeError("Unexpected type {} given "
+                            "for multiplication".format(type(other)))
 
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
