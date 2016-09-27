@@ -438,6 +438,20 @@ def test_operators_with_bad_types():
         with pytest.raises(TypeError):
             s / test
 
+@pytest.mark.xfail
+def test_assignment_with_bad_types():
+    # Need to improve checking of what can pass into spectrum
+    test_str = "Test String"
+    test_tup = (1, 2, "3")
+    test_dict = {"1":1, "2":2, "3":3}
+    test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
+    tests = [test_str, test_tup, test_dict, test_set]
+    for test in tests:
+        #print(test)
+        with pytest.raises(TypeError):
+            Spectrum(None, test)
+        with pytest.raises(TypeError):
+            Spectrum(test)
         
 
 def test_spectra_stay_the_same_after_operations():
