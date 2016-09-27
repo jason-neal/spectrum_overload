@@ -418,3 +418,10 @@ def test_valueerror_when_spectra_dont_overlap():
         s / u
     with pytest.raises(ValueError):
         s * u
+        
+
+def test_spectra_stay_the_same_after_operations():
+    """ After a operation of two spectra e.g. a/b both a and b should
+    remaion the same unless specifcally defined such as a = a + b
+    """
+    pass
