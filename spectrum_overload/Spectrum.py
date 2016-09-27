@@ -232,9 +232,18 @@ class Spectrum(object):
     # ######################################################
 
     def __truediv__(self, other):
-        """Overload truedivision (/) to divide two specta """
+        """ Overloaded truedivision (/) method for Spectrum
 
+        If there is truedivision between two Spectrum objects which have
+        difference xaxis values then the second Spectrum is interpolated
+        to the xaxis of the first Spectum
 
+        e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
+        then if len(a / b) = 10 and len(b / a) = 15.
+
+        This makes (a / b) != (1/b) / (1/a)
+
+        """
         # Checks for type errors and size. It interpolates other if needed.
         prepared_other = self._prepare_other(other)
         try:
