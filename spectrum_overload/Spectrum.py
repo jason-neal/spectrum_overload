@@ -245,12 +245,12 @@ class Spectrum(object):
                     new_flux = self.flux / other.flux
                 except ZeroDivisionError:
                     print("Some of the spectrum was zero. Replaced with Nans")
-                    nand_other = other.flux
-                    nand_other[nand_other == 0] = np.nan()
-                    new_flux = self.flux / other.flux
             else:
                 raise NotImplementedError
 
+                    nand_other = copy.copy(other.flux)
+                    nand_other[nand_other == 0] = np.nan
+                    new_flux = self.flux / nand_other
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux / other
         else:
