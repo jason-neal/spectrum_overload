@@ -245,12 +245,24 @@ class Spectrum(object):
                     new_flux = self.flux / other.flux
                 except ZeroDivisionError:
                     print("Some of the spectrum was zero. Replaced with Nans")
-            else:
-                raise NotImplementedError
-
                     nand_other = copy.copy(other.flux)
                     nand_other[nand_other == 0] = np.nan
                     new_flux = self.flux / nand_other
+            else:  # Uneven length xaxis need to be interpolated
+                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
+                    (np.max(self.xaxis) < np.min(other.xaxis))):
+                        raise ValueError("The xaxis do not overlap so cannot"
+                                         " be interpolated")
+                else:
+                    o_copy = copy.copy(other)
+                    o_copy.interpolate_to(self)
+                    try:
+                        new_flux = self.flux / o_copy.flux
+                    except ZeroDivisionError:
+                        print("Some of the spectrum was zero. Replaced with Nans")
+                        nand_other = o_copy.flux
+                        nand_other[nand_other == 0] = np.nan
+                        new_flux = self.flux / nand_other
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux / other
         else:
@@ -269,9 +281,15 @@ class Spectrum(object):
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux + other.flux
-            else:
-                raise NotImplementedError
-
+            else:    # Uneven length xaxis need to be interpolated
+                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
+                    (np.max(self.xaxis) < np.min(other.xaxis))):
+                        raise ValueError("The xaxis do not overlap so cannot"
+                                         " be interpolated")
+                else:
+                    o_copy = copy.copy(other)
+                    o_copy.interpolate_to(self)
+                    new_flux = self.flux + o_copy.flux
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux + other
         else:
@@ -335,8 +353,15 @@ class Spectrum(object):
             if np.all(self.xaxis == other.xaxis):
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux * other.flux
-            else:
-                raise NotImplementedError
+            else:  # Uneven length xaxis need to be interpolated
+                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
+                    (np.max(self.xaxis) < np.min(other.xaxis))):
+                        raise ValueError("The xaxis do not overlap so cannot"
+                                         " be interpolated")
+                else:
+                    o_copy = copy.copy(other)
+                    o_copy.interpolate_to(self)
+                    new_flux = self.flux * o_copy.flux
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux * other
         else:
