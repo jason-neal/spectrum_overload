@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from __future__ import print_function, division
 import numpy as np
+import copy
 from scipy.interpolate import interp1d
 # Spectrum Class
 
@@ -171,7 +172,7 @@ class Spectrum(object):
                        fill_value=np.nan):
         """Interpolate wavelength solution to the  reference wavelength.
         Using scipy interpolation so the optional parameters are passed to scipy.
-        See scipy.interolate.interp1d for more details
+        See scipy.interpolate.interp1d for more details
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d
 
         Inputs:
@@ -225,46 +226,27 @@ class Spectrum(object):
             # print("Interpolate was not give a valid type")
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
-        
 
-    #######################################################
+    # ###################R##################################
     # Overloading Operators
-    #######################################################
-
-    def __truediv__(self, other):
-        """Overload truedivision (/) to divide two specta """
-        if isinstance(other, Spectrum):
-            if self.calibrated != other.calibrated:
-                """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("Spectra are not calibrated similarly.")
-
-            if np.all(self.xaxis == other.xaxis):
-                # Easiest condition in which xaxis of both are the same
-                try:
-                    new_flux = self.flux / other.flux
-                except ZeroDivisionError:
-                    print("Some of the spectrum was zero. Replaced with Nans")
-                    nand_other = other.flux
-                    nand_other[nand_other == 0] = np.nan()
-                    new_flux = self.flux / other.flux
-
-        else:
-            new_flux = self.flux / other
-        return Spectrum(flux=new_flux, xaxis=self.xaxis,
-                        calibrated=self.calibrated)
+    # ######################################################
 
     def __add__(self, other):
-        if isinstance(other, Spectrum):
-            if self.calibrated != other.calibrated:
-                """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("Spectra are not calibrated similarly.")
+        """ Overloaded addition method for Spectrum
 
-            if np.all(self.xaxis == other.xaxis):
-                # Easiest condition in which xaxis of both are the same
-                new_flux = self.flux + other.flux
-        else:
-            new_flux = self.flux + other
+        If there is addition between two Spectrum objects which have
+        difference xaxis values then the second Spectrum is interpolated
+        to the xaxis of the first Spectum
 
+        e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
+        then if len(a + b) = 10 and len(b + a) = 15.
+
+        This makes a + b != b + a
+
+        """
+        # Checks for type errors and size. It interpolates other if needed.
+        prepared_other = self._prepare_other(other)
+        new_flux = self.flux + prepared_other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
 
@@ -276,33 +258,66 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __sub__(self, other):
-        if isinstance(other, Spectrum):
-            if self.calibrated != other.calibrated:
-                """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("Spectra are not calibrated similarly.")
-            # Only for equal xaxis
-            if np.all(self.xaxis == other.xaxis):
-                # Easiest condition in which xaxis of both are the same
-                new_flux = self.flux - other.flux
-        else:
-            new_flux = self.flux - other
+        """ Overloaded subtraction method for Spectrum
 
+        If there is subtraction between two Spectrum objects which have
+        difference xaxis values then the second Spectrum is interpolated
+        to the xaxis of the first Spectum
+
+        e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
+        then if len(a - b) = 10 and len(b - a) = 15.
+
+        # This makes a - b != -b + a
+
+        """
+        # Checks for type errors and size. It interpolates other if needed.
+        prepared_other = self._prepare_other(other)
+        new_flux = self.flux - prepared_other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
 
     def __mul__(self, other):
-        if isinstance(other, Spectrum):
-            if self.calibrated != other.calibrated:
-                """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("Spectra are not calibrated similarly.")
-            # Only for equal xaxis
-            if np.all(self.xaxis == other.xaxis):
-                # Easiest condition in which xaxis of both are the same
-                new_flux = self.flux * other.flux
-        else:
-            new_flux = self.flux * other
+        """ Overloaded multiplication method for Spectrum
 
+        If there is multiplication between two Spectrum objects which have
+        difference xaxis values then the second Spectrum is interpolated
+        to the xaxis of the first Spectum
+
+        e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
+        then if len(a * b) = 10 and len(b * a) = 15.
+
+        This makes a * b != b * a
+
+        """
+        # Checks for type errors and size. It interpolates other if needed.
+        prepared_other = self._prepare_other(other)
+        new_flux = self.flux * prepared_other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
+                        calibrated=self.calibrated)
+
+    def __truediv__(self, other):
+        """ Overloaded truedivision (/) method for Spectrum
+
+        If there is truedivision between two Spectrum objects which have
+        difference xaxis values then the second Spectrum is interpolated
+        to the xaxis of the first Spectum
+
+        e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
+        then if len(a / b) = 10 and len(b / a) = 15.
+
+        This makes (a / b) != (1/b) / (1/a)
+
+        """
+        # Checks for type errors and size. It interpolates other if needed.
+        prepared_other = self._prepare_other(other)
+        try:
+            new_flux = self.flux / prepared_other
+        except ZeroDivisionError:
+            print("Warning some of the spectrum was zero. Replaced zeros with"
+                  " Nans to avoid ZeroDivisionError")
+            prepared_other[prepared_other == 0] = np.nan
+            new_flux = self.flux / prepared_other
+        return Spectrum(flux=new_flux, xaxis=self.xaxis,
                         calibrated=self.calibrated)
 
     def __pow__(self, other):
@@ -310,14 +325,19 @@ class Spectrum(object):
         # if len(other) > 1 :
         #    raise ValueError("Spectrum can only be raised to the power of
         # one number not {}".format(len(other)))
-        try:
-            new_flux = self.flux ** other
-            return Spectrum(flux=new_flux, xaxis=self.xaxis,
-                            header=self.header, calibrated=self.calibrated)
-
-        except:
-            # Tpye error or value error are likely
-            raise
+        if isinstance(other, Spectrum):
+            raise TypeError("Can not preform Spectrum ** Spectrum")
+        elif isinstance(other, (int, float, np.ndarray)):
+            try:
+                new_flux = self.flux ** other
+                return Spectrum(flux=new_flux, xaxis=self.xaxis,
+                                header=self.header, calibrated=self.calibrated)
+            except:
+                # Type error or value error are likely
+                raise
+        else:
+            raise TypeError("Unexpected type {} given for"
+                            " __pow__".format(type(other)))
 
     def __len__(self):
         """ Return length of flux Spectrum"""
@@ -340,6 +360,28 @@ class Spectrum(object):
         absflux = abs(self.flux)
         return Spectrum(flux=absflux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
+
+    def _prepare_other(self, other):
+        if isinstance(other, Spectrum):
+            if self.calibrated != other.calibrated:
+                """Checking the Spectra are of same calibration state"""
+                raise SpectrumError("Spectra are not calibrated similarly.")
+            if np.all(self.xaxis == other.xaxis):  # Only for equal xaxis
+                # Easiest condition in which xaxis of both are the same
+                return copy.copy(other.flux)
+            else:  # Uneven length xaxis need to be interpolated
+                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
+                     (np.max(self.xaxis) < np.min(other.xaxis))):
+                    raise ValueError("The xaxis do not overlap so cannot"
+                                     " be interpolated")
+                else:
+                    other_copy = copy.copy(other)
+                    other_copy.interpolate_to(self)
+                    return other_copy.flux
+        elif isinstance(other, (int, float, np.ndarray)):
+            return copy.copy(other)
+        else:
+            raise TypeError("Unexpected type {} given".format(type(other)))
 
 # TO DO !
 # --------------------
