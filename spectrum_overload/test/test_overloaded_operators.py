@@ -418,6 +418,26 @@ def test_valueerror_when_spectra_dont_overlap():
         s / u
     with pytest.raises(ValueError):
         s * u
+
+def test_operators_with_bad_types():
+    s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
+    test_str = "Test String"
+    test_list = [1, 2, 3, 4, 5]
+    test_list2 = [2, 3, "4"]
+    test_tup = (1, 2, "3")
+    test_dict = {"1":1, "2":2, "3":3}
+    test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
+    tests = [test_str, test_list, test_list2, test_tup, test_dict, test_set]
+    for test in tests:
+        with pytest.raises(TypeError):
+            s + test
+        with pytest.raises(TypeError):
+            s - test
+        with pytest.raises(TypeError):
+            s * test
+        with pytest.raises(TypeError):
+            s / test
+
         
 
 def test_spectra_stay_the_same_after_operations():
