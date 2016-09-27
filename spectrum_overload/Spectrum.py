@@ -315,31 +315,12 @@ class Spectrum(object):
         e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
         then if len(a - b) = 10 and len(b - a) = 15.
 
-        Also becasue of this a - b != -b + a
-        """
-        if isinstance(other, Spectrum):
-            # When other is a Spectrum object
-            if self.calibrated != other.calibrated:
-                """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("Spectra are not calibrated similarly.")
-            if np.all(self.xaxis == other.xaxis):  # Equal xaxis
-                # Easiest condition in which xaxis of both are the same
-                new_flux = self.flux - other.flux
-            else:  # Uneven length xaxis need to be interpolated
-                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
-                    (np.max(self.xaxis) < np.min(other.xaxis))):
-                        raise ValueError("The xaxis do not overlap so cannot"
-                                         " be interpolated")
-                else:
-                    o_copy = copy.copy(other)
-                    o_copy.interpolate_to(self)
-                    new_flux = self.flux - o_copy.flux
-        elif isinstance(other, (int, float, np.ndarray)):
-            new_flux = self.flux - other
-        else:
-            raise TypeError("Unexpected type {} given for"
-                            " subtraction".format(type(other)))
+        # This makes a - b != -b + a
 
+        """
+        # Checks for type errors and size. It interpolates other if needed.
+        prepared_other = self._prepare_other(other)
+        new_flux = self.flux - prepared_other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
 
