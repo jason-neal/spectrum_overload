@@ -248,7 +248,7 @@ class Spectrum(object):
                     nand_other[nand_other == 0] = np.nan()
                     new_flux = self.flux / other.flux
             else:
-                raise NotImplemented
+                raise NotImplementedError
 
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux / other
@@ -268,7 +268,7 @@ class Spectrum(object):
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux + other.flux
             else:
-                raise NotImplemented
+                raise NotImplementedError
 
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux + other
@@ -314,7 +314,7 @@ class Spectrum(object):
                 # Easiest condition in which xaxis of both are the same
                 new_flux = self.flux * other.flux
             else:
-                raise NotImplemented
+                raise NotImplementedError
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux * other
         else:
