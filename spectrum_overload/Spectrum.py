@@ -233,41 +233,17 @@ class Spectrum(object):
 
     def __truediv__(self, other):
         """Overload truedivision (/) to divide two specta """
-        if isinstance(other, Spectrum):
-            if self.calibrated != other.calibrated:
-                """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("Spectra are not calibrated similarly.")
 
-            if np.all(self.xaxis == other.xaxis):
-                # Easiest condition in which xaxis of both are the same
-                try:
-                    new_flux = self.flux / other.flux
-                except ZeroDivisionError:
-                    print("Some of the spectrum was zero. Replaced with Nans")
-                    nand_other = copy.copy(other.flux)
-                    nand_other[nand_other == 0] = np.nan
-                    new_flux = self.flux / nand_other
-            else:  # Uneven length xaxis need to be interpolated
-                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
-                    (np.max(self.xaxis) < np.min(other.xaxis))):
-                        raise ValueError("The xaxis do not overlap so cannot"
-                                         " be interpolated")
-                else:
-                    o_copy = copy.copy(other)
-                    o_copy.interpolate_to(self)
-                    try:
-                        new_flux = self.flux / o_copy.flux
-                    except ZeroDivisionError:
-                        print("Some of the spectrum was zero. Replaced with Nans")
-                        nand_other = o_copy.flux
-                        nand_other[nand_other == 0] = np.nan
-                        new_flux = self.flux / nand_other
-        elif isinstance(other, (int, float, np.ndarray)):
-            new_flux = self.flux / other
-        else:
-            raise TypeError("Unexpected type {} given for"
-                            " true division".format(type(other)))
 
+        # Checks for type errors and size. It interpolates other if needed.
+        prepared_other = self._prepare_other(other)
+        try:
+            new_flux = self.flux / prepared_other
+        except ZeroDivisionError:
+            print("Warning some of the spectrum was zero. Replaced zeros with"
+                  " Nans to avoid ZeroDivisionError")
+            prepared_other[prepared_other == 0] = np.nan
+            new_flux = self.flux / prepared_other
         return Spectrum(flux=new_flux, xaxis=self.xaxis,
                         calibrated=self.calibrated)
 
