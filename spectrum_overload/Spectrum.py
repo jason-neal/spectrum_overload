@@ -226,11 +226,10 @@ class Spectrum(object):
             # print("Interpolate was not give a valid type")
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
-        
 
-    #######################################################
+    # ###################R##################################
     # Overloading Operators
-    #######################################################
+    # ######################################################
 
     def __truediv__(self, other):
         """Overload truedivision (/) to divide two specta """
@@ -417,14 +416,14 @@ class Spectrum(object):
             if self.calibrated != other.calibrated:
                 """Checking the Spectra are of same calibration state"""
                 raise SpectrumError("Spectra are not calibrated similarly.")
-            if np.all(self.xaxis == other.xaxis): # Only for equal xaxis
+            if np.all(self.xaxis == other.xaxis):  # Only for equal xaxis
                 # Easiest condition in which xaxis of both are the same
                 return copy.copy(other.flux)
             else:  # Uneven length xaxis need to be interpolated
                 if ((np.min(self.xaxis) > np.max(other.xaxis)) |
-                    (np.max(self.xaxis) < np.min(other.xaxis))):
-                        raise ValueError("The xaxis do not overlap so cannot"
-                                         " be interpolated")
+                     (np.max(self.xaxis) < np.min(other.xaxis))):
+                    raise ValueError("The xaxis do not overlap so cannot"
+                                     " be interpolated")
                 else:
                     other_copy = copy.copy(other)
                     other_copy.interpolate_to(self)
