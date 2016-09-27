@@ -2,6 +2,7 @@
 
 from __future__ import division, print_function
 import pytest
+import copy
 import numpy as np
 # from astropy.io import fits
 # from pkg_resources import resource_filename
@@ -252,6 +253,8 @@ def test_abs_operator():
     abs_spec2 = abs(abs_spec)
     assert np.all(abs_spec.flux == np.array([1, 2, 3.2, 4]))
     assert np.all(abs_spec.flux == abs_spec2.flux)
+
+
 def test_subtraction_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -284,3 +287,29 @@ def test_subtraction_with_interpolation():
     with pytest.raises(ValueError):
         s1 - s5
 
+
+def test_NotImplemented_in_operators_works_atm():
+    s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
+    t = Spectrum([1, 2, 1, 2], [3, 5, 7, 8])
+    # Outside bounds
+    with pytest.raises(NotImplementedError):
+        s + t
+    # with pytest.raises(NotImplementedError):
+    #    d = s - t
+    with pytest.raises(NotImplementedError):
+        s / t
+    with pytest.raises(NotImplementedError):
+        s * t
+
+def test_valueerror_when_spectra_dont_overlap():
+    s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
+    u = Spectrum([1, 2, 1, 2], [50, 51, 52, 53])
+
+    with pytest.raises(ValueError):
+        s + u
+    with pytest.raises(ValueError):
+        s - u
+    with pytest.raises(ValueError):
+        s / u
+    with pytest.raises(ValueError):
+        s * u
