@@ -171,7 +171,7 @@ class Spectrum(object):
                        fill_value=np.nan):
         """Interpolate wavelength solution to the  reference wavelength.
         Using scipy interpolation so the optional parameters are passed to scipy.
-        See scipy.interolate.interp1d for more details
+        See scipy.interpolate.interp1d for more details
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d
 
         Inputs:
