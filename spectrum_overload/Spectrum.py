@@ -272,29 +272,11 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __add__(self, other):
-        if isinstance(other, Spectrum):
-            if self.calibrated != other.calibrated:
-                """Checking the Spectra are of same calibration state"""
-                raise SpectrumError("Spectra are not calibrated similarly.")
 
-            if np.all(self.xaxis == other.xaxis):
-                # Easiest condition in which xaxis of both are the same
-                new_flux = self.flux + other.flux
-            else:    # Uneven length xaxis need to be interpolated
-                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
-                    (np.max(self.xaxis) < np.min(other.xaxis))):
-                        raise ValueError("The xaxis do not overlap so cannot"
-                                         " be interpolated")
-                else:
-                    o_copy = copy.copy(other)
-                    o_copy.interpolate_to(self)
-                    new_flux = self.flux + o_copy.flux
-        elif isinstance(other, (int, float, np.ndarray)):
-            new_flux = self.flux + other
-        else:
-            raise TypeError("Unexpected type {} given for"
-                            " addition".format(type(other)))
 
+        # Checks for type errors and size. It interpolates other if needed.
+        prepared_other = self._prepare_other(other)
+        new_flux = self.flux + prepared_other
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
 
