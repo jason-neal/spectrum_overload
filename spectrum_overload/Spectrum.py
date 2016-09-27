@@ -329,14 +329,19 @@ class Spectrum(object):
         # if len(other) > 1 :
         #    raise ValueError("Spectrum can only be raised to the power of
         # one number not {}".format(len(other)))
-        try:
-            new_flux = self.flux ** other
-            return Spectrum(flux=new_flux, xaxis=self.xaxis,
+        if isinstance(other, Spectrum):
+            raise TypeError("Can not preform Spectrum ** Spectrum")
+        elif isinstance(other, (int, float, np.ndarray)):
+            try:
+                new_flux = self.flux ** other
+                return Spectrum(flux=new_flux, xaxis=self.xaxis,
                             header=self.header, calibrated=self.calibrated)
+            except:
+                # Type error or value error are likely
+                raise
+        else:
+            raise TypeError("Unexpected type {} given for __pow__".format(type(other)))
 
-        except:
-            # Tpye error or value error are likely
-            raise
 
     def __len__(self):
         """ Return length of flux Spectrum"""
