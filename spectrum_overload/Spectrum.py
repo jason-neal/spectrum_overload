@@ -253,7 +253,8 @@ class Spectrum(object):
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux / other
         else:
-            raise TypeError("Unexpected type {} given for addition".format(type(other)))
+            raise TypeError("Unexpected type {} given for"
+                            " true division".format(type(other)))
 
         return Spectrum(flux=new_flux, xaxis=self.xaxis,
                         calibrated=self.calibrated)
@@ -273,7 +274,8 @@ class Spectrum(object):
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux + other
         else:
-            raise TypeError("Unexpected type {} given for addition".format(type(other)))
+            raise TypeError("Unexpected type {} given for"
+                            " addition".format(type(other)))
 
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
@@ -299,7 +301,8 @@ class Spectrum(object):
         elif isinstance(other, (int, float, np.ndarray)):
             new_flux = self.flux - other
         else:
-            raise TypeError("Unexpected type {} given for subtraction".format(type(other)))
+            raise TypeError("Unexpected type {} given for"
+                            " subtraction".format(type(other)))
 
         return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
@@ -335,13 +338,13 @@ class Spectrum(object):
             try:
                 new_flux = self.flux ** other
                 return Spectrum(flux=new_flux, xaxis=self.xaxis,
-                            header=self.header, calibrated=self.calibrated)
+                                header=self.header, calibrated=self.calibrated)
             except:
                 # Type error or value error are likely
                 raise
         else:
-            raise TypeError("Unexpected type {} given for __pow__".format(type(other)))
-
+            raise TypeError("Unexpected type {} given for"
+                            " __pow__".format(type(other)))
 
     def __len__(self):
         """ Return length of flux Spectrum"""
