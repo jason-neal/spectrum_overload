@@ -206,6 +206,15 @@ def test_x_calibration_works():
     assert np.allclose(spec.xaxis, np.asarray(x)*3)
 
 
+def test_cant_calibrate_calibrated_spectrum():
+    # Check that a calibrated spectra is not calibrated a second time
+    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], calibrated=True)
+
+    with pytest.raises(SpectrumError):
+        s.calibrate_with([5, 3, 2])
+    assert np.all(s.xaxis == np.array([1, 2, 3, 4]))
+
+
 def test_calibration_wavlength_only_positive():
     # Can't have a wavelenght of zero or negative.
     # So raise a SpectrumError before calibrating
