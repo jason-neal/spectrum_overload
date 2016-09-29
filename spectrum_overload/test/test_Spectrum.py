@@ -164,10 +164,15 @@ def test_wav_select_example():
 
 
 @given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1),
-       st.floats(), st.booleans())
-def test_doppler_shift_with_hypothesis(x, RV, calib):
+       st.floats(min_value=1e-8), st.booleans(), st.booleans())
+def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
     """Test doppler shift properties.
     Need to check values against pyastronomy separately """
+    
+    # Added a min value to RV shift to avoid very small RV values (1e-300).
+    # Have added a flag to change RV direction to explore negative values
+    rvdir = 2 * RV_dir - 1   # True -> 1 , False -> -1
+    RV = RV * rvdir
     x = np.asarray(x)
     y = np.random.random(len(x))
 
