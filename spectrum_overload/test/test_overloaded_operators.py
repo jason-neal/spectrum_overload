@@ -189,14 +189,14 @@ def test_overload_pow():
         spec1 ** spec2
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** [1]  # This should fail
+        spec1 ** [1]                # This should fail
     with pytest.raises(TypeError):
-        spec1 ** [1,2]  # This should fail also
+        spec1 ** [1, 2]              # This should fail also
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** (2,)  # This should fail as it is a tuple
+        spec1 ** (2,)               # This should fail as it is a tuple
     with pytest.raises(ValueError):
-        spec1 ** np.array([1, 2]) # too many values
+        spec1 ** np.array([1, 2])   # too many values
     # Should also test that something works
     spec4 = spec1 ** power
     assert np.all(spec4.flux == np.array([1, 4, 9, 16]))  # flux is squared
@@ -379,10 +379,10 @@ def test_truedivision_with_interpolation():
     # Difficult to get nans to equal so using isnan inverted
     d3notnan = np.invert(np.isnan(d3.flux))
     assert np.allclose(d3.flux[d3notnan],
-                       np.array([np.nan, 2, 1/2, 2, 1/2, 2])[d3notnan])
+                       np.array([np.nan, 2, .5, 2, .5, 2])[d3notnan])
     d4notnan = np.invert(np.isnan(d4.flux))
     assert np.allclose(d4.flux[d4notnan],
-                       np.array([1/2, 2, 1/2, 2, 1/2, np.nan, np.nan])[d4notnan])
+                       np.array([.5, 2, .5, 2, .5, np.nan, np.nan])[d4notnan])
     s5 = Spectrum([1, 2, 1, 2, 1], [50, 51, 52, 53, 54])
     # xaxis of both Spectrum do not overlap
     with pytest.raises(ValueError):
