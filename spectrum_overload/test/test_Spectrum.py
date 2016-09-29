@@ -291,4 +291,20 @@ def test_interpolation():
     # Need to write better tests!
 
 
+def test_interpolation_when_given_a_ndarray():
+
+    x1 = [1., 2., 3., 4., 5.]
+    y1 = [2., 4., 6., 8., 10]
+    x2 = [1.5, 2, 3.5, 4]
+    # y2 = [1., 2., 1., 2.]
+    S1 = Spectrum(y1, x1)
+    # S2 = Spectrum(y2, x2)
+    S_lin = copy.copy(S1)
+    S_lin.interpolate_to(np.asarray(x2), kind='linear')
+
+    assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
+    # test linear interpoation matches numpy interp
+    assert np.allclose(S_lin.flux, np.interp(x2, x1, y1))
+
+
 # test_doppler_shift_with_hypothesis()
