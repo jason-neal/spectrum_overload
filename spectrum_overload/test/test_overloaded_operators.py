@@ -465,3 +465,21 @@ def test_spectra_stay_the_same_after_operations():
     assert False    # Not implemented
 
 
+def test_xaxis_type_error_init_check():
+    # Test that passing None to xaxis when flux doesn't have a lenght
+    # results in just setting to None
+    s = Spectrum(np.nan, None)
+    assert s.xaxis is None
+    s.flux = [1, 1.1]   # has length
+    s.xaxis = None      # xaxis truns into range(len(s.flux))
+    assert s.xaxis is not None
+    print(s.xaxis)
+    assert np.all(s.xaxis == np.array([0, 1]))
+    s.flux = 1          # 1 has no length
+    s.xaxis = None
+    assert s.xaxis is None
+    s.flux = np.inf     # np.inf has no length
+    s.xaxis = None
+    assert s.xaxis is None
+
+
