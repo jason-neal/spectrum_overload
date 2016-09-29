@@ -503,3 +503,21 @@ def test_wave_selection_with_ill_defined_xaxis():
     assert np.all(s.xaxis == np.array([]))       # s Didn't change
 
 
+def test_zero_division():
+    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4])
+    t = Spectrum([1, 2, 0, 4], [1, 2, 3, 4])
+
+    divide = s / t
+    print(divide)
+    notnan = np.invert(np.isinf(divide.flux))
+    print(divide.flux[2])
+    assert np.isinf(divide.flux[2])
+    assert np.all(divide.flux[notnan] == [1, 1, 1])
+
+    div2 = s / 0
+    assert np.all(np.isinf(div2.flux))  # div by zero goes to np.inf
+    div3 = s / np.asarray(0)
+    assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
+    div4 = s / np.asarray([0])
+    assert np.all(np.isinf(div4.flux))  # div by zero goes to np.inf
+
