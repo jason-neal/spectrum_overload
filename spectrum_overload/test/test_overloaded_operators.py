@@ -457,8 +457,11 @@ def test_assignment_with_bad_types():
             Spectrum(test)
 
 
+@pytest.mark.xfail
 def test_spectra_stay_the_same_after_operations():
     """ After a operation of two spectra e.g. a/b both a and b should
     remaion the same unless specifcally defined such as a = a + b
     """
-    pass
+    assert False    # Not implemented
+
+
