@@ -317,13 +317,10 @@ class Spectrum(object):
         """
         # Checks for type errors and size. It interpolates other if needed.
         prepared_other = self._prepare_other(other)
-        try:
-            new_flux = self.flux / prepared_other
-        except ZeroDivisionError:
-            print("Warning some of the spectrum was zero. Replaced zeros with"
-                  " Nans to avoid ZeroDivisionError")
-            prepared_other[prepared_other == 0] = np.nan
-            new_flux = self.flux / prepared_other
+        # Divide by zero only gives a runtime warning with numpy
+        new_flux = self.flux / prepared_other
+        # May want to change the inf to something else, nan, 0?...
+        # new_flux[new_flux == np.inf] = np.nan
         return Spectrum(flux=new_flux, xaxis=self.xaxis,
                         calibrated=self.calibrated)
 
