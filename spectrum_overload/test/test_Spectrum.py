@@ -11,7 +11,7 @@ from pkg_resources import resource_filename
 # Add Spectrum location to path
 # sys.path.append('../')
 from spectrum_overload.Spectrum import Spectrum
-# from spectrum_overload.Spectrum import SpectrumError
+from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
 from hypothesis import given
@@ -204,6 +204,24 @@ def test_x_calibration_works():
 
     assert spec.calibrated
     assert np.allclose(spec.xaxis, np.asarray(x)*3)
+
+
+def test_calibration_wavlength_only_positive():
+    # Can't have a wavelenght of zero or negative.
+    # So raise a SpectrumError before calibrating
+    s = Spectrum([1, 2, 3, 4], [-4, -3, -2, -1])
+    with pytest.raises(SpectrumError):
+        s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
+    assert s.calibrated is False     # Check values stay the same
+    assert np.all(s.flux == np.array([1, 2, 3, 4]))
+    assert np.all(s.xaxis == np.array([-4, -3, -2, -1]))
+
+    s = Spectrum([1, 2, 3, 4], [0, 2, 3, 4])
+    with pytest.raises(SpectrumError):
+        s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
+    assert s.calibrated is False     # Check values stay the same
+    assert np.all(s.flux == np.array([1, 2, 3, 4]))
+    assert np.all(s.xaxis == np.array([0, 2, 3, 4]))
 
 
 def test_header_attribute():
