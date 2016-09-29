@@ -151,7 +151,7 @@ def test_truediv_with_number():
     number = 0.3
     flux_arr = np.array([1, 2, 3, 2.3, 4.5])
     spec1 = Spectrum(flux=flux_arr, xaxis=[1, 1.1, 1.2, 2.1, 4],
-                              calibrated=True)
+                     calibrated=True)
 
     spec_truediv = spec1 / number
 
@@ -189,14 +189,14 @@ def test_overload_pow():
         spec1 ** spec2
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** [1]  # This should fail
+        spec1 ** [1]                # This should fail
     with pytest.raises(TypeError):
-        spec1 ** [1,2]  # This should fail also
+        spec1 ** [1, 2]              # This should fail also
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** (2,)  # This should fail as it is a tuple
+        spec1 ** (2,)               # This should fail as it is a tuple
     with pytest.raises(ValueError):
-        spec1 ** np.array([1, 2]) # too many values
+        spec1 ** np.array([1, 2])   # too many values
     # Should also test that something works
     spec4 = spec1 ** power
     assert np.all(spec4.flux == np.array([1, 4, 9, 16]))  # flux is squared
@@ -379,10 +379,10 @@ def test_truedivision_with_interpolation():
     # Difficult to get nans to equal so using isnan inverted
     d3notnan = np.invert(np.isnan(d3.flux))
     assert np.allclose(d3.flux[d3notnan],
-                       np.array([np.nan, 2, 1/2, 2, 1/2, 2])[d3notnan])
+                       np.array([np.nan, 2, .5, 2, .5, 2])[d3notnan])
     d4notnan = np.invert(np.isnan(d4.flux))
     assert np.allclose(d4.flux[d4notnan],
-                       np.array([1/2, 2, 1/2, 2, 1/2, np.nan, np.nan])[d4notnan])
+                       np.array([.5, 2, .5, 2, .5, np.nan, np.nan])[d4notnan])
     s5 = Spectrum([1, 2, 1, 2, 1], [50, 51, 52, 53, 54])
     # xaxis of both Spectrum do not overlap
     with pytest.raises(ValueError):
@@ -457,8 +457,67 @@ def test_assignment_with_bad_types():
             Spectrum(test)
 
 
+@pytest.mark.xfail
 def test_spectra_stay_the_same_after_operations():
     """ After a operation of two spectra e.g. a/b both a and b should
     remaion the same unless specifcally defined such as a = a + b
     """
-    pass
+    assert False    # Not implemented
+
+
+def test_xaxis_type_error_init_check():
+    # Test that passing None to xaxis when flux doesn't have a lenght
+    # results in just setting to None
+    s = Spectrum(np.nan, None)
+    assert s.xaxis is None
+    s.flux = [1, 1.1]   # has length
+    s.xaxis = None      # xaxis truns into range(len(s.flux))
+    assert s.xaxis is not None
+    print(s.xaxis)
+    assert np.all(s.xaxis == np.array([0, 1]))
+    s.flux = 1          # 1 has no length
+    s.xaxis = None
+    assert s.xaxis is None
+    s.flux = np.inf     # np.inf has no length
+    s.xaxis = None
+    assert s.xaxis is None
+
+
+def test_wave_selection_with_ill_defined_xaxis():
+    # if xaxis is None
+    s = Spectrum()
+    s.flux = [1, 2, 3, 4, 3, 2, 1]
+    with pytest.raises(TypeError):
+        s.wav_select(1, 8)
+    # dealing when xaxis is empty []
+    s = Spectrum()
+    s.flux = []
+    s.xaxis = []
+    s.wav_select(1, 8)
+    assert np.all(s.flux == np.array([]))        # s Didn't change
+    assert np.all(s.xaxis == np.array([]))       # s Didn't change
+    new_flux = [1, 2, 3, 4]
+    s.flux = new_flux     # different flux but same xaxis
+    s.wav_select(1, 8)
+    assert np.all(s.flux == np.array(new_flux))  # s Didn't change
+    assert np.all(s.xaxis == np.array([]))       # s Didn't change
+
+
+def test_zero_division():
+    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4])
+    t = Spectrum([1, 2, 0, 4], [1, 2, 3, 4])
+
+    divide = s / t
+    print(divide)
+    notnan = np.invert(np.isinf(divide.flux))
+    print(divide.flux[2])
+    assert np.isinf(divide.flux[2])
+    assert np.all(divide.flux[notnan] == [1, 1, 1])
+
+    div2 = s / 0
+    assert np.all(np.isinf(div2.flux))  # div by zero goes to np.inf
+    div3 = s / np.asarray(0)
+    assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
+    div4 = s / np.asarray([0])
+    assert np.all(np.isinf(div4.flux))  # div by zero goes to np.inf
+
