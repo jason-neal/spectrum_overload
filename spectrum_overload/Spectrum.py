@@ -35,6 +35,7 @@ class Spectrum(object):
                 try:
                     self._xaxis = np.arange(len(flux))
                 except TypeError:
+                    print("TypeError caught becasue flux has no length")
                     self._xaxis = None
         else:
             self._xaxis = np.asarray(xaxis)  # Setter not used - need asarray
