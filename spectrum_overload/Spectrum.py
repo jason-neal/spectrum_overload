@@ -111,22 +111,26 @@ class Spectrum(object):
     def wav_select(self, wav_min, wav_max):
         """ Select the spectrum between wav_min and wav_max values
             Uses numpy slicing for high speed.
+
+            Note: This maight be better suited to return the new spectra
+            instead of direct replacement.
         """
         x_org = self.xaxis
         flux_org = self.flux
-        if len(self.xaxis) == 0:
-            print("No xaxis to select from")
-        else:
-            try:
+        try:
+            if len(self.xaxis) == 0:
+                print("Warning! Spectrum has an empty xaxis to select"
+                      " wavelengths from")
+            else:
                 mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
                 self.flux = self.flux[mask]    # change flux first
                 self.xaxis = self.xaxis[mask]
-            except TypeError:
-                print("Make sure your xaxis is an array")
-                # Return to original values
-                self.flux = flux_org           # change flux first
-                self.xaxis = x_org
-                raise
+        except TypeError:
+            print("Spectrum has no xaxis to select wavelength from")
+            # Return to original values iscase were changed
+            self.flux = flux_org           # Fix flux first
+            self.xaxis = x_org
+            raise
 
     def doppler_shift(self, RV):
         ''' Function to compute a wavelenght shift due to radial velocity
