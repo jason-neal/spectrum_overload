@@ -182,7 +182,7 @@ class Spectrum(object):
                 self.xaxis = wavelength
                 self.calibrated = True  # Set calibrated Flag
 
-    def interpolate_to(self, reference, kind="cubic", bounds_error=False,
+    def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
                        fill_value=np.nan):
         """Interpolate wavelength solution to the  reference wavelength.
         Using scipy interpolation so the optional parameters are passed to
@@ -223,7 +223,9 @@ class Spectrum(object):
         extrapolated. (“nearest” and “linear” kinds only.)
 
         """
-
+        if kind == 'cubic':
+            print("Warning! Cubic spline interpolation with interp1d can cause"
+                  " memory errors and crashes")
         # Create scipy interpolation function from self
         interp_function = interp1d(self.xaxis, self.flux, kind=kind,
                                    fill_value=fill_value,
@@ -389,7 +391,7 @@ class Spectrum(object):
                                      " be interpolated")
                 else:
                     other_copy = copy.copy(other)
-                    other_copy.interpolate_to(self)
+                    #other_copy.interpolate_to(self)
                     return other_copy.flux
         elif isinstance(other, (int, float, np.ndarray)):
             return copy.copy(other)
