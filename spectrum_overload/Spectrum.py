@@ -135,7 +135,7 @@ class Spectrum(object):
             raise
 
     def doppler_shift(self, RV):
-        ''' Function to compute a wavelenght shift due to radial velocity
+        ''' Function to compute a wavelength shift due to radial velocity
         using RV / c = delta_lambda/lambda
         RV - radial velocity (in km/s)
         lambda_rest - rest wavelenght of the spectral line
