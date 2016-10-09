@@ -273,7 +273,7 @@ def test_interpolation():
     S1 = Spectrum(y1, x1)
     S2 = Spectrum(y2, x2)
     S_lin = copy.copy(S1)
-    S_lin.interpolate_to(S2, kind='linear')
+    S_lin.interpolate1d_to(S2, kind='cubic')
 
     assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
     # test linear interpoation matches numpy interp
@@ -281,25 +281,24 @@ def test_interpolation():
 
     S_same = copy.copy(S1)
     # Interpolation to itself should be the same
-    S_same.interpolate_to(S1)
+    S_same.interpolate1d_to(S1)
     assert np.allclose(S_same.flux, S1.flux)
     assert np.allclose(S_same.xaxis, S1.xaxis)
 
     # Need to test that if boundserror is True a ValueError is raised
     with pytest.raises(ValueError):
-        S2.interpolate_to(S1, bounds_error=True)
+        S2.interpolate1d_to(S1, bounds_error=True)
     with pytest.raises(ValueError):
-        S2.interpolate_to(S1, kind='linear', bounds_error=True)
+        S2.interpolate1d_to(S1, kind='cubic', bounds_error=True)
     with pytest.raises(TypeError):
-        S2.interpolate_to(x1, bounds_error=True)
+        S2.interpolate1d_to(x1, bounds_error=True)
     with pytest.raises(ValueError):
-        S2.interpolate_to(np.asarray(x1), bounds_error=True)
+        S2.interpolate1d_to(np.asarray(x1), bounds_error=True)
     with pytest.raises(TypeError):
-        S2.interpolate_to([1, 2, 3, 4])
+        S2.interpolate1d_to([1, 2, 3, 4])
     with pytest.raises(TypeError):
-        S2.interpolate_to("string")
+        S2.interpolate1d_to("string")
     # Need to write better tests!
-
 
 def test_interpolation_when_given_a_ndarray():
 
@@ -310,7 +309,12 @@ def test_interpolation_when_given_a_ndarray():
     S1 = Spectrum(y1, x1)
     # S2 = Spectrum(y2, x2)
     S_lin = copy.copy(S1)
-    S_lin.interpolate_to(np.asarray(x2), kind='linear')
+    S_lin.interpolate1d_to(np.asarray(x2), kind='linear')
+
+    assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
+    # test linear interpoation matches numpy interp
+    assert np.allclose(S_lin.flux, np.interp(x2, x1, y1))
+
 
     assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
     # test linear interpoation matches numpy interp
