@@ -14,7 +14,7 @@ from spectrum_overload.Spectrum import Spectrum
 from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
-from hypothesis import given
+from hypothesis import given, example
 import hypothesis.strategies as st
 
 
@@ -163,9 +163,10 @@ def test_wav_select_example():
     # spec2 = spec.wav_selector()
 
 
-@given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1),
-       st.floats(min_value=1e-8), st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
+@given(st.lists(st.floats(min_value=1e-5, allow_infinity=False), min_size=1),
+       st.floats(min_value=1e-6), st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
        st.booleans())
+@example([1000,2002,2003,2004], 1e-8, 1, 1)
 def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
     """Test doppler shift properties.
     Need to check values against pyastronomy separately 
