@@ -247,7 +247,7 @@ class Spectrum(object):
                             " {}".format(type(reference)))
 
     def spline_interpolate_to(self, reference, w=None, bbox=[None,None], k=3,
-                              ext=0, check_finite=False):
+                              ext=0, check_finite=False, bounds_error=False):
         """Interpolate wavelength solution to the reference wavelength using 
         InterpolatedUnivariateSpline.
         Using scipy interpolation so the optional parameters are passed to
@@ -309,10 +309,19 @@ class Spectrum(object):
         # Determine the flux at the new locations given by reference
         if isinstance(reference, Spectrum):      # Spectrum type
             new_flux = interp_spline(reference.xaxis)
+            self_mask = (reference.xaxis < np.min(self.xaxis)) | (reference.xaxis > np.max(self.xaxis))
+            if np.any(self_mask) & bounds_error:
+                raise ValueError("A value in reference.xaxis is outside the interpolation range.")
+            print(reference.xaxis, self.xaxis)
+            new_flux[self_mask] = np.nan
             self.flux = new_flux                 # Flux needs to change first
             self.xaxis = reference.xaxis
         elif isinstance(reference, np.ndarray):  # Numpy type
             new_flux = interp_spline(reference)
+            self_mask = (reference < np.min(self.xaxis)) | (reference > np.max(self.xaxis))
+            if np.any(self_mask) & bounds_error:
+                raise ValueError("A value in reference is outside the interpolation range.")
+            new_flux[self_mask] = np.nan
             self.flux = new_flux                 # Flux needs to change first
             self.xaxis = reference
         else:
