@@ -14,7 +14,7 @@ from spectrum_overload.Spectrum import Spectrum
 from spectrum_overload.Spectrum import SpectrumError
 
 # Test using hypothesis
-from hypothesis import given
+from hypothesis import given, example
 import hypothesis.strategies as st
 
 
@@ -163,9 +163,10 @@ def test_wav_select_example():
     # spec2 = spec.wav_selector()
 
 
-@given(st.lists(st.floats(min_value=1e-6, allow_infinity=False), min_size=1),
-       st.floats(min_value=1e-8), st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
+@given(st.lists(st.floats(min_value=1e-5, allow_infinity=False), min_size=1),
+       st.floats(min_value=1e-6), st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
        st.booleans())
+@example([1000,2002,2003,2004], 1e-8, 1, 1)
 def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
     """Test doppler shift properties.
     Need to check values against pyastronomy separately 
@@ -272,7 +273,7 @@ def test_interpolation():
     S1 = Spectrum(y1, x1)
     S2 = Spectrum(y2, x2)
     S_lin = copy.copy(S1)
-    S_lin.interpolate_to(S2, kind='linear')
+    S_lin.interpolate1d_to(S2, kind='cubic')
 
     assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
     # test linear interpoation matches numpy interp
@@ -280,25 +281,24 @@ def test_interpolation():
 
     S_same = copy.copy(S1)
     # Interpolation to itself should be the same
-    S_same.interpolate_to(S1)
+    S_same.interpolate1d_to(S1)
     assert np.allclose(S_same.flux, S1.flux)
     assert np.allclose(S_same.xaxis, S1.xaxis)
 
     # Need to test that if boundserror is True a ValueError is raised
     with pytest.raises(ValueError):
-        S2.interpolate_to(S1, bounds_error=True)
+        S2.interpolate1d_to(S1, bounds_error=True)
     with pytest.raises(ValueError):
-        S2.interpolate_to(S1, kind='linear', bounds_error=True)
+        S2.interpolate1d_to(S1, kind='cubic', bounds_error=True)
     with pytest.raises(TypeError):
-        S2.interpolate_to(x1, bounds_error=True)
+        S2.interpolate1d_to(x1, bounds_error=True)
     with pytest.raises(ValueError):
-        S2.interpolate_to(np.asarray(x1), bounds_error=True)
+        S2.interpolate1d_to(np.asarray(x1), bounds_error=True)
     with pytest.raises(TypeError):
-        S2.interpolate_to([1, 2, 3, 4])
+        S2.interpolate1d_to([1, 2, 3, 4])
     with pytest.raises(TypeError):
-        S2.interpolate_to("string")
+        S2.interpolate1d_to("string")
     # Need to write better tests!
-
 
 def test_interpolation_when_given_a_ndarray():
 
@@ -309,7 +309,61 @@ def test_interpolation_when_given_a_ndarray():
     S1 = Spectrum(y1, x1)
     # S2 = Spectrum(y2, x2)
     S_lin = copy.copy(S1)
-    S_lin.interpolate_to(np.asarray(x2), kind='linear')
+    S_lin.interpolate1d_to(np.asarray(x2), kind='linear')
+
+    assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
+    # test linear interpoation matches numpy interp
+    assert np.allclose(S_lin.flux, np.interp(x2, x1, y1))
+
+def test_sline_interpolation():
+    # Test the interpolation function some how
+    # simple examples?
+    # simple linear case
+    x1 = [1., 2., 3., 4., 5.]
+    y1 = [2., 4., 6., 8., 10]
+    x2 = [1.5, 2, 3.5, 4]
+    y2 = [1., 2., 1., 2.]
+    S1 = Spectrum(y1, x1)
+    S2 = Spectrum(y2, x2)
+    S_lin = copy.copy(S1)
+    S_lin.spline_interpolate_to(S2, k=1)
+
+    assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
+    # test linear interpoation matches numpy interp
+    assert np.allclose(S_lin.flux, np.interp(x2, x1, y1))
+
+    S_same = copy.copy(S1)
+    # Interpolation to itself should be the same
+    S_same.spline_interpolate_to(S1)
+    assert np.allclose(S_same.flux, S1.flux)
+    assert np.allclose(S_same.xaxis, S1.xaxis)
+
+    # Need to test that if boundserror is True a ValueError is raised
+    with pytest.raises(ValueError):
+        S2.spline_interpolate_to(S1, bounds_error=True)
+    with pytest.raises(ValueError):
+        S2.spline_interpolate_to(S1, k=1, bounds_error=True)
+    with pytest.raises(TypeError):
+        S2.spline_interpolate_to(x1, bounds_error=True)
+    with pytest.raises(ValueError):
+        S2.spline_interpolate_to(np.asarray(x1), bounds_error=True)
+    with pytest.raises(TypeError):
+        S2.spline_interpolate_to([1, 2, 3, 4])
+    with pytest.raises(TypeError):
+        S2.spline_interpolate_to("string")
+    # Need to write better tests! 
+    # These are a direct copy of other interpolation test
+
+def test_spline_interpolation_when_given_a_ndarray():
+
+    x1 = [1., 2., 3., 4., 5.]
+    y1 = [2., 4., 6., 8., 10]
+    x2 = [1.5, 2, 3.5, 4]
+    # y2 = [1., 2., 1., 2.]
+    S1 = Spectrum(y1, x1)
+    # S2 = Spectrum(y2, x2)
+    S_lin = copy.copy(S1)
+    S_lin.spline_interpolate_to(np.asarray(x2), k=1)
 
     assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
     # test linear interpoation matches numpy interp

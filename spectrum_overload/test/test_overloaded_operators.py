@@ -20,9 +20,6 @@ import hypothesis.strategies as st
 #    Overloading Operators
 #######################################################
 
-# Try just with integers
-
-
 @given(st.lists(st.integers(min_value=-100000, max_value=100000), min_size=1),
        st.integers(min_value=-1000000, max_value=1000000),
        st.integers(min_value=-1000000, max_value=1000000), st.booleans())

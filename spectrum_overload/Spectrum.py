@@ -3,6 +3,7 @@ from __future__ import print_function, division
 import numpy as np
 import copy
 from scipy.interpolate import interp1d
+from scipy.interpolate import InterpolatedUnivariateSpline
 # Spectrum Class
 
 # Begun August 2016
@@ -134,7 +135,7 @@ class Spectrum(object):
             raise
 
     def doppler_shift(self, RV):
-        ''' Function to compute a wavelenght shift due to radial velocity
+        ''' Function to compute a wavelength shift due to radial velocity
         using RV / c = delta_lambda/lambda
         RV - radial velocity (in km/s)
         lambda_rest - rest wavelenght of the spectral line
@@ -182,7 +183,7 @@ class Spectrum(object):
                 self.xaxis = wavelength
                 self.calibrated = True  # Set calibrated Flag
 
-    def interpolate_to(self, reference, kind="cubic", bounds_error=False,
+    def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
                        fill_value=np.nan):
         """Interpolate wavelength solution to the  reference wavelength.
         Using scipy interpolation so the optional parameters are passed to
@@ -223,7 +224,9 @@ class Spectrum(object):
         extrapolated. (“nearest” and “linear” kinds only.)
 
         """
-
+        if kind == 'cubic':
+            print("Warning! Cubic spline interpolation with interp1d can cause"
+                  " memory errors and crashes")
         # Create scipy interpolation function from self
         interp_function = interp1d(self.xaxis, self.flux, kind=kind,
                                    fill_value=fill_value,
@@ -243,7 +246,91 @@ class Spectrum(object):
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
 
-    # ###################R##################################
+    def spline_interpolate_to(self, reference, w=None, bbox=[None,None], k=3,
+                              ext=0, check_finite=False, bounds_error=False):
+        """Interpolate wavelength solution to the reference wavelength using 
+        InterpolatedUnivariateSpline.
+        Using scipy interpolation so the optional parameters are passed to
+        scipy.
+        See scipy.interolate.InterpolatedUnivariateSpline for more details
+        https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.InterpolatedUnivariateSpline.html#scipy.interpolate.InterpolatedUnivariateSpline
+        
+        Documentation copied from Sicpy:
+        One-dimensional interpolating spline for a given set of data points.
+
+        Fits a spline y = spl(x) of degree k to the provided x, y data. Spline
+        function passes through all provided points. Equivalent to
+        UnivariateSpline with s=0.
+        Parameters: 
+        x : (N,) array_like
+        Input dimension of data points – must be increasing
+
+        y : (N,) array_like
+        input dimension of data points
+
+        w : (N,) array_like, optional
+        Weights for spline fitting. Must be positive. If None (default),
+        weights are all equal.
+
+        bbox : (2,) array_like, optional
+        2-sequence specifying the boundary of the approximation interval.
+        If None (default), bbox=[x[0], x[-1]].
+
+        k : int, optional
+        Degree of the smoothing spline. Must be 1 <= k <= 5.
+
+        ext : int or str, optional
+        Controls the extrapolation mode for elements not in the interval
+        defined by the knot sequence.
+            if ext=0 or ‘extrapolate’, return the extrapolated value.
+            if ext=1 or ‘zeros’, return 0
+            if ext=2 or ‘raise’, raise a ValueError
+            if ext=3 of ‘const’, return the boundary value.
+        The default value is 0.
+    
+        check_finite : bool, optional
+        Whether to check that the input arrays contain only finite numbers.
+        Disabling may give a performance gain, but may result in problems
+        (crashes, non-termination or non-sensical results) if the inputs do
+        contain infinities or NaNs. Default is False.
+
+        """
+
+        # Create scipy interpolation function from self
+        interp_spline = InterpolatedUnivariateSpline(self.xaxis, self.flux,
+                                                     w=w, bbox=bbox, k=k,
+                                                     ext=ext,
+                                                     check_finite=False)
+
+        #interp_function = interp1d(self.xaxis, self.flux, kind=kind,
+        #                           fill_value=fill_value,
+        #                           bounds_error=bounds_error)
+
+        # Determine the flux at the new locations given by reference
+        if isinstance(reference, Spectrum):      # Spectrum type
+            new_flux = interp_spline(reference.xaxis)
+            self_mask = (reference.xaxis < np.min(self.xaxis)) | (reference.xaxis > np.max(self.xaxis))
+            if np.any(self_mask) & bounds_error:
+                raise ValueError("A value in reference.xaxis is outside the interpolation range.")
+            print(reference.xaxis, self.xaxis)
+            new_flux[self_mask] = np.nan
+            self.flux = new_flux                 # Flux needs to change first
+            self.xaxis = reference.xaxis
+        elif isinstance(reference, np.ndarray):  # Numpy type
+            new_flux = interp_spline(reference)
+            self_mask = (reference < np.min(self.xaxis)) | (reference > np.max(self.xaxis))
+            if np.any(self_mask) & bounds_error:
+                raise ValueError("A value in reference is outside the interpolation range.")
+            new_flux[self_mask] = np.nan
+            self.flux = new_flux                 # Flux needs to change first
+            self.xaxis = reference
+        else:
+            # print("Interpolate was not give a valid type")
+            raise TypeError("Cannot interpolate with the given object of type"
+                            " {}".format(type(reference)))
+
+
+    # ######################################################
     # Overloading Operators
     # ######################################################
 
@@ -389,7 +476,8 @@ class Spectrum(object):
                                      " be interpolated")
                 else:
                     other_copy = copy.copy(other)
-                    other_copy.interpolate_to(self)
+                    #other_copy.interpolate_to(self)
+                    other_copy.spline_interpolate_to(self)
                     return other_copy.flux
         elif isinstance(other, (int, float, np.ndarray)):
             return copy.copy(other)
