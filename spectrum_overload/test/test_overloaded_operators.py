@@ -2,6 +2,7 @@
 
 from __future__ import division, print_function
 import pytest
+import copy
 import numpy as np
 # from astropy.io import fits
 # from pkg_resources import resource_filename
@@ -18,9 +19,6 @@ import hypothesis.strategies as st
 #######################################################
 #    Overloading Operators
 #######################################################
-
-# Try just with integers
-
 
 @given(st.lists(st.integers(min_value=-100000, max_value=100000), min_size=1),
        st.integers(min_value=-1000000, max_value=1000000),
@@ -150,7 +148,7 @@ def test_truediv_with_number():
     number = 0.3
     flux_arr = np.array([1, 2, 3, 2.3, 4.5])
     spec1 = Spectrum(flux=flux_arr, xaxis=[1, 1.1, 1.2, 2.1, 4],
-                              calibrated=True)
+                     calibrated=True)
 
     spec_truediv = spec1 / number
 
@@ -186,10 +184,16 @@ def test_overload_pow():
     # Can test when things are not suposed to work :)
     with pytest.raises(TypeError):
         spec1 ** spec2
+    with pytest.raises(TypeError):
+        # Does not accept lists
+        spec1 ** [1]                # This should fail
+    with pytest.raises(TypeError):
+        spec1 ** [1, 2]              # This should fail also
+    with pytest.raises(TypeError):
+        # Does not accept lists
+        spec1 ** (2,)               # This should fail as it is a tuple
     with pytest.raises(ValueError):
-        spec1 ** [1, 2]  # This should fail
-    with pytest.raises(ValueError):
-        spec1 ** np.array([1, 2])
+        spec1 ** np.array([1, 2])   # too many values
     # Should also test that something works
     spec4 = spec1 ** power
     assert np.all(spec4.flux == np.array([1, 4, 9, 16]))  # flux is squared
@@ -246,3 +250,271 @@ def test_abs_operator():
     abs_spec2 = abs(abs_spec)
     assert np.all(abs_spec.flux == np.array([1, 2, 3.2, 4]))
     assert np.all(abs_spec.flux == abs_spec2.flux)
+
+
+# @pytest.mark.xfail
+def test_addition_with_interpolation():
+    s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
+    x = np.array([1, 5, 7, 8, 12])
+    s2 = Spectrum([1, 2, 1, 2, 1], x)
+    d1 = s1 + s2
+    d2 = s2 + s1
+    assert np.all(d2.xaxis == x)  # d has axis of t
+    assert np.all(d1.xaxis == s1.xaxis)
+    assert np.all(d2.xaxis == s2.xaxis)
+    assert len(d1) != len(d2)   # due to different length of s1 and s2
+
+    # Values in one that are outside range are filled with nans
+    s3 = Spectrum([1, 3, 1, 2, 3, 2], [3, 4, 5, 6, 7, 8])
+    s4 = Spectrum([1, 2, 1, 2, 1, 2, 1], [4, 5, 6, 7, 8, 9, 10])
+    d3 = s3 + s4
+    d4 = s4 + s3
+    assert np.all(d3.xaxis == s3.xaxis)
+    assert np.all(d4.xaxis == s4.xaxis)
+    # Difficult to get nans to equal so using isnan inverted
+    d3notnan = np.invert(np.isnan(d3.flux))
+    assert np.allclose(d3.flux[d3notnan],
+                       np.array([np.nan, 4, 3, 3, 5, 3])[d3notnan])
+    d4notnan = np.invert(np.isnan(d4.flux))
+    assert np.allclose(d4.flux[d4notnan],
+                       np.array([4, 3, 3, 5, 3, np.nan, np.nan])[d4notnan])
+    s5 = Spectrum([1, 2, 1, 2, 1], [50, 51, 52, 53, 54])
+    # xaxis of both Spectrum do not overlap
+    with pytest.raises(ValueError):
+        s5 + s1
+    with pytest.raises(ValueError):
+        s1 + s5
+
+
+    # @pytest.mark.xfail
+def test_subtraction_with_interpolation():
+    s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
+    x = np.array([1, 5, 7, 8, 12])
+    s2 = Spectrum([1, 2, 1, 2, 1], x)
+    d1 = s1 - s2
+    d2 = s2 - s1
+    assert np.all(d2.xaxis == x)  # d has axis of t
+    assert np.all(d1.xaxis == s1.xaxis)
+    assert np.all(d2.xaxis == s2.xaxis)
+    assert len(d1) != len(d2)   # due to different length of s1 and s2
+
+    # Values in one that are outside range are filled with nans
+    s3 = Spectrum([1, 2, 1, 2, 1, 2], [3, 4, 5, 6, 7, 8])
+    s4 = Spectrum([1, 2, 1, 2, 1, 2, 1], [4, 5, 6, 7, 8, 9, 10])
+    d3 = s3 - s4
+    d4 = s4 - s3
+    assert np.all(d3.xaxis == s3.xaxis)
+    assert np.all(d4.xaxis == s4.xaxis)
+    # Difficult to get nans to equal so using isnan inverted
+    d3notnan = np.invert(np.isnan(d3.flux))
+    assert np.allclose(d3.flux[d3notnan],
+                       np.array([np.nan, 1, -1, 1, -1, 1])[d3notnan])
+    d4notnan = np.invert(np.isnan(d4.flux))
+    assert np.allclose(d4.flux[d4notnan],
+                       np.array([-1, 1, -1, 1, -1, np.nan, np.nan])[d4notnan])
+    s5 = Spectrum([1, 2, 1, 2, 1], [50, 51, 52, 53, 54])
+    # xaxis of both Spectrum do not overlap
+    with pytest.raises(ValueError):
+        s5 - s1
+    with pytest.raises(ValueError):
+        s1 - s5
+
+
+    # @pytest.mark.xfail
+def test_multiplication_with_interpolation():
+    s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
+    x = np.array([1, 5, 7, 8, 12])
+    s2 = Spectrum([1, 2, 1, 2, 1], x)
+    d1 = s1 * s2
+    d2 = s2 * s1
+    assert np.all(d2.xaxis == x)  # d has axis of t
+    assert np.all(d1.xaxis == s1.xaxis)
+    assert np.all(d2.xaxis == s2.xaxis)
+    assert len(d1) != len(d2)   # due to different length of s1 and s2
+
+    # Values in one that are outside range are filled with nans
+    s3 = Spectrum([1, 3, 1, 2, 3, 2], [3, 4, 5, 6, 7, 8])
+    s4 = Spectrum([1, 2, 1, 2, 1, 2, 1], [4, 5, 6, 7, 8, 9, 10])
+    d3 = s3 * s4
+    d4 = s4 * s3
+    assert np.all(d3.xaxis == s3.xaxis)
+    assert np.all(d4.xaxis == s4.xaxis)
+    # Difficult to get nans to equal so using isnan inverted
+    d3notnan = np.invert(np.isnan(d3.flux))
+    assert np.allclose(d3.flux[d3notnan],
+                       np.array([np.nan, 3, 2, 2, 6, 2])[d3notnan])
+    d4notnan = np.invert(np.isnan(d4.flux))
+    assert np.allclose(d4.flux[d4notnan],
+                       np.array([3, 2, 2, 6, 2, np.nan, np.nan])[d4notnan])
+    s5 = Spectrum([1, 2, 1, 2, 1], [50, 51, 52, 53, 54])
+    # xaxis of both Spectrum do not overlap
+    with pytest.raises(ValueError):
+        s5 * s1
+    with pytest.raises(ValueError):
+        s1 * s5
+
+
+# @pytest.mark.xfail
+def test_truedivision_with_interpolation():
+    s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
+    x = np.array([1, 5, 7, 8, 12])
+    s2 = Spectrum([1, 2, 1, 2, 1], x)
+    d1 = s1 / s2
+    d2 = s2 / s1
+    assert np.all(d2.xaxis == x)  # d has axis of t
+    assert np.all(d1.xaxis == s1.xaxis)
+    assert np.all(d2.xaxis == s2.xaxis)
+    assert len(d1) != len(d2)   # due to different length of s1 and s2
+
+    # Values in one that are outside range are filled with nans
+    s3 = Spectrum([1, 2, 1, 2, 1, 2], [3, 4, 5, 6, 7, 8])
+    s4 = Spectrum([1, 2, 1, 2, 1, 2, 1], [4, 5, 6, 7, 8, 9, 10])
+    d3 = s3 / s4
+    d4 = s4 / s3
+    assert np.all(d3.xaxis == s3.xaxis)
+    assert np.all(d4.xaxis == s4.xaxis)
+    # Difficult to get nans to equal so using isnan inverted
+    d3notnan = np.invert(np.isnan(d3.flux))
+    assert np.allclose(d3.flux[d3notnan],
+                       np.array([np.nan, 2, .5, 2, .5, 2])[d3notnan])
+    d4notnan = np.invert(np.isnan(d4.flux))
+    assert np.allclose(d4.flux[d4notnan],
+                       np.array([.5, 2, .5, 2, .5, np.nan, np.nan])[d4notnan])
+    s5 = Spectrum([1, 2, 1, 2, 1], [50, 51, 52, 53, 54])
+    # xaxis of both Spectrum do not overlap
+    with pytest.raises(ValueError):
+        s5 / s1
+    with pytest.raises(ValueError):
+        s1 / s5
+
+# Commented out as these are now Implemented
+# @pytest.mark.xfail
+# def test_NotImplemented_in_operators_works_atm():
+    # s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
+    # t = Spectrum([1, 2, 1, 2], [3, 5, 7, 8])
+    # Outside bounds
+    # with pytest.raises(NotImplementedError):
+    #     s + t
+    # with pytest.raises(NotImplementedError):
+    #    d = s - t
+    # with pytest.raises(NotImplementedError):
+    #     s / t
+    # with pytest.raises(NotImplementedError):
+    #     s * t
+
+
+# @pytest.mark.xfail
+def test_valueerror_when_spectra_dont_overlap():
+    s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
+    u = Spectrum([1, 2, 1, 2], [50, 51, 52, 53])
+
+    with pytest.raises(ValueError):
+        s + u
+    with pytest.raises(ValueError):
+        s - u
+    with pytest.raises(ValueError):
+        s / u
+    with pytest.raises(ValueError):
+        s * u
+
+
+def test_operators_with_bad_types():
+    s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
+    test_str = "Test String"
+    test_list = [1, 2, 3, 4, 5]
+    test_list2 = [2, 3, "4"]
+    test_tup = (1, 2, "3")
+    test_dict = {"1": 1, "2": 2, "3": 3}
+    test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
+    tests = [test_str, test_list, test_list2, test_tup, test_dict, test_set]
+    for test in tests:
+        with pytest.raises(TypeError):
+            s + test
+        with pytest.raises(TypeError):
+            s - test
+        with pytest.raises(TypeError):
+            s * test
+        with pytest.raises(TypeError):
+            s / test
+
+
+@pytest.mark.xfail
+def test_assignment_with_bad_types():
+    # Need to improve checking of what can pass into spectrum
+    test_str = "Test String"
+    test_tup = (1, 2, "3")
+    test_dict = {"1": 1, "2": 2, "3": 3}
+    test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
+    tests = [test_str, test_tup, test_dict, test_set]
+    for test in tests:
+        # print(test)
+        with pytest.raises(TypeError):
+            Spectrum(None, test)
+        with pytest.raises(TypeError):
+            Spectrum(test)
+
+
+@pytest.mark.xfail
+def test_spectra_stay_the_same_after_operations():
+    """ After a operation of two spectra e.g. a/b both a and b should
+    remaion the same unless specifcally defined such as a = a + b
+    """
+    assert False    # Not implemented
+
+
+def test_xaxis_type_error_init_check():
+    # Test that passing None to xaxis when flux doesn't have a lenght
+    # results in just setting to None
+    s = Spectrum(np.nan, None)
+    assert s.xaxis is None
+    s.flux = [1, 1.1]   # has length
+    s.xaxis = None      # xaxis truns into range(len(s.flux))
+    assert s.xaxis is not None
+    print(s.xaxis)
+    assert np.all(s.xaxis == np.array([0, 1]))
+    s.flux = 1          # 1 has no length
+    s.xaxis = None
+    assert s.xaxis is None
+    s.flux = np.inf     # np.inf has no length
+    s.xaxis = None
+    assert s.xaxis is None
+
+
+def test_wave_selection_with_ill_defined_xaxis():
+    # if xaxis is None
+    s = Spectrum()
+    s.flux = [1, 2, 3, 4, 3, 2, 1]
+    with pytest.raises(TypeError):
+        s.wav_select(1, 8)
+    # dealing when xaxis is empty []
+    s = Spectrum()
+    s.flux = []
+    s.xaxis = []
+    s.wav_select(1, 8)
+    assert np.all(s.flux == np.array([]))        # s Didn't change
+    assert np.all(s.xaxis == np.array([]))       # s Didn't change
+    new_flux = [1, 2, 3, 4]
+    s.flux = new_flux     # different flux but same xaxis
+    s.wav_select(1, 8)
+    assert np.all(s.flux == np.array(new_flux))  # s Didn't change
+    assert np.all(s.xaxis == np.array([]))       # s Didn't change
+
+
+def test_zero_division():
+    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4])
+    t = Spectrum([1, 2, 0, 4], [1, 2, 3, 4])
+
+    divide = s / t
+    print(divide)
+    notnan = np.invert(np.isinf(divide.flux))
+    print(divide.flux[2])
+    assert np.isinf(divide.flux[2])
+    assert np.all(divide.flux[notnan] == [1, 1, 1])
+
+    div2 = s / 0
+    assert np.all(np.isinf(div2.flux))  # div by zero goes to np.inf
+    div3 = s / np.asarray(0)
+    assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
+    div4 = s / np.asarray([0])
+    assert np.all(np.isinf(div4.flux))  # div by zero goes to np.inf
+
