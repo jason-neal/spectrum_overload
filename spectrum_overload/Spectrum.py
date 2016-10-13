@@ -1,9 +1,11 @@
 #!/usr/bin/python
+
 from __future__ import print_function, division
 import numpy as np
 import copy
 from scipy.interpolate import interp1d
 from scipy.interpolate import InterpolatedUnivariateSpline
+
 # Spectrum Class
 
 # Begun August 2016
@@ -11,10 +13,37 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 
 
 class Spectrum(object):
-    """ Spectrum class represents and manipulates astronomical spectra. """
+    """ Spectrum class to represent and manipulate astronomical spectra.
+
+    Attributes
+    ----------
+    xaxis (np.ndarray)
+        The wavlength or pixel position values.
+    flux (np.ndarray, array-like, list
+        The extracted flux (measured intesity of light)
+    calibrated : bool
+        Flag to indicate calibration state.
+    header : astropy.Header, dict
+        Header information of observation.
+
+    Methods
+    -------
+    wav_select:
+    calibrate_with:
+    doopler_shift:
+    length_check:
+    interpolate1d_to:
+    spline_interpolate_to:
+
+    Notes
+    -----
+    pass
+
+    """
 
     def __init__(self, flux=None, xaxis=None, calibrated=False, header=None):
         """ Initalise a Spectrum object """
+
         # Some checks before creating class
         if isinstance(flux, str):
             raise TypeError("Cannot assign {} to the flux attribute".format(
