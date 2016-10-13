@@ -490,4 +490,7 @@ class Spectrum(object):
 
 
 class SpectrumError(Exception):
+    """ Spectrum Error class to raise special errors
+
+    """
     pass
