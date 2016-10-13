@@ -5,7 +5,6 @@ The purpose of this was project was to learn how to use and create Classes, and 
 
 The main goals of this project are basically complete.
 
-Variables pixel, flux, wavelength
 - create a class to contain spectrum
 - automatic interpolation 
 - overloaded operators
@@ -14,9 +13,20 @@ especially
 - Spectral subtraction (SpectrumA - SpectrumB)
 - Powers/exponents (Spectrum ** x)
 
+## Installation
+Currently to install and use Spectrum class for your own projects.
 
+clone the git repository where you want it:
+  
+    https://github.com/jason-neal/spectrum_overload.git
 
+cd into the downloaded directory:
 
+    cd spectrum_overload
+
+and install using:
+
+    python setup.py install
 
 
 
