@@ -488,13 +488,6 @@ class Spectrum(object):
         else:
             raise TypeError("Unexpected type {} given".format(type(other)))
 
-# TO DO !
-# --------------------
-# Add an interpolation
-# Incorporate interpolation into all overloaded operators
-
-# Setter /getter for xaxis and flux to turn into np.asarrays
-
 
 class SpectrumError(Exception):
     pass
