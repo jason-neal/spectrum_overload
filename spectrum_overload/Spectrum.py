@@ -140,11 +140,26 @@ class Spectrum(object):
             raise ValueError("The length of xaxis and flux must be the same")
 
     def wav_select(self, wav_min, wav_max):
-        """ Select the spectrum between wav_min and wav_max values
-            Uses numpy slicing for high speed.
+        """ Select part of the spectrum between the given wavelength bounds.
 
-            Note: This maight be better suited to return the new spectra
-            instead of direct replacement.
+        Parameters
+        ----------
+        wav_min : float
+            Lower wavelength bound
+        wav_max : float
+            Upper wavelength bound
+
+        Returns
+        -------
+        None:
+            Acts on self
+
+        Notes
+        -----
+        This might be better suited to return the new spectra
+        instead of direct replacement.
+        This uses uses numpy slicing for high speed.
+
         """
         x_org = self.xaxis
         flux_org = self.flux
