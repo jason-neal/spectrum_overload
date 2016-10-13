@@ -302,25 +302,27 @@ class Spectrum(object):
                                                      ext=ext,
                                                      check_finite=False)
 
-        #interp_function = interp1d(self.xaxis, self.flux, kind=kind,
+        # interp_function = interp1d(self.xaxis, self.flux, kind=kind,
         #                           fill_value=fill_value,
         #                           bounds_error=bounds_error)
 
         # Determine the flux at the new locations given by reference
         if isinstance(reference, Spectrum):      # Spectrum type
             new_flux = interp_spline(reference.xaxis)
-            self_mask = (reference.xaxis < np.min(self.xaxis)) | (reference.xaxis > np.max(self.xaxis))
+            self_mask = ((reference.xaxis < np.min(self.xaxis)) |
+                         (reference.xaxis > np.max(self.xaxis)))
             if np.any(self_mask) & bounds_error:
-                raise ValueError("A value in reference.xaxis is outside the interpolation range.")
             print(reference.xaxis, self.xaxis)
             new_flux[self_mask] = np.nan
             self.flux = new_flux                 # Flux needs to change first
             self.xaxis = reference.xaxis
         elif isinstance(reference, np.ndarray):  # Numpy type
             new_flux = interp_spline(reference)
-            self_mask = (reference < np.min(self.xaxis)) | (reference > np.max(self.xaxis))
+            self_mask = ((reference < np.min(self.xaxis)) |
+                         (reference > np.max(self.xaxis)))
             if np.any(self_mask) & bounds_error:
-                raise ValueError("A value in reference is outside the interpolation range.")
+                raise ValueError("A value in reference is outside the"
+                                 "interpolation range.")
             new_flux[self_mask] = np.nan
             self.flux = new_flux                 # Flux needs to change first
             self.xaxis = reference
@@ -464,19 +466,18 @@ class Spectrum(object):
     def _prepare_other(self, other):
         if isinstance(other, Spectrum):
             if self.calibrated != other.calibrated:
-                """Checking the Spectra are of same calibration state"""
+                # Checking the Spectra are of same calibration state
                 raise SpectrumError("Spectra are not calibrated similarly.")
             if np.all(self.xaxis == other.xaxis):  # Only for equal xaxis
                 # Easiest condition in which xaxis of both are the same
                 return copy.copy(other.flux)
             else:  # Uneven length xaxis need to be interpolated
                 if ((np.min(self.xaxis) > np.max(other.xaxis)) |
-                     (np.max(self.xaxis) < np.min(other.xaxis))):
                     raise ValueError("The xaxis do not overlap so cannot"
                                      " be interpolated")
                 else:
                     other_copy = copy.copy(other)
-                    #other_copy.interpolate_to(self)
+                    # other_copy.interpolate_to(self)
                     other_copy.spline_interpolate_to(self)
                     return other_copy.flux
         elif isinstance(other, (int, float, np.ndarray)):
