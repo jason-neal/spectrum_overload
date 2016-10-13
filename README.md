@@ -31,6 +31,14 @@ and install using:
 
 
 
+## Contributions
+Contributions are very welcome.
+
+I would really appreciate user feedback or suggested improvements if you have any.
+
+Feel free to submit issues or create pull requests.
+
+
 
 ## Other Spectrum Classes
 
