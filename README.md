@@ -1,20 +1,23 @@
 # spectrum_overload [![Build Status](https://travis-ci.org/jason-neal/spectrum_overload.svg)](https://travis-ci.org/jason-neal/spectrum_overload) [![Coverage Status](https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=develop)](https://coveralls.io/github/jason-neal/spectrum_overload?branch=develop)
-Learn to use Classes by creating a Spectrum class to use in my Phd work.
 
+## Overview
+The purpose of this was project was to learn how to use and create Classes, and to create a Spectrum object to use within my Phd work.
 
-Ideas to include:
+The main goals of this project are basically complete.
 
 Variables pixel, flux, wavelength
+- create a class to contain spectrum
+- automatic interpolation 
+- overloaded operators
+especially
+- Spectral division (SpectrumA / SpectrumB )
+- Spectral subtraction (SpectrumA - SpectrumB)
+- Powers/exponents (Spectrum ** x)
 
-Spectral slicing method. (wav_selector)
 
-Radial velocity shifts
 
-Wavelength calibration method. pixel->wavelength
 
-Spectral subtraction:  SpectrumA - SpectrumB
 
-Spectral division    SpectrumA/SpectrumB 
 
 
 
