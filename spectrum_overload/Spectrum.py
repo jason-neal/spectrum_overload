@@ -312,6 +312,8 @@ class Spectrum(object):
             self_mask = ((reference.xaxis < np.min(self.xaxis)) |
                          (reference.xaxis > np.max(self.xaxis)))
             if np.any(self_mask) & bounds_error:
+                raise ValueError("A value in reference.xaxis is outside"
+                                 "the interpolation range.")
             print(reference.xaxis, self.xaxis)
             new_flux[self_mask] = np.nan
             self.flux = new_flux                 # Flux needs to change first
@@ -473,6 +475,7 @@ class Spectrum(object):
                 return copy.copy(other.flux)
             else:  # Uneven length xaxis need to be interpolated
                 if ((np.min(self.xaxis) > np.max(other.xaxis)) |
+                    (np.max(self.xaxis) < np.min(other.xaxis))):
                     raise ValueError("The xaxis do not overlap so cannot"
                                      " be interpolated")
                 else:
