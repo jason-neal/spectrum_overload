@@ -48,11 +48,27 @@ class Spectrum(object):
 
     @property
     def xaxis(self):
+        """ Getter for the xaxis attribute.
+
+        """
         # print("Getting xaxis property")
         return self._xaxis
 
     @xaxis.setter
     def xaxis(self, value):
+        """ Setter for xaxis attribute.
+
+        Preforms type checking at turn into a numpy array if it is not.
+
+
+        Parameters
+        ----------
+        value : array-like or list or None
+            The value to set the spectrum's xaxis attribute. If None is given
+            and the flux is not None then xaxis is turned into a array
+            representing pixel position using np.arange(len(flux)).
+
+        """
         # print("xaxis value = ", value)
         if isinstance(value, str):
             # Try to catch some bad assignments
@@ -80,10 +96,23 @@ class Spectrum(object):
 
     @property
     def flux(self):
+        """ Getter for the flux attribute
+
+        """
         return self._flux
 
     @flux.setter
     def flux(self, value):
+        """ Setter for the flux attribute.
+
+        Preforms type checking at turn into a numpy array if it is not.
+
+        Parameters
+        ----------
+        value: array-like or list
+            The value to set the spectrum's flux attribute
+
+        """
         if isinstance(value, str):
             # Try to catch some bad assignments
             # Yes a list of strings will not be caught
