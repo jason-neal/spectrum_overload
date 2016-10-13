@@ -179,14 +179,39 @@ class Spectrum(object):
             raise
 
     def doppler_shift(self, RV):
-        ''' Function to compute a wavelength shift due to radial velocity
-        using RV / c = delta_lambda/lambda
-        RV - radial velocity (in km/s)
-        lambda_rest - rest wavelenght of the spectral line
-        delta_lambda - (lambda_final - lambda_rest)
-        '''
-        if abs(RV) < 1e-7:
-            """ RV smaller then 0.1 mm/s"""
+        """ Doopler shift wavelength by a given Radial Velocity.
+
+        Apply doopler shift to the wavlength values of the spectrum
+        using the radial velocity value provided and the relation
+        RV/c = :math:`\Delta\lambda/\lambda`.
+
+        Parameters
+        ----------
+        RV : float
+            Radial Velocity to doopler shift by in km/s.
+
+        Warnings
+        --------
+        Small RV :
+            A lower limit of RV shift of 0.1 mm/s is set to prevent RV
+            shifts much smaller than wavelength accuracy.
+        Uncalibrated xaxis :
+            When the xaxis is uncalibrated there is no wavelength to
+            doopler shift. A message is printed and no shift is done.
+
+        Notes
+        -----
+        The Doopler shift is calculated using the relation
+
+        .. math::
+            RV / c = \Delta\lambda / \lambda
+
+        Where RV is the radial velocity (in km/s), :math:`\lambda_0`
+        is the rest wavelength and :math:`\Delta\lambda` is the wavelength
+        shift, :math:`(\lambda_{shift} - \lambda_0)`
+
+        """
+        if abs(RV) < 1e-7:  # RV smaller then 0.1 mm/s
             print("Warning the RV value given is very small (<0.1 mm/s).\n "
                   "Not performing the doppler shift")
 
