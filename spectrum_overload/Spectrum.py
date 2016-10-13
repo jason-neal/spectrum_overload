@@ -128,9 +128,16 @@ class Spectrum(object):
             self._flux = value
 
     def length_check(self):
-        """ Check length of xaxis and flux are equal.
-        Raise error if they are not
-        If everyting is ok then there is no response/output"""
+        """ Check that the length of xaxis and flux are equal.
+
+        If everyting is ok then there is no response/output
+
+        Raises
+        ------
+        ValueError:
+            The length of xaxis and flux must be the same
+
+        """
         if (self._flux is None) and (self._xaxis is None):
             # Can't measure lenght of none
             pass
