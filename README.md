@@ -29,6 +29,22 @@ and install using:
     python setup.py install
 
 
+## Usage
+To use import the class using :
+    
+    from spectrum_overload import Spectrum
+    ...
+    my_spectrum = Spectrum.Spectrum(flux, xaxis)
+
+or :
+
+    from spectrum_overload.Spectrum import Spectrum as spec
+    ...
+    my_spectrum = spec(flux, xaxis)
+
+or how ever else you would like to import it.
+
+A tutorial is provided [here](Notebooks/Tutorial.ipynb) to show an example of how to use this class.
 
 
 ## Contributions
