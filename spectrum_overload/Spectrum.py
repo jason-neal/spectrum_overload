@@ -325,7 +325,7 @@ class Spectrum(object):
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
 
-    def spline_interpolate_to(self, reference, w=None, bbox=[None,None], k=3,
+    def spline_interpolate_to(self, reference, w=None, bbox=[None, None], k=3,
                               ext=0, check_finite=False, bounds_error=False):
         """Interpolate wavelength solution to the reference wavelength using 
         InterpolatedUnivariateSpline.
@@ -411,7 +411,6 @@ class Spectrum(object):
             # print("Interpolate was not give a valid type")
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
-
 
     # ######################################################
     # Overloading Operators
