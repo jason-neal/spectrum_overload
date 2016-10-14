@@ -1,5 +1,5 @@
 """ spectrum_overload Setup.py
-My first atempt at a setup.py file. It is based off 
+My first atempt at a setup.py file. It is based off
 
 A setuptools based setup module.
 See:
@@ -14,18 +14,17 @@ from setuptools import setup, find_packages
 # from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 from codecs import open
-from os import path
+import os
 
-
-here = path.abspath(path.dirname(__file__))
+# here = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
-#with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-#with open(path.join(here, 'README.md')) as f:
+# with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+# with open(os.path.join(here, 'README.md')) as f:
 #    long_description = f.read()
 long_description = " "
 
-#Allow "python setup.py test" to work
+# Allow "python setup.py test" to work
 # class PyTest(TestCommand):
 #     def finalize_options(self):
 #         TestCommand.finalize_options(self)
@@ -93,7 +92,7 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
-    ######test_suite=['spectrum_overload.test.test_Spectrum','spectrum_overload.test.test_overloaded_operators'],
+    # test_suite=[],
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
     #   py_modules=["my_module"],
@@ -103,8 +102,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['numpy', 'hypothesis', 'astropy', 'scipy'], #'matplotlib'
-    
+    install_requires=['numpy', 'hypothesis', 'astropy', 'scipy'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     # List additional groups of dependencies here (e.g. development
@@ -113,15 +111,16 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['coverage', 'pytest', 'pytest-cov', 'python-coveralls', 'hypothesis'],
+        'test': (['coverage', 'pytest', 'pytest-cov', 'python-coveralls',
+                 'hypothesis'],)
     },
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_data={"spectrum_overload":["data/*.fits"]},
+    package_data={"spectrum_overload": ["data/*.fits"]},
     #    'sample': ['package_data.dat'],
-    #},
+    # },
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
