@@ -62,10 +62,10 @@ def test_setters_for_flux_and_xaxis():
     s.xaxis = [1, 2, 3, 4]
 
     s.flux = [2, 2.1, 2.2, 2.1]
-    # Spectrum(False,False)
-    # Spectrum(False,None)
-    # Spectrum(False,False)
-    # Spectrum(None,False)
+    # Spectrum(False, False)
+    # Spectrum(False, None)
+    # Spectrum(False, False)
+    # Spectrum(None, False)
     pass
 
 
@@ -166,12 +166,13 @@ def test_wav_select_example():
 @given(st.lists(st.floats(min_value=1e-5, allow_infinity=False), min_size=1),
        st.floats(min_value=1e-6), st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
        st.booleans())
-@example([1000,2002,2003,2004], 1e-8, 1, 1)
+@example([1000, 2002, 2003, 2004], 1e-8, 1, 1)
 def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
     """Test doppler shift properties.
-    Need to check values against pyastronomy separately 
+    Need to check values against pyastronomy separately
 
     calib is sampled with a 1/8 chance being uncalibrated.
+
     """
 
     # Added a min value to RV shift to avoid very small RV values (1e-300).
@@ -300,6 +301,7 @@ def test_interpolation():
         S2.interpolate1d_to("string")
     # Need to write better tests!
 
+
 def test_interpolation_when_given_a_ndarray():
 
     x1 = [1., 2., 3., 4., 5.]
@@ -314,6 +316,7 @@ def test_interpolation_when_given_a_ndarray():
     assert np.allclose(S_lin.flux, [3., 4., 7., 8.])
     # test linear interpoation matches numpy interp
     assert np.allclose(S_lin.flux, np.interp(x2, x1, y1))
+
 
 def test_sline_interpolation():
     # Test the interpolation function some how
@@ -351,8 +354,9 @@ def test_sline_interpolation():
         S2.spline_interpolate_to([1, 2, 3, 4])
     with pytest.raises(TypeError):
         S2.spline_interpolate_to("string")
-    # Need to write better tests! 
+    # Need to write better tests!
     # These are a direct copy of other interpolation test
+
 
 def test_spline_interpolation_when_given_a_ndarray():
 

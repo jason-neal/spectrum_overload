@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function
 import pytest
-import copy
+# import copy
 import numpy as np
 # from astropy.io import fits
 # from pkg_resources import resource_filename
@@ -19,6 +19,7 @@ import hypothesis.strategies as st
 #######################################################
 #    Overloading Operators
 #######################################################
+
 
 @given(st.lists(st.integers(min_value=-100000, max_value=100000), min_size=1),
        st.integers(min_value=-1000000, max_value=1000000),
@@ -517,4 +518,3 @@ def test_zero_division():
     assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
     div4 = s / np.asarray([0])
     assert np.all(np.isinf(div4.flux))  # div by zero goes to np.inf
-

@@ -324,7 +324,7 @@ class Spectrum(object):
             (where extrapolation is necessary). If False, out
             of bounds values are assigned fill_value. By default, an error
             is raised unless fill_value=”extrapolate”.
-        fill_value : array-like or (array-like, array_like) or “extrapolate”, optional (default = NaN)
+        fill_value : array-like or “extrapolate”, optional (default = NaN)
             If a ndarray (or float), this value will be used to fill in for
             requested points outside of the data range. If not provided, then
             the default is NaN. The array-like must broadcast properly to the
@@ -607,8 +607,9 @@ class Spectrum(object):
                 # Easiest condition in which xaxis of both are the same
                 return copy.copy(other.flux)
             else:  # Uneven length xaxis need to be interpolated
-                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
-                    (np.max(self.xaxis) < np.min(other.xaxis))):
+                no_overlap_lower = (np.min(self.xaxis) > np.max(other.xaxis))
+                no_overlap_upper = (np.max(self.xaxis) < np.min(other.xaxis))
+                if no_overlap_lower | no_overlap_upper:
                     raise ValueError("The xaxis do not overlap so cannot"
                                      " be interpolated")
                 else:
