@@ -7,6 +7,7 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
 
 """
+# Licensed under the MIT Licence
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
