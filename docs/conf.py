@@ -14,7 +14,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
+# import sys
 import os
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -140,9 +140,9 @@ html_theme = 'alabaster'
 # of the sidebar.
 #html_logo = None
 
-# The name of an image file (relative to this directory) to use as a favicon of
-# the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
+# The name of an image file (relative to this directory) to use as a favicon
+# of the docs.  This file should be a Windows icon file (.ico) being 16x16 or
+# 32x32 pixels large.
 #html_favicon = None
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -218,26 +218,23 @@ htmlhelp_basename = 'spectrum_overloaddoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
 
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 
-# Latex figure (float) alignment
-#'figure_align': 'htbp',
-}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'spectrum_overload.tex', 'spectrum_overload Documentation',
-     'Jason Neal', 'manual'),
-]
+     author, 'manual'),
+    ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -267,7 +264,7 @@ latex_documents = [
 man_pages = [
     (master_doc, 'spectrum_overload', 'spectrum_overload Documentation',
      [author], 1)
-]
+    ]
 
 # If true, show URL addresses after external links.
 #man_show_urls = False
@@ -282,7 +279,7 @@ texinfo_documents = [
     (master_doc, 'spectrum_overload', 'spectrum_overload Documentation',
      author, 'spectrum_overload', 'One line description of project.',
      'Miscellaneous'),
-]
+    ]
 
 # Documents to append as an appendix to all manuals.
 #texinfo_appendices = []
