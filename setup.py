@@ -1,10 +1,11 @@
-"""spectrum_overload Setup.py
+""" spectrum_overload Setup.py
 My first atempt at a setup.py file. It is based off 
 
 A setuptools based setup module.
 See:
 https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
+
 """
 
 # Always prefer setuptools over distutils
@@ -135,7 +136,7 @@ setup(
     #    'console_scripts': [
     #        'sample=sample:main',
         'console_scripts': [
-            'spectrum_overload=Spectrum:main',
+            'spectrum_overload=spectrum_overload:main',
         ],
     },
 )
