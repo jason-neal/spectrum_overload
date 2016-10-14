@@ -36,6 +36,11 @@ long_description = " "
 #         errcode = pytest.main(self.test_args)
 #         sys.exit(errcode)
 
+base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+
+about = {}
+with open(os.path.join(base_dir, "spectrum_overload", "__about__.py")) as f:
+    exec(f.read(), about)
 
 setup(
     name='spectrum_overload',
@@ -43,7 +48,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.1",
+    version=about["__version__"],
 
     description='Spectrum class that overloads operators.',
     long_description=long_description,
