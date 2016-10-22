@@ -70,6 +70,7 @@ One of these may better suit your needs
 
 Wow A lot. I probably should not reinvent the wheel too much then...
 
+It turns out that astropy/specutils is very similar to what I have created but its direction is uncertain at the moment and they do not use overloaded operators and will not implement in the foreseeable future.
 
 ## TO DO
 Some tasks still to do:
