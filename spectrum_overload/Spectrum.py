@@ -141,7 +141,10 @@ class Spectrum(object):
         lambda_rest - rest wavelenght of the spectral line
         delta_lambda - (lambda_final - lambda_rest)
         '''
-        if abs(RV) < 1e-7:
+        if RV == 0:
+            """ Do nothing """
+            pass
+        elif abs(RV) < 1e-7:
             """ RV smaller then 0.1 mm/s"""
             print("Warning the RV value given is very small (<0.1 mm/s).\n "
                   "Not performing the doppler shift")
@@ -152,8 +155,8 @@ class Spectrum(object):
 
         elif self.calibrated:
             c = 299792.458
-            lambdaShift = self.xaxis * (RV / c)
-            self.xaxis = self.xaxis + lambdaShift
+            lambda_shift = self.xaxis * (RV / c)
+            self.xaxis = self.xaxis + lambda_shift
         else:
             print("Attribute xaxis is not wavelength calibrated."
                   " Cannot perform doppler shift")
@@ -248,20 +251,20 @@ class Spectrum(object):
 
     def spline_interpolate_to(self, reference, w=None, bbox=[None,None], k=3,
                               ext=0, check_finite=False, bounds_error=False):
-        """Interpolate wavelength solution to the reference wavelength using 
+        """Interpolate wavelength solution to the reference wavelength using
         InterpolatedUnivariateSpline.
         Using scipy interpolation so the optional parameters are passed to
         scipy.
         See scipy.interolate.InterpolatedUnivariateSpline for more details
         https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.InterpolatedUnivariateSpline.html#scipy.interpolate.InterpolatedUnivariateSpline
-        
+
         Documentation copied from Sicpy:
         One-dimensional interpolating spline for a given set of data points.
 
         Fits a spline y = spl(x) of degree k to the provided x, y data. Spline
         function passes through all provided points. Equivalent to
         UnivariateSpline with s=0.
-        Parameters: 
+        Parameters:
         x : (N,) array_like
         Input dimension of data points – must be increasing
 
@@ -287,7 +290,7 @@ class Spectrum(object):
             if ext=2 or ‘raise’, raise a ValueError
             if ext=3 of ‘const’, return the boundary value.
         The default value is 0.
-    
+
         check_finite : bool, optional
         Whether to check that the input arrays contain only finite numbers.
         Disabling may give a performance gain, but may result in problems
