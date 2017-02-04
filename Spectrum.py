@@ -10,8 +10,12 @@ import numpy as np
 class Spectrum:
     """ Spectrum class represents and manipulates astronomical spectra. """
     
-    def __init__(self, flux=[], xaxis=[], calibrated=False):
+    def __init__(self, flux=None, xaxis=None, calibrated=False):
         """ Create a empty spectra """
+        if flux is None:
+            flux = []
+        if xaxis is None:
+            xaxis = []
         self.xaxis = np.asarray(xaxis)
         self.flux = np.asarray(flux)
         self.calibrated = calibrated
