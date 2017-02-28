@@ -1,4 +1,4 @@
-"""Spectrum Setup.py
+"""spectrum_overload Setup.py
 My first atempt at a setup.py file. It is based off 
 
 A setuptools based setup module.
@@ -9,9 +9,12 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+# from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 from codecs import open
 from os import path
+
+
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
@@ -20,19 +23,32 @@ here = path.abspath(path.dirname(__file__))
 #    long_description = f.read()
 long_description = " "
 
+#Allow "python setup.py test" to work
+# class PyTest(TestCommand):
+#     def finalize_options(self):
+#         TestCommand.finalize_options(self)
+#         self.test_args = []
+#         self.test_suite = True
+
+#     def run_tests(self):
+#         import pytest
+#         errcode = pytest.main(self.test_args)
+#         sys.exit(errcode)
+
+
 setup(
-    name='Spectrum',
+    name='spectrum_overload',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.1',
+    version="0.1",
 
-    description='A python class for Spectra',
+    description='Spectrum class that overloads operators.',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/jason-neal/Spectrum',
+    url='https://github.com/jason-neal/spectrum_overload',
 
     # Author details
     author='Jason Neal',
@@ -75,30 +91,33 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
+    ######test_suite=['spectrum_overload.test.test_Spectrum','spectrum_overload.test.test_overloaded_operators'],
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
     #   py_modules=["my_module"],
-    py_modules=["Spectrum"],
+    #py_modules=["spectrum/Spectrum"],
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['numpy','hypothesis'], #'matplotlib'
-
+    install_requires=['numpy', 'hypothesis', 'astropy', 'scipy'], #'matplotlib'
+    
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['coverage','pytest','hypothesis'],
+        'test': ['coverage', 'pytest', 'pytest-cov', 'python-coveralls', 'hypothesis'],
     },
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_data={},
+    package_data={"spectrum_overload":["data/*.fits"]},
     #    'sample': ['package_data.dat'],
     #},
 
@@ -116,7 +135,7 @@ setup(
     #    'console_scripts': [
     #        'sample=sample:main',
         'console_scripts': [
-            'spectrum=Spectrum:main',
+            'spectrum_overload=Spectrum:main',
         ],
     },
 )

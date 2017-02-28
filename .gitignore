@@ -1,6 +1,10 @@
+#sync
+.sync/
+
 #notebook and html
-*.ipynb
+#*.ipynb
 *.html
+Docs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
