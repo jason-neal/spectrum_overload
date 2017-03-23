@@ -4,6 +4,7 @@ import numpy as np
 import copy
 from scipy.interpolate import interp1d
 from scipy.interpolate import InterpolatedUnivariateSpline
+from PyAstronomy import pyasl
 # Spectrum Class
 
 # Begun August 2016
@@ -110,6 +111,7 @@ class Spectrum(object):
         elif len(self._flux) != len(self._xaxis):
             raise ValueError("The length of xaxis and flux must be the same")
 
+
     def wav_select(self, wav_min, wav_max):
         """ Select the spectrum between wav_min and wav_max values
             Uses numpy slicing for high speed.
@@ -133,6 +135,7 @@ class Spectrum(object):
             self.flux = flux_org           # Fix flux first
             self.xaxis = x_org
             raise
+
 
     def doppler_shift(self, RV):
         ''' Function to compute a wavelength shift due to radial velocity
@@ -160,6 +163,42 @@ class Spectrum(object):
         else:
             print("Attribute xaxis is not wavelength calibrated."
                   " Cannot perform doppler shift")
+
+
+    def crosscorrRV(self, spectrum, rvmin, rvmax, drv, **params):
+        """Perform pyasl.crosscorrRV with another spectrum.
+
+        Parameters
+        spectrum: Spectrum
+            Spectrum object to cross correlate with.
+        rvmin: float
+            Minimum radial velocity for which to calculate the cross-correlation
+            function [km/s].
+        rvmax: float
+            Maximum radial velocity for which to calculate the cross-correlation
+            function [km/s].
+        drv: float
+            The width of the radial-velocity steps to be applied in the calculation
+            of the cross-correlation function [km/s].
+        kwargs: dict
+            Cross-correlation parameters.
+
+        Returns
+        dRV: array
+            The RV axis of the cross-correlation function. The radial velocity refer
+            to a shift of the template, i.e., positive values indicate that the
+            template has been red-shifted and negative numbers indicate a blue-shift
+            of the template. The numbers are given in km/s.
+        CC: array
+            The cross-correlation function.
+
+        Notes
+        Uses the PyAstronomy function pyasl.crosscorrRV http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/pyaslDoc/aslDoc/crosscorr.html
+        """
+        drv, cc = pyasl.crosscorrRV(self.xaxis, self.flux, spectrum.xaxis, spectrum.flux,
+                                    rvmin, rvmax, drv, **params)
+        return drv, cc
+
 
     def calibrate_with(self, wl_map):
         """ Calibrate with polynomial with parameters wl_map.
