@@ -11,7 +11,7 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 
 
 class Spectrum(object):
-    """ Spectrum class represents and manipulates astronomical spectra. """
+    """Spectrum class represents and manipulates astronomical spectra."""
 
     def __init__(self, flux=None, xaxis=None, calibrated=False, header=None):
         """ Initalise a Spectrum object """
@@ -186,8 +186,9 @@ class Spectrum(object):
                 self.xaxis = wavelength
                 self.calibrated = True  # Set calibrated Flag
 
+
     def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
-                       fill_value=np.nan):
+                         fill_value=np.nan):
         """Interpolate wavelength solution to the  reference wavelength.
         Using scipy interpolation so the optional parameters are passed to
         scipy.
@@ -249,7 +250,7 @@ class Spectrum(object):
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
 
-    def spline_interpolate_to(self, reference, w=None, bbox=[None,None], k=3,
+    def spline_interpolate_to(self, reference, w=None, bbox=[None, None], k=3,
                               ext=0, check_finite=False, bounds_error=False):
         """Interpolate wavelength solution to the reference wavelength using
         InterpolatedUnivariateSpline.
@@ -305,7 +306,7 @@ class Spectrum(object):
                                                      ext=ext,
                                                      check_finite=False)
 
-        #interp_function = interp1d(self.xaxis, self.flux, kind=kind,
+        # interp_function = interp1d(self.xaxis, self.flux, kind=kind,
         #                           fill_value=fill_value,
         #                           bounds_error=bounds_error)
 
@@ -473,13 +474,12 @@ class Spectrum(object):
                 # Easiest condition in which xaxis of both are the same
                 return copy.copy(other.flux)
             else:  # Uneven length xaxis need to be interpolated
-                if ((np.min(self.xaxis) > np.max(other.xaxis)) |
-                     (np.max(self.xaxis) < np.min(other.xaxis))):
+                if ((np.min(self.xaxis) > np.max(other.xaxis)) | (np.max(self.xaxis) < np.min(other.xaxis))):
                     raise ValueError("The xaxis do not overlap so cannot"
                                      " be interpolated")
                 else:
                     other_copy = copy.copy(other)
-                    #other_copy.interpolate_to(self)
+                    # other_copy.interpolate_to(self)
                     other_copy.spline_interpolate_to(self)
                     return other_copy.flux
         elif isinstance(other, (int, float, np.ndarray)):
