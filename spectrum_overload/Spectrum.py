@@ -5,7 +5,7 @@ import copy
 from scipy.interpolate import interp1d
 from scipy.interpolate import InterpolatedUnivariateSpline
 from PyAstronomy import pyasl
-# Spectrum Class
+"""Spectrum Class."""
 
 # Begun August 2016
 # Jason Neal
@@ -49,6 +49,7 @@ class Spectrum(object):
 
     @property
     def xaxis(self):
+        """The xaxis getter."""
         # print("Getting xaxis property")
         return self._xaxis
 
@@ -81,6 +82,7 @@ class Spectrum(object):
 
     @property
     def flux(self):
+        """Flux getter."""
         return self._flux
 
     @flux.setter
@@ -117,6 +119,7 @@ class Spectrum(object):
         """Select the spectrum between wav_min and wav_max values.
 
         Uses numpy slicing for high speed.
+
         Note: This maight be better suited to return the new spectra
         instead of direct replacement.
         """
@@ -234,7 +237,7 @@ class Spectrum(object):
 
     def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
                          fill_value=np.nan):
-        u"""Interpolate wavelength solution to the  reference wavelength.
+        u"""Interpolate wavelength solution to the reference wavelength.
 
         Using scipy interpolation so the optional parameters are passed to
         scipy.
@@ -402,6 +405,7 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __radd__(self, other):
+        """Right addition."""
         # E.g. for first Item in Sum  0  + Spectrum fails.
 
         new_flux = self.flux + other
@@ -469,6 +473,7 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __pow__(self, other):
+        """Exponetial magic method."""
         # Overlaod to use power to scale the flux of the spectra
         # if len(other) > 1 :
         #    raise ValueError("Spectrum can only be raised to the power of
@@ -518,6 +523,7 @@ class Spectrum(object):
                 # Easiest condition in which xaxis of both are the same
                 return copy.copy(other.flux)
             else:  # Uneven length xaxis need to be interpolated
+
                 if ((np.min(self.xaxis) > np.max(other.xaxis)) | (np.max(self.xaxis) < np.min(other.xaxis))):
                     raise ValueError("The xaxis do not overlap so cannot"
                                      " be interpolated")
@@ -540,4 +546,5 @@ class Spectrum(object):
 
 
 class SpectrumError(Exception):
+    """A errorclass for specturm errors."""
     pass
