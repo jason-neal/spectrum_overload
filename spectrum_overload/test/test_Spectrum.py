@@ -64,10 +64,10 @@ def test_setters_for_flux_and_xaxis():
     s.xaxis = [1, 2, 3, 4]
 
     s.flux = [2, 2.1, 2.2, 2.1]
-    # Spectrum(False,False)
-    # Spectrum(False,None)
-    # Spectrum(False,False)
-    # Spectrum(None,False)
+    # Spectrum(False, False)
+    # Spectrum(False, None)
+    # Spectrum(False, False)
+    # Spectrum(None, False)
     pass
 
 
@@ -148,7 +148,7 @@ def test_wav_select(x, calib, wav_min, wav_max):
 def test_wav_select_example():
     """Manual test of a wavelength selection."""
     # Create specturm
-    y = 2*np.random.random(20)
+    y = 2 * np.random.random(20)
     x = np.arange(20)
     calib = False
     spec = Spectrum(y, xaxis=x, calibrated=calib)
@@ -168,7 +168,7 @@ def test_wav_select_example():
 @given(st.lists(st.floats(min_value=1e-5, allow_infinity=False), min_size=1),
        st.floats(min_value=1e-6), st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
        st.booleans())
-@example([1000,2002,2003,2004], 1e-8, 1, 1)
+@example([1000, 2002, 2003, 2004], 1e-8, 1, 1)
 def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
     """Test doppler shift properties.
 
@@ -216,7 +216,7 @@ def test_x_calibration_works():
     spec.calibrate_with(params)
 
     assert spec.calibrated
-    assert np.allclose(spec.xaxis, np.asarray(x)*3)
+    assert np.allclose(spec.xaxis, np.asarray(x) * 3)
 
 
 def test_cant_calibrate_calibrated_spectrum():
