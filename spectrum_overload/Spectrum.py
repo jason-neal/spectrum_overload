@@ -249,7 +249,7 @@ class Spectrum(object):
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
 
-    def spline_interpolate_to(self, reference, w=None, bbox=[None,None], k=3,
+    def spline_interpolate_to(self, reference, w=None, bbox=None, k=3,
                               ext=0, check_finite=False, bounds_error=False):
         """Interpolate wavelength solution to the reference wavelength using
         InterpolatedUnivariateSpline.
@@ -298,6 +298,8 @@ class Spectrum(object):
         contain infinities or NaNs. Default is False.
 
         """
+        if bbox is None:
+            bbox = [None,None]
 
         # Create scipy interpolation function from self
         interp_spline = InterpolatedUnivariateSpline(self.xaxis, self.flux,
