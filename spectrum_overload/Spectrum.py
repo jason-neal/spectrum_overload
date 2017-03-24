@@ -4,6 +4,7 @@ import numpy as np
 import copy
 from scipy.interpolate import interp1d
 from scipy.interpolate import InterpolatedUnivariateSpline
+from PyAstronomy import pyasl
 """Spectrum Class."""
 
 # Begun August 2016
@@ -139,6 +140,12 @@ class Spectrum(object):
             self.xaxis = x_org
             raise
 
+    def add_noise(self, snr):
+        """Add noise level of snr to the flux of the spectrum."""
+        sigma = self.flux / snr
+        # Add normal distributed noise at the SNR level.
+        self.flux += np.random.normal(0, sigma)
+
     def doppler_shift(self, RV):
         """Function to compute a wavelength shift due to radial velocity.
 
@@ -156,7 +163,7 @@ class Spectrum(object):
                   "Not performing the doppler shift")
 
         elif np.isnan(RV) or np.isinf(RV):
-            print("Warning RV is infinity or Nan. "
+            print("Warning RV is infinity or Nan."
                   "Not performing the doppler shift")
 
         elif self.calibrated:
@@ -166,6 +173,41 @@ class Spectrum(object):
         else:
             print("Attribute xaxis is not wavelength calibrated."
                   " Cannot perform doppler shift")
+
+    def crosscorrRV(self, spectrum, rvmin, rvmax, drv, **params):
+        """Perform pyasl.crosscorrRV with another spectrum.
+
+        Parameters
+        spectrum: Spectrum
+            Spectrum object to cross correlate with.
+        rvmin: float
+            Minimum radial velocity for which to calculate the cross-correlation
+            function [km/s].
+        rvmax: float
+            Maximum radial velocity for which to calculate the cross-correlation
+            function [km/s].
+        drv: float
+            The width of the radial-velocity steps to be applied in the calculation
+            of the cross-correlation function [km/s].
+        kwargs: dict
+            Cross-correlation parameters.
+
+        Returns
+        dRV: array
+            The RV axis of the cross-correlation function. The radial velocity refer
+            to a shift of the template, i.e., positive values indicate that the
+            template has been red-shifted and negative numbers indicate a blue-shift
+            of the template. The numbers are given in km/s.
+        CC: array
+            The cross-correlation function.
+
+        Notes
+        Uses the PyAstronomy function pyasl.crosscorrRV
+        http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/pyaslDoc/aslDoc/crosscorr.html
+        """
+        drv, cc = pyasl.crosscorrRV(self.xaxis, self.flux, spectrum.xaxis, spectrum.flux,
+                                    rvmin, rvmax, drv, **params)
+        return drv, cc
 
     def calibrate_with(self, wl_map):
         """Calibrate with polynomial with parameters wl_map.
@@ -195,7 +237,7 @@ class Spectrum(object):
 
     def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
                          fill_value=np.nan):
-        """Interpolate wavelength solution to the reference wavelength.
+        u"""Interpolate wavelength solution to the reference wavelength.
 
         Using scipy interpolation so the optional parameters are passed to
         scipy.
@@ -259,7 +301,7 @@ class Spectrum(object):
 
     def spline_interpolate_to(self, reference, w=None, bbox=[None, None], k=3,
                               ext=0, check_finite=False, bounds_error=False):
-        """Interpolate wavelength solution to the reference wavelength using InterpolatedUnivariateSpline.
+        u"""Interpolate wavelength solution to the reference wavelength using InterpolatedUnivariateSpline.
 
         Using scipy interpolation so the optional parameters are passed to
         scipy.
@@ -481,8 +523,8 @@ class Spectrum(object):
                 # Easiest condition in which xaxis of both are the same
                 return copy.copy(other.flux)
             else:  # Uneven length xaxis need to be interpolated
-                if (((np.min(self.xaxis) > np.max(other.xaxis)) |
-                     (np.max(self.xaxis) < np.min(other.xaxis)))):
+
+                if ((np.min(self.xaxis) > np.max(other.xaxis)) | (np.max(self.xaxis) < np.min(other.xaxis))):
                     raise ValueError("The xaxis do not overlap so cannot"
                                      " be interpolated")
                 else:

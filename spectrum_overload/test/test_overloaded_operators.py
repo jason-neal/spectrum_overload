@@ -232,7 +232,7 @@ def test_add_sub_mult_divide_by_numbers(x, y, float1, int1):
 
 
 def test_unitary_operators():
-    """Test __pos__ and __neg__ operators"""
+    """Test __pos__ and __neg__ operators."""
     a = np.array([1, 2, -3, 4])
     b = np.array([1, 2, 3, 4])
     spec = Spectrum(a, b)
@@ -245,7 +245,7 @@ def test_unitary_operators():
 
 
 def test_abs_operator():
-    """Test absolute value of flux"""
+    """Test absolute value of flux."""
     spec = Spectrum([-1, 2, -3.2, 4], [2, 3, 4, 5])
     abs_spec = abs(spec)
     abs_spec2 = abs(abs_spec)
@@ -457,8 +457,11 @@ def test_assignment_with_bad_types():
 
 @pytest.mark.xfail
 def test_spectra_stay_the_same_after_operations():
-    """After a operation of two spectra e.g. a/b both a and b should
-    remaion the same unless specifcally defined such as a = a + b
+    """After a operation of two spectra...
+
+    e.g. a/b both a and b should
+    remain the same unless specifcally defined such as a = a + b
+
     """
     assert False    # Not implemented
 
