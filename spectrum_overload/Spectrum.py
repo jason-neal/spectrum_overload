@@ -137,6 +137,12 @@ class Spectrum(object):
             self.xaxis = x_org
             raise
 
+    def add_noise(self, snr):
+        """Add noise level of snr to the flux of the spectrum."""
+        sigma = self.flux / snr
+        # Add normal distributed noise at the SNR level.
+        self.flux += np.random.normal(0, sigma)
+
     def doppler_shift(self, RV):
         """Function to compute a wavelength shift due to radial velocity.
 
