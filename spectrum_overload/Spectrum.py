@@ -15,7 +15,7 @@ class Spectrum(object):
     """Spectrum class represents and manipulates astronomical spectra."""
 
     def __init__(self, flux=None, xaxis=None, calibrated=False, header=None):
-        """ Initalise a Spectrum object """
+        """Initalise a Spectrum object."""
         # Some checks before creating class
         if isinstance(flux, str):
             raise TypeError("Cannot assign {} to the flux attribute".format(
@@ -100,9 +100,11 @@ class Spectrum(object):
             self._flux = value
 
     def length_check(self):
-        """ Check length of xaxis and flux are equal.
+        """Check length of xaxis and flux are equal.
+
         Raise error if they are not
-        If everyting is ok then there is no response/output"""
+        If everyting is ok then there is no response/output.
+        """
         if (self._flux is None) and (self._xaxis is None):
             # Can't measure lenght of none
             pass
@@ -111,13 +113,12 @@ class Spectrum(object):
         elif len(self._flux) != len(self._xaxis):
             raise ValueError("The length of xaxis and flux must be the same")
 
-
     def wav_select(self, wav_min, wav_max):
-        """ Select the spectrum between wav_min and wav_max values
-            Uses numpy slicing for high speed.
+        """Select the spectrum between wav_min and wav_max values.
 
-            Note: This maight be better suited to return the new spectra
-            instead of direct replacement.
+        Uses numpy slicing for high speed.
+        Note: This maight be better suited to return the new spectra
+        instead of direct replacement.
         """
         x_org = self.xaxis
         flux_org = self.flux
@@ -136,24 +137,24 @@ class Spectrum(object):
             self.xaxis = x_org
             raise
 
-
     def doppler_shift(self, RV):
-        ''' Function to compute a wavelength shift due to radial velocity
+        """Function to compute a wavelength shift due to radial velocity.
+
         using RV / c = delta_lambda/lambda
         RV - radial velocity (in km/s)
         lambda_rest - rest wavelenght of the spectral line
         delta_lambda - (lambda_final - lambda_rest)
-        '''
+        """
         if RV == 0:
-            """ Do nothing """
+            """Do nothing"""
             pass
         elif abs(RV) < 1e-7:
-            """ RV smaller then 0.1 mm/s"""
+            """RV smaller then 0.1 mm/s"""
             print("Warning the RV value given is very small (<0.1 mm/s).\n "
                   "Not performing the doppler shift")
 
         elif np.isnan(RV) or np.isinf(RV):
-            print("Warning RV is infinity or Nan. "
+            print("Warning RV is infinity or Nan."
                   "Not performing the doppler shift")
 
         elif self.calibrated:
@@ -163,7 +164,6 @@ class Spectrum(object):
         else:
             print("Attribute xaxis is not wavelength calibrated."
                   " Cannot perform doppler shift")
-
 
     def crosscorrRV(self, spectrum, rvmin, rvmax, drv, **params):
         """Perform pyasl.crosscorrRV with another spectrum.
@@ -193,15 +193,16 @@ class Spectrum(object):
             The cross-correlation function.
 
         Notes
-        Uses the PyAstronomy function pyasl.crosscorrRV http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/pyaslDoc/aslDoc/crosscorr.html
+        Uses the PyAstronomy function pyasl.crosscorrRV
+        http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/pyaslDoc/aslDoc/crosscorr.html
         """
         drv, cc = pyasl.crosscorrRV(self.xaxis, self.flux, spectrum.xaxis, spectrum.flux,
                                     rvmin, rvmax, drv, **params)
         return drv, cc
 
-
     def calibrate_with(self, wl_map):
-        """ Calibrate with polynomial with parameters wl_map.
+        """Calibrate with polynomial with parameters wl_map.
+
         Input:
             wl_map - Polynomial cooeficients of form expected by np.poylval()
         Output:
@@ -225,10 +226,10 @@ class Spectrum(object):
                 self.xaxis = wavelength
                 self.calibrated = True  # Set calibrated Flag
 
-
     def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
                          fill_value=np.nan):
-        """Interpolate wavelength solution to the  reference wavelength.
+        u"""Interpolate wavelength solution to the  reference wavelength.
+
         Using scipy interpolation so the optional parameters are passed to
         scipy.
         See scipy.interolate.interp1d for more details
@@ -291,8 +292,8 @@ class Spectrum(object):
 
     def spline_interpolate_to(self, reference, w=None, bbox=[None, None], k=3,
                               ext=0, check_finite=False, bounds_error=False):
-        """Interpolate wavelength solution to the reference wavelength using
-        InterpolatedUnivariateSpline.
+        u"""Interpolate wavelength solution to the reference wavelength using InterpolatedUnivariateSpline.
+
         Using scipy interpolation so the optional parameters are passed to
         scipy.
         See scipy.interolate.InterpolatedUnivariateSpline for more details
@@ -338,7 +339,6 @@ class Spectrum(object):
         contain infinities or NaNs. Default is False.
 
         """
-
         # Create scipy interpolation function from self
         interp_spline = InterpolatedUnivariateSpline(self.xaxis, self.flux,
                                                      w=w, bbox=bbox, k=k,
@@ -372,13 +372,12 @@ class Spectrum(object):
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
 
-
     # ######################################################
     # Overloading Operators
     # ######################################################
 
     def __add__(self, other):
-        """ Overloaded addition method for Spectrum
+        """Overloaded addition method for Spectrum.
 
         If there is addition between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
@@ -404,7 +403,7 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __sub__(self, other):
-        """ Overloaded subtraction method for Spectrum
+        """Overloaded subtraction method for Spectrum.
 
         If there is subtraction between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
@@ -423,7 +422,7 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __mul__(self, other):
-        """ Overloaded multiplication method for Spectrum
+        """Overloaded multiplication method for Spectrum.
 
         If there is multiplication between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
@@ -442,7 +441,7 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __truediv__(self, other):
-        """ Overloaded truedivision (/) method for Spectrum
+        """Overloaded truedivision (/) method for Spectrum.
 
         If there is truedivision between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
@@ -483,23 +482,23 @@ class Spectrum(object):
                             " __pow__".format(type(other)))
 
     def __len__(self):
-        """ Return length of flux Spectrum"""
+        """Return length of flux Spectrum."""
         return len(self.flux)
 
     def __neg__(self):
-        """ Take negative flux """
+        """Take negative flux."""
         negflux = -self.flux
         return Spectrum(flux=negflux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
 
     def __pos__(self):
-        """ Take positive flux """
+        """Take positive flux."""
         posflux = +self.flux
         return Spectrum(flux=posflux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
 
     def __abs__(self):
-        """ Take absolute flux """
+        """Take absolute flux."""
         absflux = abs(self.flux)
         return Spectrum(flux=absflux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
