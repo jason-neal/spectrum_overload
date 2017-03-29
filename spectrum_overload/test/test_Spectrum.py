@@ -53,7 +53,10 @@ def test_empty_call_is_nones():
     assert s.flux is None
     assert s.xaxis is None
     assert s.header is None
-    assert s.calibrated is False
+    assert s.calibrated is True
+
+    s2 = Spectrum(calibrated=False)
+    assert s2.calibrated is False
 
 
 def test_setters_for_flux_and_xaxis():
@@ -231,14 +234,14 @@ def test_cant_calibrate_calibrated_spectrum():
 def test_calibration_wavlength_only_positive():
     # Can't have a wavelenght of zero or negative.
     # So raise a SpectrumError before calibrating
-    s = Spectrum([1, 2, 3, 4], [-4, -3, -2, -1])
+    s = Spectrum([1, 2, 3, 4], [-4, -3, -2, -1], calibrated=False)
     with pytest.raises(SpectrumError):
         s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
     assert s.calibrated is False     # Check values stay the same
     assert np.all(s.flux == np.array([1, 2, 3, 4]))
     assert np.all(s.xaxis == np.array([-4, -3, -2, -1]))
 
-    s = Spectrum([1, 2, 3, 4], [0, 2, 3, 4])
+    s = Spectrum([1, 2, 3, 4], [0, 2, 3, 4], calibrated=False)
     with pytest.raises(SpectrumError):
         s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
     assert s.calibrated is False     # Check values stay the same

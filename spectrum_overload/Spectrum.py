@@ -14,8 +14,10 @@ from PyAstronomy import pyasl
 class Spectrum(object):
     """Spectrum class represents and manipulates astronomical spectra."""
 
-    def __init__(self, flux=None, xaxis=None, calibrated=False, header=None):
-        """Initalise a Spectrum object."""
+    def __init__(self, flux=None, xaxis=None, calibrated=True, header=None):
+        """Initalise a Spectrum object.
+
+        Calibrated defaults to True."""
         # Some checks before creating class
         if isinstance(flux, str):
             raise TypeError("Cannot assign {} to the flux attribute".format(
