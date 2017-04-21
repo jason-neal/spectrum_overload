@@ -1,0 +1,8 @@
+pyastronomy
+numpy
+astropy
+scipy
+hypothesis
+pytest
+pytest-cov
+python-coveralls

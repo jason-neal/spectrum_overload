@@ -23,7 +23,7 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-install:  
+install:
   #- conda install --yes python=$TRAVIS_PYTHON_VERSION  numpy scipy matplotlib #nose atlas dateutil pandas statsmodels
   # Coverage packages are on my binstar channel
   #- conda install --yes -c dan_blanchard python-coveralls nose-cov
@@ -32,16 +32,16 @@ install:
   - python setup.py install
 
 
-  - pip install python-coveralls
-  - pip install pytest-cov
-# install:  
+  - pip install pytest-cov python-coveralls
+  - pip install -r requirements.txt
+# install:
 #  -  pip install numpy
 #  -  pip install tox
 #  -  pip install matplotlib
 #  -  pip install hypothesis
 
 # command to run tests
-script: 
+script:
   # - py.test -cov coveralls --cov-report term-missing
   # - py.test --cov=spectrum_overload spectrum_overload/ --cov-report term-missing
   - py.test --cov=spectrum_overload --cov-report term-missing

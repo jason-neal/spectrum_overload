@@ -21,7 +21,7 @@ import hypothesis.strategies as st
 @given(st.lists(st.floats(allow_infinity=False, allow_nan=False)),
        st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
-    """Test that data was assigned to the correct attributes"""
+    """Test that data was assigned to the correct attributes."""
     # Use one hypotheseis list they need to have the same lenght
     # multiply by a random int to mix it up a little.
     x = x * np.array(y)
@@ -32,8 +32,10 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
 
 
 def test_spectrum_assigns_data():
-    """Test a manual example
-    Lenghts of x and y need to be the same"""
+    """Test a manual example.
+
+    Lenghts of x and y need to be the same.
+    """
     x = [1, 2, 3, 4, 5, 6]
     y = [1, 1, 0.9, 0.95, 1, 1]
     calib_val = 0
@@ -51,7 +53,10 @@ def test_empty_call_is_nones():
     assert s.flux is None
     assert s.xaxis is None
     assert s.header is None
-    assert s.calibrated is False
+    assert s.calibrated is True
+
+    s2 = Spectrum(calibrated=False)
+    assert s2.calibrated is False
 
 
 def test_setters_for_flux_and_xaxis():
@@ -93,7 +98,7 @@ def test_length_checking():
 
 
 def test_flux_and_xaxis_cannot_pass_stings():
-    """Passing a string to flux or xaxis will raise a TypeError"""
+    """Passing a string to flux or xaxis will raise a TypeError."""
     with pytest.raises(TypeError):
         Spectrum([1, 2, 3], xaxis='bar')
     with pytest.raises(TypeError):
@@ -116,7 +121,7 @@ def test_auto_genration_of_xaxis_if_None():
 
 
 def test_length_of_flux_and_xaxis_equal():
-    """ Try assign a mismatched xaxis it should raise a ValueError"""
+    """Try assign a mismatched xaxis it should raise a ValueError."""
     with pytest.raises(ValueError):
         Spectrum([1, 2, 3], [1, 2])
     with pytest.raises(ValueError):
@@ -130,7 +135,7 @@ def test_length_of_flux_and_xaxis_equal():
 
 @given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
 def test_wav_select(x, calib, wav_min, wav_max):
-    """Test some properties of wavelength selection"""
+    """Test some properties of wavelength selection."""
     # Create specturm
     y = np.copy(x)
     spec = Spectrum(y, xaxis=x, calibrated=calib)
@@ -144,9 +149,9 @@ def test_wav_select(x, calib, wav_min, wav_max):
 
 
 def test_wav_select_example():
-    """Manual test of a wavelength selection"""
+    """Manual test of a wavelength selection."""
     # Create specturm
-    y = 2*np.random.random(20)
+    y = 2 * np.random.random(20)
     x = np.arange(20)
     calib = False
     spec = Spectrum(y, xaxis=x, calibrated=calib)
@@ -169,6 +174,7 @@ def test_wav_select_example():
 @example([1000, 2002, 2003, 2004], 1e-8, 1, 1)
 def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
     """Test doppler shift properties.
+ 
     Need to check values against pyastronomy separately
 
     calib is sampled with a 1/8 chance being uncalibrated.
@@ -201,8 +207,8 @@ def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
 
 
 def test_x_calibration_works():
-    """ Simple test to check that the calibration works """
-    "Setup the code "
+    """Simple test to check that the calibration works."""
+    # Setup the code
     x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     x = [float(x_i) for x_i in x]
     y = np.ones_like(x)
@@ -214,7 +220,7 @@ def test_x_calibration_works():
     spec.calibrate_with(params)
 
     assert spec.calibrated
-    assert np.allclose(spec.xaxis, np.asarray(x)*3)
+    assert np.allclose(spec.xaxis, np.asarray(x) * 3)
 
 
 def test_cant_calibrate_calibrated_spectrum():
@@ -229,14 +235,14 @@ def test_cant_calibrate_calibrated_spectrum():
 def test_calibration_wavlength_only_positive():
     # Can't have a wavelenght of zero or negative.
     # So raise a SpectrumError before calibrating
-    s = Spectrum([1, 2, 3, 4], [-4, -3, -2, -1])
+    s = Spectrum([1, 2, 3, 4], [-4, -3, -2, -1], calibrated=False)
     with pytest.raises(SpectrumError):
         s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
     assert s.calibrated is False     # Check values stay the same
     assert np.all(s.flux == np.array([1, 2, 3, 4]))
     assert np.all(s.xaxis == np.array([-4, -3, -2, -1]))
 
-    s = Spectrum([1, 2, 3, 4], [0, 2, 3, 4])
+    s = Spectrum([1, 2, 3, 4], [0, 2, 3, 4], calibrated=False)
     with pytest.raises(SpectrumError):
         s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
     assert s.calibrated is False     # Check values stay the same
@@ -245,7 +251,7 @@ def test_calibration_wavlength_only_positive():
 
 
 def test_header_attribute():
-    """Test header attribute is accessable as a dict"""
+    """Test header attribute is accessable as a dict."""
     header = {"Date": "20120601", "Exptime": 180}
     spec = Spectrum(header=header)
     # Some simple assignment tests
@@ -264,6 +270,7 @@ def test_header_attribute():
 
 
 def test_interpolation():
+    """Test interpoilation."""
     # Test the interpolation function some how
     # simple examples?
     # simple linear case
@@ -303,7 +310,7 @@ def test_interpolation():
 
 
 def test_interpolation_when_given_a_ndarray():
-
+    """Test interpolation."""
     x1 = [1., 2., 3., 4., 5.]
     y1 = [2., 4., 6., 8., 10]
     x2 = [1.5, 2, 3.5, 4]
@@ -319,6 +326,7 @@ def test_interpolation_when_given_a_ndarray():
 
 
 def test_sline_interpolation():
+    """Test spline interpoilation."""
     # Test the interpolation function some how
     # simple examples?
     # simple linear case
@@ -359,7 +367,7 @@ def test_sline_interpolation():
 
 
 def test_spline_interpolation_when_given_a_ndarray():
-
+    """Test spline interpoilation."""
     x1 = [1., 2., 3., 4., 5.]
     y1 = [2., 4., 6., 8., 10]
     x2 = [1.5, 2, 3.5, 4]
@@ -375,3 +383,12 @@ def test_spline_interpolation_when_given_a_ndarray():
 
 
 # test_doppler_shift_with_hypothesis()
+@pytest.mark.parametrize('snr', [50, 100, 200, 1000])
+def test_add_noise(snr):
+    """Test addition of noise."""
+    x = np.linspace(2000, 2200, 10000000)
+    y = np.ones_like(x)
+    spec = Spectrum(xaxis=x, flux=y)
+    spec.add_noise(snr)
+
+    assert np.isclose(np.std(spec.flux), 1. / snr, atol=1e-5)

@@ -32,7 +32,7 @@ def test_overload_add_integers_with_same_xaxis(x1, y1, y2, calib):
     spec1 = Spectrum(flux=y1, xaxis=x1, calibrated=calib)
     spec2 = Spectrum(flux=y2, xaxis=x1, calibrated=calib)
 
-    spec3 = spec1+spec2
+    spec3 = spec1 + spec2
     spec4 = sum([spec1, spec2])
     spec5 = sum([spec1, spec2, spec3, spec4])
     summed = np.asarray(y1) + np.asarray(y2)
@@ -42,7 +42,7 @@ def test_overload_add_integers_with_same_xaxis(x1, y1, y2, calib):
     assert np.all(spec3.flux == spec4.flux)
     assert np.all(spec4.flux == summed)
     assert np.all(spec4.flux == npsummed)
-    assert np.all(spec5.flux == 3*summed)
+    assert np.all(spec5.flux == 3 * summed)
 
     # Assert calibration has stayed the same.
     assert np.allclose(spec4.calibrated, spec1.calibrated)
@@ -62,7 +62,7 @@ def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
     spec1 = Spectrum(flux=y1, xaxis=x1, calibrated=calib)
     spec2 = Spectrum(flux=y2, xaxis=x1, calibrated=calib)
 
-    spec3 = spec1+spec2
+    spec3 = spec1 + spec2
     spec4 = sum([spec1, spec2])
     # Assert the flux values are summed togther
     assert np.allclose(spec3.flux, np.asarray(y1) + np.asarray(y2))
@@ -153,7 +153,7 @@ def test_truediv_with_number():
 
     spec_truediv = spec1 / number
 
-    assert np.all(spec_truediv.flux == flux_arr/number)
+    assert np.all(spec_truediv.flux == flux_arr / number)
 
 
 def test_len_works():
@@ -232,7 +232,7 @@ def test_add_sub_mult_divide_by_numbers(x, y, float1, int1):
 
 
 def test_unitary_operators():
-    """ Test __pos__ and __neg__ operators"""
+    """Test __pos__ and __neg__ operators."""
     a = np.array([1, 2, -3, 4])
     b = np.array([1, 2, 3, 4])
     spec = Spectrum(a, b)
@@ -245,7 +245,7 @@ def test_unitary_operators():
 
 
 def test_abs_operator():
-    """ Test absolute value of flux"""
+    """Test absolute value of flux."""
     spec = Spectrum([-1, 2, -3.2, 4], [2, 3, 4, 5])
     abs_spec = abs(spec)
     abs_spec2 = abs(abs_spec)
@@ -287,7 +287,7 @@ def test_addition_with_interpolation():
         s1 + s5
 
 
-    # @pytest.mark.xfail
+# @pytest.mark.xfail
 def test_subtraction_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -321,7 +321,7 @@ def test_subtraction_with_interpolation():
         s1 - s5
 
 
-    # @pytest.mark.xfail
+# @pytest.mark.xfail
 def test_multiplication_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -457,8 +457,11 @@ def test_assignment_with_bad_types():
 
 @pytest.mark.xfail
 def test_spectra_stay_the_same_after_operations():
-    """ After a operation of two spectra e.g. a/b both a and b should
-    remaion the same unless specifcally defined such as a = a + b
+    """After a operation of two spectra...
+
+    e.g. a/b both a and b should
+    remain the same unless specifcally defined such as a = a + b
+
     """
     assert False    # Not implemented
 

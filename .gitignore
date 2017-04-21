@@ -1,3 +1,6 @@
+#sync
+.sync/
+
 #notebook and html
 #*.ipynb
 *.html
