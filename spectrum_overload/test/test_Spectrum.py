@@ -174,10 +174,11 @@ def test_wav_select_example():
 @example([1000, 2002, 2003, 2004], 1e-8, 1, 1)
 def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
     """Test doppler shift properties.
-
+ 
     Need to check values against pyastronomy separately
 
     calib is sampled with a 1/8 chance being uncalibrated.
+
     """
 
     # Added a min value to RV shift to avoid very small RV values (1e-300).
