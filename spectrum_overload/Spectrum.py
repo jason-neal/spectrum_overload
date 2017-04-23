@@ -17,27 +17,15 @@ class Spectrum(object):
 
     Attributes
     ----------
-    xaxis (np.ndarray)
+    xaxis:np.ndarray
         The wavlength or pixel position values.
-    flux (np.ndarray, array-like, list
+    flux: np.ndarray, array-like, list
         The extracted flux (measured intesity of light).
-    calibrated : bool
+    calibrated: bool
         Flag to indicate calibration state. (Default = True.)
-    header : astropy.Header, dict-like
+    header: astropy.Header, dict-like
         Header information of observation.
 
-    Methods
-    -------
-    wav_select:
-    calibrate_with:
-    doopler_shift:
-    length_check:
-    interpolate1d_to:
-    spline_interpolate_to:
-
-    Notes
-    -----
-    pass
 
     """
 
@@ -268,6 +256,7 @@ class Spectrum(object):
         """Perform pyasl.crosscorrRV with another spectrum.
 
         Parameters
+        -----------
         spectrum: Spectrum
             Spectrum object to cross correlate with.
         rvmin: float
@@ -283,6 +272,7 @@ class Spectrum(object):
             Cross-correlation parameters.
 
         Returns
+        -------
         dRV: array
             The RV axis of the cross-correlation function. The radial velocity refer
             to a shift of the template, i.e., positive values indicate that the
@@ -292,8 +282,11 @@ class Spectrum(object):
             The cross-correlation function.
 
         Notes
-        Uses the PyAstronomy function pyasl.crosscorrRV
+        -----
+        The PyAstronomy function pyasl.crosscorrRV() is used
+        
         http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/pyaslDoc/aslDoc/crosscorr.html
+
         """
         drv, cc = pyasl.crosscorrRV(self.xaxis, self.flux, spectrum.xaxis, spectrum.flux,
                                     rvmin, rvmax, drv, **params)
@@ -463,7 +456,7 @@ class Spectrum(object):
 
         See also
         --------
-            https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.InterpolatedUnivariateSpline.html#scipy.interpolate.InterpolatedUnivariateSpline
+        https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.InterpolatedUnivariateSpline.html#scipy.interpolate.InterpolatedUnivariateSpline
 
         """
         # Create scipy interpolation function from self

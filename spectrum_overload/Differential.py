@@ -3,9 +3,11 @@ from spectrum_overload.Spectrum import Spectrum
 # Begin Feburary 2017
 # Jason Neal
 
+# TODO: Add in s-profile from
+# Ferluga 1997: Separating the spectra of binary stars-I. A simple method: Secondary reconstruction
 
 class DifferentialSpectrum(object):
-    """Make differential spectrum."""
+    """A differential spectrum."""
 
     def __init__(self, Spectrum1, Spectrum2):
         """Initalise lass with both spectra."""
@@ -39,5 +41,5 @@ class DifferentialSpectrum(object):
         self.spec1, self.spec2 = self.spec2, self.spec1
 
     def add_orbital_params(self, params):
-        """Acecpt dictionary of orbital parameters to use for shifting frames."""
+        """A dictionary of orbital parameters to use for shifting frames."""
         self.params = params
