@@ -108,7 +108,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['numpy', 'hypothesis', 'astropy', 'scipy'],
-    setup_requires=['pytest-runner'],
+    setup_requires=['numpy','pytest-runner'],
     tests_require=['pytest'],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
