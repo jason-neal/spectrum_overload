@@ -3,9 +3,7 @@
 ==================
 Quickstart Guide
 ==================
-
 First install spectrum_overload via the :ref:`installation guide <install>`.
-
 
 Import the Spectrum class into your code.
 

@@ -4,13 +4,6 @@
 =============================================
 Installation
 =============================================
-
-.. image:: https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=develop
-    :target: https://travis-ci.org/jason-neal/spectrum_overload
-
-.. image:: https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=develop
-    :target: https://coveralls.io/github/jason-neal/spectrum_overload?branch=develop
-
 Spectrum_overload is currently available from ``github``.
 
 Navigate to where you want to put files.
@@ -31,7 +24,6 @@ The plan is to have it available via ``pip`` someday in the future.::
     $ pip install spectrum-overload
 
 That day is not today...
-
 
 If you have any issues with installation of spectrum_overload please open an `issue`_ so it can be resolved.
 
@@ -71,6 +63,5 @@ Editable Installation
 If you want to modify spectrum_overload you can instead install it like::
 
     $ python setup.py develop
-
 
 ..  or  pip install -e . when available

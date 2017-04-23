@@ -22,7 +22,7 @@ This means that you can easily divide and subtract spectra from each other using
    installation
    quickstart
    classes
-  
+
 
 Other Projects
 ===============
@@ -36,7 +36,7 @@ In alphabetical order:
     - `pyspeckit/spectrum <https://github.com/pyspeckit/pyspeckit/tree/master/pyspeckit/spectrum>`_
     - `PySpectrograph/Spectra <https://github.com/crawfordsm/pyspectrograph/tree/master/PySpectrograph/Spectra>`_
 
-I am sure there will be more to add here.
+I am sure there are others.
 
 
 Contributions

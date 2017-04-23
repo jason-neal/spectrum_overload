@@ -3,7 +3,6 @@
 =================
 Available Classes
 =================
-
 Currently there are two classes available.
     - :ref:`Spectrum <spectrumclass>`
     - :ref:`DifferentialSpectrum <diffclass>`
@@ -22,14 +21,10 @@ A class to contain a spectrum. The operators have been overloaded so that you ca
    :show-inheritance:
 
 
-
-
 .. _diffclass:
-
 
 Differential Spectrum
 =====================
-
 Compute the difference between two :ref:`Spectrum <spectrumclass>` objects.
 
 This is in an introductory state and need more work.
