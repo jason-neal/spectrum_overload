@@ -120,10 +120,8 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['coverage', 'pytest', 'pytest-cov', 'python-coveralls', 'hypothesis']
-        'docs': [
-            'sphinx >= 1.4',
-            'sphinx_rtd_theme']
+        'test': ['coverage', 'pytest', 'pytest-cov', 'python-coveralls', 'hypothesis'],
+        'docs': ['sphinx >= 1.4', 'sphinx_rtd_theme']
     },
 
     # If there are data files included in your packages that need to be
