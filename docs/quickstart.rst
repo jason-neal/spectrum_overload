@@ -26,7 +26,7 @@ where ``f`` and ``x`` are 1D lists or numpy arrays.
 
 	Flux is the first kwarg. Be careful not to switch the order of flux and xaxis when not specifying the kwarg names.
 
-By default the spectrum is "calibrated". If the xaxis is the pixel values of your spectra you can pass
+By default the spectrum is "calibrated". If the xaxis is only the pixel values of your spectra you can pass
 
 ::
 
@@ -67,5 +67,5 @@ exponential scaling etc...
 .. note ::
 
     Its probably best to interpolate the spectra to the same xaxis yourself before hand.
-    If the spectra are do not have the same wavelength axis then it is automatically interpolated
+    If the spectra do not have the same wavelength axis then it is automatically spline interpolated
     to match the first spectrum or to another defined new xaxis.
