@@ -29,8 +29,8 @@ install:
   #- conda install --yes -c dan_blanchard python-coveralls nose-cov
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy astropy
   - source activate test-environment
+  - pip install pyastronomy
   - python setup.py install
-
 
   - pip install pytest-cov python-coveralls
   - pip install -r requirements.txt
