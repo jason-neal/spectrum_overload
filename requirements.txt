@@ -1,7 +1,7 @@
 numpy
 astropy
 scipy
-pyastronomy
+#pyastronomy
 hypothesis
 pytest
 pytest-cov
