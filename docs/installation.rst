@@ -34,17 +34,22 @@ Requirements
 ============
 The main requirements are
 
-    - numpy
-    - astropy
-    - scipy
-    - pyastronomy
+    - `numpy <https://www.numpy.org/>`_
+    - `astropy <https://www.astropy.org/>`_
+    - `scipy <https://www.scipy.org/>`_
+    - `pyastronomy <http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/index.html>`_
 
 If you are needing to use this package you probably have these installed already...
+
+Unfortunately `pyastronomy <http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/index.html>`_ cannot be added to the ``requirements.txt`` alongside ``numpy`` due to an `issue#22 <https://github.com/sczesla/PyAstronomy/issues/22>`_ with the setup dependency of ``numpy`` in ``pyastronomy``.
+If you do not have it installed already then run::
+
+    $ pip install pyastronomy
 
 Other requirements are needed for running the `pytest <https://docs.pytest.org/en/latest/>`_ test suite.
 If you want to try run the tests, run::
 
-python setup.py test
+    $ python setup.py test
 
 after normal installation.
 
