@@ -123,7 +123,7 @@ setup(
     extras_require={
         'dev': ['check-manifest'],
         'test': ['coverage', 'pytest', 'pytest-cov', 'python-coveralls', 'hypothesis'],
-        'docs': ['sphinx >= 1.4', 'sphinx_rtd_theme']
+        'docs': ['sphinx >= 1.4', 'sphinx_rtd_theme', 'pyastronomy']
     },
 
     # If there are data files included in your packages that need to be
