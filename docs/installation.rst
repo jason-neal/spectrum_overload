@@ -13,12 +13,22 @@ with ``git``::
 
     $ git clone https://github.com/jason-neal/spectrum_overload.git
 
-To install::
+To install, run::
 
     $ cd spectrum_overload
     $ python setup.py install
 
-The plan is to have it available via ``pip`` someday in the future.::
+    # Or:
+
+    $ cd spectrum_overload
+    $ pip install .
+
+    # Or, for an editable installation:
+
+    $ cd spectrum_overload
+    $ pip install -e .
+
+The plan is to have it available via ``pypi`` someday in the future.::
 
     # Bug me about this.
     $ pip install spectrum-overload
@@ -41,7 +51,7 @@ The main requirements are
 
 If you are needing to use this package you probably have these installed already...
 
-Unfortunately `pyastronomy <http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/index.html>`_ cannot be added to the ``requirements.txt`` alongside ``numpy`` due to an `issue#22 <https://github.com/sczesla/PyAstronomy/issues/22>`_ with the setup dependency of ``numpy`` in ``pyastronomy``.
+Unfortunately `pyastronomy <http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/index.html>`_ cannot be added to the ``requirements.txt`` alongside ``numpy`` due to `issue #22 <https://github.com/sczesla/PyAstronomy/issues/22>`_ with the setup dependency of ``numpy`` in ``pyastronomy``.
 If you do not have it installed already then run::
 
     $ pip install pyastronomy
