@@ -1,17 +1,25 @@
 .. Spectrum documentation master file, created by
    sphinx-quickstart on Sun Sep 11 23:45:23 2016.
 
+.. image:: https://readthedocs.org/projects/spectrum-overload/badge/?version=latest
+    :target: http://spectrum-overload.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. image:: https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=master
+    :target: https://travis-ci.org/jason-neal/spectrum_overload
+
+.. image:: https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=master
+    :target: https://coveralls.io/github/jason-neal/spectrum_overload?branch=master
+
+.. image:: https://codeclimate.com/github/jason-neal/spectrum_overload/badges/gpa.svg
+    :target: https://codeclimate.com/github/jason-neal/spectrum_overload
+    :alt: Code Climate
+
 .. _home:
 
 =============================================
 Welcome to spectrum_overload's documentation!
 =============================================
-.. image:: https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=develop
-    :target: https://travis-ci.org/jason-neal/spectrum_overload
-
-.. image:: https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=develop
-    :target: https://coveralls.io/github/jason-neal/spectrum_overload?branch=develop
-
 
 Spectrum_overload is to manipulate astronomical spectra in a spectrum class with :ref:`overloaded operators <overloaded_operators>`.
 This means that you can easily divide and subtract spectra from each other using the math operators ``+``, ``-``, ``*``, ``/``, ``**`` keeping the wavelength, flux and headers together.
