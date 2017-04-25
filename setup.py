@@ -42,6 +42,10 @@ about = {}
 with open(os.path.join(base_dir, "spectrum_overload", "__about__.py")) as f:
     exec(f.read(), about)
 
+# https://www.reddit.com/r/Python/comments/3uzl2a/setuppy_requirementstxt_or_a_combination/
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setup(
     name='spectrum_overload',
 
@@ -107,17 +111,19 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['numpy', 'hypothesis', 'astropy', 'scipy'],
+    # install_requires=requirements,
+    install_requires=[],
+    #install_requires=["numpy", "scipy", "astropy", "pyastronomy"],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
+    tests_require=['pytest', "hypothesis"],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': (['coverage', 'pytest', 'pytest-cov', 'python-coveralls',
-                 'hypothesis'],)
+        'test': ['coverage', 'pytest', 'pytest-cov', 'python-coveralls', 'hypothesis'],
+        'docs': ['sphinx >= 1.4', 'sphinx_rtd_theme', 'pyastronomy']
     },
 
     # If there are data files included in your packages that need to be

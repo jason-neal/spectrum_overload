@@ -14,8 +14,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-# import sys
 import os
+import sys
 
 try:
     import sphinx_rtd_theme
@@ -29,6 +29,9 @@ about = {}
 with open(os.path.join(base_dir, "spectrum_overload", "__about__.py")) as f:
     exec(f.read(), about)
 
+
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".."))
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "spectrum_overload"))
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -136,7 +139,8 @@ if sphinx_rtd_theme:
     html_theme = "sphinx_rtd_theme"
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 else:
-    html_theme = "default"
+    # html_theme = "default"
+    html_theme = "sphinxdoc"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
