@@ -46,3 +46,11 @@ Any contributions and/or suggestions to improve this module are very welcome.
 Submit `issues <https://github.com/jason-neal/spectrum_overload/issues>`_, suggestions or pull requests to `jason-neal/spectrum_overload <https://github.com/jason-neal/spectrum_overload>`_.
 
 This is my first attempt at creating classes, and packaging a python project so any *helpful* feedback is appreciated.
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
