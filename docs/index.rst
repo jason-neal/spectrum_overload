@@ -47,6 +47,50 @@ Submit `issues <https://github.com/jason-neal/spectrum_overload/issues>`_, sugge
 
 This is my first attempt at creating classes, and packaging a python project so any *helpful* feedback is appreciated.
 
+Badges
+======
+**master**
+
+.. image:: https://readthedocs.org/projects/spectrum-overload/badge/?version=latest
+    :target: http://spectrum-overload.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+.. image:: https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=master
+    :target: https://travis-ci.org/jason-neal/spectrum_overload
+    :alt: Build Status
+.. image:: https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=master
+    :target: https://coveralls.io/github/jason-neal/spectrum_overload?branch=master
+    :alt: Test Coverage
+.. image:: https://codeclimate.com/github/jason-neal/spectrum_overload/badges/gpa.svg
+    :target: https://codeclimate.com/github/jason-neal/spectrum_overload
+    :alt: Code Climate
+.. image:: https://codeclimate.com/github/jason-neal/spectrum_overload/badges/issue_count.svg
+    :target: https://codeclimate.com/github/jason-neal/spectrum_overload
+    :alt: Issue Count
+.. image:: https://www.quantifiedcode.com/api/v1/project/6e918445f6f344c1af9c32f50718082e/badge.svg?branch=master
+    :target: https://www.quantifiedcode.com/app/project/6e918445f6f344c1af9c32f50718082e
+    :alt: Code Issues
+
+**develop**
+
+.. image:: https://readthedocs.org/projects/spectrum-overload/badge/?version=develop
+    :target: http://spectrum-overload.readthedocs.io/en/develop
+    :alt: Documentation Status
+.. image:: https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=develop
+    :target: https://travis-ci.org/jason-neal/spectrum_overload?branch=develop
+    :alt: Build Status
+.. image:: https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=develop
+    :target: https://coveralls.io/github/jason-neal/spectrum_overload?branch=develop
+    :alt: Test Coverage
+.. image:: https://codeclimate.com/github/jason-neal/spectrum_overload/badges/gpa.svg?branch=develop
+    :target: https://codeclimate.com/github/jason-neal/spectrum_overload?branch=develop
+    :alt: Code Climate GPA
+.. image:: https://codeclimate.com/github/jason-neal/spectrum_overload/badges/issue_count.svg?branch=develop
+    :target: https://codeclimate.com/github/jason-neal/spectrum_overload?branch=develop
+    :alt: Issue Count
+.. image:: https://www.quantifiedcode.com/api/v1/project/6e918445f6f344c1af9c32f50718082e/badge.svg?branch=develop
+    :target: https://www.quantifiedcode.com/app/project/6e918445f6f344c1af9c32f50718082e?branch=develop
+    :alt: Code Issues
+
 
 Indices and tables
 ==================
