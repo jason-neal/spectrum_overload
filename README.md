@@ -1,4 +1,8 @@
-# spectrum_overload [![Build Status](https://travis-ci.org/jason-neal/spectrum_overload.svg)](https://travis-ci.org/jason-neal/spectrum_overload) [![Coverage Status](https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=develop)](https://coveralls.io/github/jason-neal/spectrum_overload?branch=develop)
+# spectrum_overload
+| Branch  | Docs | Build | Coverage | Code Climate | Code Issues |
+| :----: | :---: | :-----: | :----: | :----------: | :---------: |
+| master  | [![Documentation Status](https://readthedocs.org/projects/spectrum-overload/badge/?version=latest)](http://spectrum-overload.readthedocs.io/en/latest/?badge=latest) | [![Build Status](https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=master)](https://travis-ci.org/jason-neal/spectrum_overload) | [![Coverage Status](https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=master)](https://coveralls.io/github/jason-neal/spectrum_overload?branch=master) [![Test Coverage](https://codeclimate.com/github/jason-neal/spectrum_overload/badges/coverage.svg)](https://codeclimate.com/github/jason-neal/spectrum_overload/coverage) | [![Code Climate](https://codeclimate.com/github/jason-neal/spectrum_overload/badges/gpa.svg)](https://codeclimate.com/github/jason-neal/spectrum_overload)[![Issue Count](https://codeclimate.com/github/jason-neal/spectrum_overload/badges/issue_count.svg)](https://codeclimate.com/github/jason-neal/spectrum_overload) | [![Code Issues](https://www.quantifiedcode.com/api/v1/project/6e918445f6f344c1af9c32f50718082e/snapshot/origin:master:HEAD/badge.svg)](https://www.quantifiedcode.com/app/project/6e918445f6f344c1af9c32f50718082e?branch=origin/master) |
+| develop | [![Documentation Status](https://readthedocs.org/projects/spectrum-overload/badge/?version=develop)](http://spectrum-overload.readthedocs.io/en/latest/?badge=develop) | [![Build Status](https://travis-ci.org/jason-neal/spectrum_overload.svg?branch=develop)](https://travis-ci.org/jason-neal/spectrum_overload) | [![Coverage Status](https://coveralls.io/repos/github/jason-neal/spectrum_overload/badge.svg?branch=develop)](https://coveralls.io/github/jason-neal/spectrum_overload?branch=develop) [![Test Coverage](https://codeclimate.com/github/jason-neal/spectrum_overload/badges/coverage.svg?branch=develop)](https://codeclimate.com/github/jason-neal/spectrum_overload/coverage?branch=develop) | [![Code Climate](https://codeclimate.com/github/jason-neal/spectrum_overload/badges/gpa.svg?branch=develop)](https://codeclimate.com/github/jason-neal/spectrum_overload?branch=develop)[![Issue Count](https://codeclimate.com/github/jason-neal/spectrum_overload/badges/issue_count.svg?branch=develop)](https://codeclimate.com/github/jason-neal/spectrum_overload?branch=develop) | [![Code Issues](https://www.quantifiedcode.com/api/v1/project/6e918445f6f344c1af9c32f50718082e/snapshot/origin:develop:HEAD/badge.svg)](https://www.quantifiedcode.com/app/project/6e918445f6f344c1af9c32f50718082e?branch=origin/develop) |
 
 ## Overview
 The purpose of this was project was to learn how to use and create Classes, and to create a Spectrum object to use within my Phd work.
@@ -6,7 +10,7 @@ The purpose of this was project was to learn how to use and create Classes, and 
 The main goals of this project are basically complete.
 
 - create a class to contain spectrum
-- automatic interpolation 
+- automatic interpolation
 - overloaded operators
 especially
 - Spectral division (SpectrumA / SpectrumB )
@@ -17,7 +21,7 @@ especially
 Currently to install and use Spectrum class for your own projects.
 
 clone the git repository where you want it:
-  
+
     https://github.com/jason-neal/spectrum_overload.git
 
 cd into the downloaded directory:
@@ -31,7 +35,7 @@ and install using:
 
 ## Usage
 To use import the class using :
-    
+
     from spectrum_overload import Spectrum
     ...
     my_spectrum = Spectrum.Spectrum(flux, xaxis)
@@ -78,4 +82,3 @@ Some tasks still to do:
 - Improve Documentation
 - Generate Calibration solution (outside spectrum class)?
 - Push a version to pypi
-
