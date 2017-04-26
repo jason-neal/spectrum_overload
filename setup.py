@@ -1,29 +1,30 @@
-"""spectrum_overload Setup.py
-My first atempt at a setup.py file. It is based off 
+""" spectrum_overload Setup.py
+My first atempt at a setup.py file. It is based off
 
 A setuptools based setup module.
 See:
 https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
+
 """
+# Licensed under the MIT Licence
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 # from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 from codecs import open
-from os import path
+import os
 
-
-here = path.abspath(path.dirname(__file__))
+# here = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
-#with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-#with open(path.join(here, 'README.md')) as f:
+# with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+# with open(os.path.join(here, 'README.md')) as f:
 #    long_description = f.read()
 long_description = " "
 
-#Allow "python setup.py test" to work
+# Allow "python setup.py test" to work
 # class PyTest(TestCommand):
 #     def finalize_options(self):
 #         TestCommand.finalize_options(self)
@@ -35,6 +36,15 @@ long_description = " "
 #         errcode = pytest.main(self.test_args)
 #         sys.exit(errcode)
 
+base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+
+about = {}
+with open(os.path.join(base_dir, "spectrum_overload", "__about__.py")) as f:
+    exec(f.read(), about)
+
+# https://www.reddit.com/r/Python/comments/3uzl2a/setuppy_requirementstxt_or_a_combination/
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
 
 setup(
     name='spectrum_overload',
@@ -42,7 +52,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.1",
+    version=about["__version__"],
 
     description='Spectrum class that overloads operators.',
     long_description=long_description,
@@ -85,13 +95,13 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords=['astronomy','spectra','spectroscopy','crires'],
+    keywords=['astronomy', 'spectra', 'spectroscopy'],
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
-    ######test_suite=['spectrum_overload.test.test_Spectrum','spectrum_overload.test.test_overloaded_operators'],
+    # test_suite=[],
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
     #   py_modules=["my_module"],
@@ -101,10 +111,11 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['numpy', 'hypothesis', 'astropy', 'scipy'], #'matplotlib'
-    
+    # install_requires=requirements,
+    install_requires=[],
+    #install_requires=["numpy", "scipy", "astropy", "pyastronomy"],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
+    tests_require=['pytest', "hypothesis"],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
@@ -112,14 +123,15 @@ setup(
     extras_require={
         'dev': ['check-manifest'],
         'test': ['coverage', 'pytest', 'pytest-cov', 'python-coveralls', 'hypothesis'],
+        'docs': ['sphinx >= 1.4', 'sphinx_rtd_theme', 'pyastronomy']
     },
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_data={"spectrum_overload":["data/*.fits"]},
+    package_data={"spectrum_overload": ["data/*.fits"]},
     #    'sample': ['package_data.dat'],
-    #},
+    # },
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
@@ -135,7 +147,7 @@ setup(
     #    'console_scripts': [
     #        'sample=sample:main',
         'console_scripts': [
-            'spectrum_overload=Spectrum:main',
+            'spectrum_overload=spectrum_overload:main',
         ],
     },
 )

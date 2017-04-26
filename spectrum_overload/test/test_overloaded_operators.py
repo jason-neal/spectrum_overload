@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function
 import pytest
-import copy
+# import copy
 import numpy as np
 # from astropy.io import fits
 # from pkg_resources import resource_filename

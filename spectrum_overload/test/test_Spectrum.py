@@ -1,5 +1,8 @@
 #!/usr/bin/env python
+"""Test Suite for Spectrum Class.
 
+It is not perfect and can be definately improved.
+"""
 from __future__ import division, print_function
 import copy
 import pytest
@@ -175,11 +178,10 @@ def test_wav_select_example():
 def test_doppler_shift_with_hypothesis(x, RV, calib, RV_dir):
     """Test doppler shift properties.
 
-    Need to check values against pyastronomy separately
+    Need to check values against pyastronomy separately.
+    Calib is sampled with a 1/8 chance being uncalibrated.
 
-    calib is sampled with a 1/8 chance being uncalibrated.
     """
-
     # Added a min value to RV shift to avoid very small RV values (1e-300).
     # Have added a flag to change RV direction to explore negative values
     rvdir = 2 * RV_dir - 1   # True -> 1 , False -> -1
@@ -223,7 +225,7 @@ def test_x_calibration_works():
 
 
 def test_cant_calibrate_calibrated_spectrum():
-    # Check that a calibrated spectra is not calibrated a second time
+    """Check that a calibrated spectra is not calibrated a second time."""
     s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], calibrated=True)
 
     with pytest.raises(SpectrumError):
@@ -231,7 +233,8 @@ def test_cant_calibrate_calibrated_spectrum():
     assert np.all(s.xaxis == np.array([1, 2, 3, 4]))
 
 
-def test_calibration_wavlength_only_positive():
+def test_calibration_wavelength_only_positive():
+    """Not quite sure what is happening here."""
     # Can't have a wavelenght of zero or negative.
     # So raise a SpectrumError before calibrating
     s = Spectrum([1, 2, 3, 4], [-4, -3, -2, -1], calibrated=False)
