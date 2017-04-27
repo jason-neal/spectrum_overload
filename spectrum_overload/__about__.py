@@ -37,4 +37,4 @@ __author__ = "Jason Neal"
 __email__ = "jason.neal@astro.up.pt"
 
 __license__ = "MIT Licence"
-__copyright__ = "2016 %s" % __author__
+__copyright__ = "2016 {0!s}".format(__author__)
