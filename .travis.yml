@@ -34,7 +34,7 @@ install:
 script:
   # - py.test -cov coveralls --cov-report term-missing
   # - py.test --cov=spectrum_overload spectrum_overload/ --cov-report term-missing
-  - pytest --cov=spectrum_overload --cov-report term-missing --durations 5
+  - pytest --cov=spectrum_overload --cov-report term-missing --durations 5 spectrum_overload/test/
 
 after_success:
   - coveralls
