@@ -6,6 +6,7 @@ import copy
 from scipy.interpolate import interp1d
 from scipy.interpolate import InterpolatedUnivariateSpline
 from PyAstronomy import pyasl
+import logging
 """Spectrum Class."""
 
 # Begun August 2016
@@ -236,9 +237,10 @@ class Spectrum(object):
         if RV == 0:
             """Do nothing."""
             pass
-        if abs(RV) < 1e-7:  # RV smaller then 0.1 mm/s
-            print("Warning the RV value given is very small (<0.1 mm/s).\n "
-                  "Not performing the doppler shift")
+        elif abs(RV) < 1e-7:
+            """RV smaller then 0.1 mm/s"""
+            logging.warning(("The RV value given is very small ({0} < 0.1 mm/s) .\n "
+                             "Not performing the doppler shift").format(abs(RV)))
 
         elif np.isnan(RV) or np.isinf(RV):
             print("Warning RV is infinity or Nan."
@@ -284,7 +286,7 @@ class Spectrum(object):
         Notes
         -----
         The PyAstronomy function pyasl.crosscorrRV() is used
-        
+
         http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/pyaslDoc/aslDoc/crosscorr.html
 
         """
