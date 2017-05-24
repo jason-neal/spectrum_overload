@@ -521,3 +521,43 @@ def test_zero_division():
     assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
     div4 = s / np.asarray([0])
     assert np.all(np.isinf(div4.flux))  # div by zero goes to np.inf
+
+
+def test_addition_perserves_header():
+    hdr = {"this": "header", "value": 2}
+    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
+    s += 1
+
+    assert np.all(s.flux == [2, 3, 4, 5])
+    assert not s.header is None
+    assert s.header == hdr
+
+
+def test_subtraction_perserves_header():
+    hdr = {"this": "header", "value": 2}
+    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
+    s -= 1
+
+    assert np.all(s.flux == [0, 1, 2, 3])
+    assert not s.header is None
+    assert s.header == hdr
+
+
+def test_multiplication_perserves_header():
+    hdr = {"this": "header", "value": 2}
+    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
+    s *= 2
+
+    assert np.all(s.flux == [1, 2, 3, 4])
+    assert not s.header is None
+    assert s.header == hdr
+
+
+def test_division_perserves_header():
+    hdr = {"this": "header", "value": 2}
+    s = Spectrum([1, 2, 3, 4], [2, 4, 6, 8], header=hdr)
+    s /= 2
+
+    assert np.all(s.flux == [1, 2, 3, 4])
+    assert not s.header is None
+    assert s.header == hdr
