@@ -157,6 +157,10 @@ class Spectrum(object):
         elif len(self._flux) != len(self._xaxis):
             raise ValueError("The length of xaxis and flux must be the same")
 
+    def copy(self):
+        """Copy the spectrum."""
+        return copy.copy(self)
+
     def wav_select(self, wav_min, wav_max):
         """Select part of the spectrum between the given wavelength bounds.
 
@@ -613,15 +617,15 @@ class Spectrum(object):
 
     def __neg__(self):
         """Take negative flux."""
-        negflux = -self.flux
-        return Spectrum(flux=negflux, xaxis=self.xaxis, header=self.header,
-                        calibrated=self.calibrated)
+        newspec = self.copy()
+        newspec.flux = -newspec.flux
+        return newspec
 
     def __pos__(self):
         """Take positive flux."""
-        posflux = +self.flux
-        return Spectrum(flux=posflux, xaxis=self.xaxis, header=self.header,
-                        calibrated=self.calibrated)
+        newspec = self.copy()
+        newspec.flux = +newspec.flux
+        return newspec
 
     def __abs__(self):
         """Take absolute flux."""
