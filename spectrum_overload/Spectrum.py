@@ -664,7 +664,7 @@ class Spectrum(object):
                 raise SpectrumError("Spectra are not calibrated similarly.")
             if np.all(self.xaxis == other.xaxis):  # Only for equal xaxis
                 # Easiest condition in which xaxis of both are the same
-                return copy.copy(other.flux)
+                return other.copy().flux
             else:  # Uneven length xaxis need to be interpolated
                 no_overlap_lower = (np.min(self.xaxis) > np.max(other.xaxis))
                 no_overlap_upper = (np.max(self.xaxis) < np.min(other.xaxis))
@@ -672,11 +672,12 @@ class Spectrum(object):
                     raise ValueError("The xaxis do not overlap so cannot"
                                      " be interpolated")
                 else:
-                    other_copy = copy.copy(other)
+                    other_copy = other.copy()
                     # other_copy.interpolate_to(self)
                     other_copy.spline_interpolate_to(self)
                     return other_copy.flux
-        elif isinstance(other, (int, float, np.ndarray)):
+        elif np.isscalar(other):
+            return other
             return copy.copy(other)
         else:
             raise TypeError("Unexpected type {} given".format(type(other)))
