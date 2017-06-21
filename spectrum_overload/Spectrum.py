@@ -161,6 +161,10 @@ class Spectrum(object):
         """Copy the spectrum."""
         return copy.copy(self)
 
+    def shape(self):
+        "Return flux shape."
+        return self.flux.shape
+
     def wav_select(self, wav_min, wav_max):
         """Select part of the spectrum between the given wavelength bounds.
 
