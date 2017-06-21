@@ -394,3 +394,17 @@ def test_add_noise(snr):
     spec.add_noise(snr)
 
     assert np.isclose(np.std(spec.flux), 1. / snr, atol=1e-5)
+
+
+def test_interp_method():
+    """Test interpolation method attribute."""
+    s = Spectrum()
+    assert s.interp_method == "spline"
+
+    s.interp_method = "linear"
+    assert s.interp_method == "linear"
+
+def test_bad_interp_method():
+    s = Spectrum()
+    with pytest.raises(ValueError):
+        s.interp_method = "invalid_method"

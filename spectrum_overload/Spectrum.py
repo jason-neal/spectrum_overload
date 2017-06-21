@@ -30,7 +30,7 @@ class Spectrum(object):
 
     """
 
-    def __init__(self, flux=None, xaxis=None, calibrated=True, header=None):
+    def __init__(self, flux=None, xaxis=None, calibrated=True, header=None, interp_method="spline"):
         """Initalise a Spectrum object."""
         # Some checks before creating class
         if isinstance(flux, str):
@@ -62,6 +62,27 @@ class Spectrum(object):
         self.length_check()
         self.calibrated = calibrated
         self.header = header   # Access header with a dictionary call.
+        self._interp_method = interp_method
+
+
+    @property
+    def interp_method(self):
+        """Getter for the interp_method attribute."""
+        return self._interp_method
+
+    @interp_method.setter
+    def interp_method(self, value):
+        """Setter for interp_method attribute.
+
+        Parameters
+        ----------
+        value : str
+            Interpolation method to use. Default "spline".
+        """
+        if value in ("linear", "spline"):
+            self._interp_method = value
+        else:
+            raise ValueError("Warning the interpolation method was not valid. ['linear', 'spline'] are the valid options.")
 
     @property
     def xaxis(self):
@@ -150,7 +171,6 @@ class Spectrum(object):
 
         """
         if (self._flux is None) and (self._xaxis is None):
-            # Can't measure lenght of none
             pass
         elif (self._flux is None) or (self._xaxis is None):
             pass
