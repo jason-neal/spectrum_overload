@@ -618,23 +618,25 @@ class Spectrum(object):
 
     def __pow__(self, other):
         """Exponetial magic method."""
-        # Overlaod to use power to scale the flux of the spectra
-        # if len(other) > 1 :
-        #    raise ValueError("Spectrum can only be raised to the power of
-        # one number not {}".format(len(other)))
         if isinstance(other, Spectrum):
             raise TypeError("Can not preform Spectrum ** Spectrum")
-        elif isinstance(other, (int, float, np.ndarray)):
-            try:
-                new_flux = self.flux ** other
-                return Spectrum(flux=new_flux, xaxis=self.xaxis,
-                                header=self.header, calibrated=self.calibrated)
-            except:
-                # Type error or value error are likely
-                raise
+        elif np.isscalar(other):
+            power = other
+        elif isinstance(other, np.ndarray):
+            if len(other) == len(self.flux):
+                power = other
+            else:
+                raise ValueError("Dimension mismatch for power operator of {} and {}".format(len(self.flux), len(other)))
         else:
             raise TypeError("Unexpected type {} given for"
                             " __pow__".format(type(other)))
+        try:
+            newspec = self.copy()
+            newspec.flux = newspec.flux ** power
+            return newspec
+        except:
+            # Type error or value error are likely
+            raise
 
     def __len__(self):
         """Return length of flux Spectrum."""
