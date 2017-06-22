@@ -514,13 +514,10 @@ def test_zero_division():
     print(divide.flux[2])
     assert np.isinf(divide.flux[2])
     assert np.all(divide.flux[notnan] == [1, 1, 1])
-
     div2 = s / 0
     assert np.all(np.isinf(div2.flux))  # div by zero goes to np.inf
-    div3 = s / np.asarray(0)
+    div3 = s / np.float(0)
     assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
-    div4 = s / np.asarray([0])
-    assert np.all(np.isinf(div4.flux))  # div by zero goes to np.inf
 
 
 def test_addition_perserves_header():
@@ -548,14 +545,14 @@ def test_multiplication_perserves_header():
     s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
     s *= 2
 
-    assert np.all(s.flux == [1, 2, 3, 4])
+    assert np.all(s.flux == [2, 4, 6, 8])
     assert not s.header is None
     assert s.header == hdr
 
 
 def test_division_perserves_header():
     hdr = {"this": "header", "value": 2}
-    s = Spectrum([1, 2, 3, 4], [2, 4, 6, 8], header=hdr)
+    s = Spectrum(xaxis=[1, 2, 3, 4], flux=[2, 4, 6, 8], header=hdr)
     s /= 2
 
     assert np.all(s.flux == [1, 2, 3, 4])

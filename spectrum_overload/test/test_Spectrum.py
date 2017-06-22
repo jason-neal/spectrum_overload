@@ -385,7 +385,7 @@ def test_spline_interpolation_when_given_a_ndarray():
 
 
 # test_doppler_shift_with_hypothesis()
-@pytest.mark.parametrize('snr', [50, 100, 200, 1000])
+@pytest.mark.parametrize('snr', [50, 100, 200])
 def test_add_noise(snr):
     """Test addition of noise."""
     x = np.linspace(2000, 2200, 10000000)
