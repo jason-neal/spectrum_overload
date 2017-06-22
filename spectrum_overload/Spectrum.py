@@ -544,16 +544,16 @@ class Spectrum(object):
         """
         # Checks for type errors and size. It interpolates other if needed.
         prepared_other = self._prepare_other(other)
-        new_flux = self.flux + prepared_other
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
-                        calibrated=self.calibrated)
+        newspec = self.copy()
+        newspec.flux = newspec.flux + prepared_other
+        return newspec
 
     def __radd__(self, other):
         """Right addition."""
         # E.g. for first Item in Sum  0  + Spectrum fails.
-        new_flux = self.flux + other
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
-                        calibrated=self.calibrated)
+        newspec = self.copy()
+        newspec.flux = newspec.flux + other
+        return newspec
 
     def __sub__(self, other):
         """Overloaded subtraction method for Spectrum.
@@ -570,9 +570,9 @@ class Spectrum(object):
         """
         # Checks for type errors and size. It interpolates other if needed.
         prepared_other = self._prepare_other(other)
-        new_flux = self.flux - prepared_other
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
-                        calibrated=self.calibrated)
+        newspec = self.copy()
+        newspec.flux = newspec.flux - prepared_other
+        return newspec
 
     def __mul__(self, other):
         """Overloaded multiplication method for Spectrum.
@@ -589,9 +589,10 @@ class Spectrum(object):
         """
         # Checks for type errors and size. It interpolates other if needed.
         prepared_other = self._prepare_other(other)
-        new_flux = self.flux * prepared_other
-        return Spectrum(flux=new_flux, xaxis=self.xaxis, header=self.header,
-                        calibrated=self.calibrated)
+        #new_flux = self.flux * prepared_other
+        newspec = self.copy()
+        newspec.flux = newspec.flux * prepared_other
+        return newspec
 
     def __truediv__(self, other):
         """Overloaded truedivision (/) method for Spectrum.
@@ -609,11 +610,11 @@ class Spectrum(object):
         # Checks for type errors and size. It interpolates other if needed.
         prepared_other = self._prepare_other(other)
         # Divide by zero only gives a runtime warning with numpy
-        new_flux = self.flux / prepared_other
+        newspec = self.copy()
+        newspec.flux = newspec.flux / prepared_other
         # May want to change the inf to something else, nan, 0?...
         # new_flux[new_flux == np.inf] = np.nan
-        return Spectrum(flux=new_flux, xaxis=self.xaxis,
-                        calibrated=self.calibrated)
+        return newspec
 
     def __pow__(self, other):
         """Exponetial magic method."""
