@@ -529,6 +529,7 @@ class Spectrum(object):
     # Overloading Operators
     # ######################################################
 
+    def _operation_wrapper(operation):
     def __add__(self, other):
         """Overloaded addition method for Spectrum.
 
@@ -542,6 +543,8 @@ class Spectrum(object):
         This makes a + b != b + a
 
         """
+        Perform an operation (addition, subtraction, mutiplication, division,
+        etc.) after checking for shape matching.
         # Checks for type errors and size. It interpolates other if needed.
         prepared_other = self._prepare_other(other)
         newspec = self.copy()
@@ -587,6 +590,36 @@ class Spectrum(object):
         This makes a * b != b * a
 
         """
+        def ofunc(self, other):
+            """ operation function """
+            newspec = self.copy()
+            if np.isscalar(other):
+                other_flux = other
+
+            # check if both are spectra (or can be treated as such)
+            elif isinstance(other, np.ndarray) and not isinstance(other, Spectrum):
+                    if len(other) == len(self.flux):
+                        # If the lenght is the correct lenght then assume that this is correct to perform.
+                        other_flux = other
+                    else:
+                        raise ValueError("Dimension mismatch in operation with lengths {} and {}.".format(len(self.flux), len(other)))
+            elif isinstance(self, Spectrum) and isinstance(other, Spectrum):
+                if self.calibrated != other.calibrated:
+                    raise SpectrumError("Spectra are not calibrated similarly.")
+                if np.all(self.xaxis == other.xaxis):  # Equal xaxis
+                    other_flux = other.copy().flux
+
+                elif self.xaxis != other.xaxis:  # Need to Apply interpolation
+                    no_overlap_lower = (np.min(self.xaxis) > np.max(other.xaxis))
+                    no_overlap_upper = (np.max(self.xaxis) < np.min(other.xaxis))
+                    if no_overlap_lower | no_overlap_upper:
+                        raise ValueError("The xaxis do not overlap so cannot be interpolated")
+                    else:
+                        other_copy = other.copy()
+                        other_copy.spline_interpolate_to(self)
+                        other_flux = other_copy.flux
+            else:
+                raise TypeError("Unexpected type {} for operation with Spectrum".format(type(other)))
         # Checks for type errors and size. It interpolates other if needed.
         prepared_other = self._prepare_other(other)
         #new_flux = self.flux * prepared_other
@@ -594,9 +627,12 @@ class Spectrum(object):
         newspec.flux = newspec.flux * prepared_other
         return newspec
 
+            newspec.flux = operation(newspec.flux, other_flux)  # Perform the operation
+            return newspec
     def __truediv__(self, other):
         """Overloaded truedivision (/) method for Spectrum.
 
+        return ofunc
         If there is truedivision between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
         to the xaxis of the first Spectum.
