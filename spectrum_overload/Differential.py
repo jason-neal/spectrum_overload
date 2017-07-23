@@ -57,6 +57,17 @@ class DifferentialSpectrum(object):
         """Swap order of the two spectra."""
         self.spec1, self.spec2 = self.spec2, self.spec1
 
-    def add_orbital_params(self, params):
-        """A dictionary of orbital parameters to use for shifting frames."""
-        self.params = params
+    @property
+    def params(self):
+        return self.params
+
+    @params.setter
+    def params(self, value):
+        """Params setter.
+
+        A dictionary of orbital parameters to use for shifting frames.
+        """
+        if isinstance(value, dict):
+            self.params = value
+        else:
+            raise TypeError("Orbital parameters need to be a dict.")
