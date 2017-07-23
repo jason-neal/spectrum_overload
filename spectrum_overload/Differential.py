@@ -9,15 +9,29 @@ from spectrum_overload.Spectrum import Spectrum
 class DifferentialSpectrum(object):
     """A differential spectrum."""
 
-    def __init__(self, Spectrum1, Spectrum2):
+        def check_compatibility(spec1, spec2):
+            """Check spectra are compatible to take differences.
+
+            Requires most of the setting to be the same. Have included a CRIRES only parameters also.
+            """
+            compatible = True
+            for check in ["EXPTIME", "HIERARCH ESO INS SLIT1 WID", "OBJECT"]:
+                if spec1.header[check] != spec1.header[check]:
+                    print("The Spectral property '{}' are not compatible. {}, {}".format(check, spec1.header[check], spec2.header[check]))
+                    compatible = False
+            return compatible
+
+    def __init__(self, Spectrum1, Spectrum2, params=None):
         """Initalise lass with both spectra."""
         if not(Spectrum1.calibrated and Spectrum2.calibrated):
             raise ValueError("Input spectra are not calibrated.")
 
-        self.spec1 = Spectrum1
-        self.spec2 = Spectrum2
-        self.params = None
-        self.diff = None
+        if check_compatibility(spec1, spec2):
+            self.spec1 = Spectrum1
+            self.spec2 = Spectrum2
+            self.diff = None
+        else:
+            raise ValueError("The spectra are not compatible.")
 
     def barycentric_correct(self):
         """Barycentic correct each spectra."""
@@ -29,8 +43,11 @@ class DifferentialSpectrum(object):
 
     def diff(self):
         """Calculate difference between the two spectra."""
+        if check_compatibility(self.spec1, self.spec2):
+            return self.spec1 - self.spec2
+        else:
+            raise ValueError("The spectra are not compatible.")
         # TODO: Access interpolations
-        return self.spec1 - self.spec2
 
     def sort(self, method="time"):
         """Sort spectra in specific order. e.g. time, reversed."""
