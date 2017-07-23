@@ -37,6 +37,13 @@ class DifferentialSpectrum(object):
         """Barycentic correct each spectra."""
         pass
 
+    def times(self):
+        time = self.spec1.header["DATE-OBS"]
+        time2 = self.spec2.header["DATE-OBS"]
+        # TODO: Turn into datetime?
+        return (time, time2)
+
+
     def rest_frame(self, frame):
         """Change restframe to one of the spectra."""
         pass
