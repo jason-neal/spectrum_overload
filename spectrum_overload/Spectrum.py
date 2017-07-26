@@ -497,6 +497,11 @@ class Spectrum(object):
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
 
+    def remove_nans(self):
+        s = self.copy()
+        s.flux = s.flux[~np.isnan(self.flux)]
+        s.xaxis = s.xaxis[~np.isnan(self.flux)]
+        return s
     # ######################################################
     # Overloading Operators
     # ######################################################
