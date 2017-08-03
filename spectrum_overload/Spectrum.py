@@ -202,7 +202,7 @@ class Spectrum(object):
         self.flux += np.random.normal(0, sigma)
 
     def doppler_shift(self, RV):
-        """Doopler shift wavelength by a given Radial Velocity.
+        r"""Doopler shift wavelength by a given Radial Velocity.
 
         Apply doopler shift to the wavlength values of the spectrum
         using the radial velocity value provided and the relation
