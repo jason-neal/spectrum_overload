@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
-from __future__ import print_function, division
-import numpy as np
+from __future__ import division, print_function
+
 import copy
-from scipy.interpolate import interp1d
-from scipy.interpolate import InterpolatedUnivariateSpline
-from PyAstronomy import pyasl
 import logging
+
+import numpy as np
+from PyAstronomy import pyasl
+from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
+
 """Spectrum Class."""
 
 # Begun August 2016

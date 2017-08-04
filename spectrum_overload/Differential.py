@@ -1,5 +1,7 @@
 """Differential Class which takes the difference between two spectra."""
 from spectrum_overload.Spectrum import Spectrum
+
+
 # Begin Feburary 2017
 # Jason Neal
 

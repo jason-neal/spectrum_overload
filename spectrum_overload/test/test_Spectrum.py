@@ -4,21 +4,21 @@
 It is not perfect and can be definately improved.
 """
 from __future__ import division, print_function
+
 import copy
-import pytest
+
+import hypothesis.strategies as st
 import numpy as np
+import pytest
 from astropy.io import fits
+# Test using hypothesis
+from hypothesis import example, given
 from pkg_resources import resource_filename
 
 # import sys
 # Add Spectrum location to path
 # sys.path.append('../')
-from spectrum_overload.Spectrum import Spectrum
-from spectrum_overload.Spectrum import SpectrumError
-
-# Test using hypothesis
-from hypothesis import given, example
-import hypothesis.strategies as st
+from spectrum_overload.Spectrum import Spectrum, SpectrumError
 
 
 @given(st.lists(st.floats(allow_infinity=False, allow_nan=False)),

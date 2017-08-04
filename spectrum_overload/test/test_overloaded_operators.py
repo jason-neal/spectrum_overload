@@ -1,20 +1,21 @@
 #!/usr/bin/env python
 
 from __future__ import division, print_function
-import pytest
+
+import hypothesis.strategies as st
 # import copy
 import numpy as np
+import pytest
+# Test using hypothesis
+from hypothesis import given
+
 # from astropy.io import fits
 # from pkg_resources import resource_filename
 # import sys
 # Add Spectrum location to path
 # sys.path.append('../')
-from spectrum_overload.Spectrum import Spectrum
-from spectrum_overload.Spectrum import SpectrumError
+from spectrum_overload.Spectrum import Spectrum, SpectrumError
 
-# Test using hypothesis
-from hypothesis import given
-import hypothesis.strategies as st
 
 #######################################################
 #    Overloading Operators
