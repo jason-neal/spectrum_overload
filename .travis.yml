@@ -5,8 +5,6 @@ python:
   - "3.5"
   - "3.6"
 
-# command to install dependencies
-# Setup anaconda
 before_install:
   # http://conda.pydata.org/docs/travis.html
   - sudo apt-get update
@@ -32,15 +30,15 @@ install:
   - pip install pyastronomy
   - python setup.py install
 
-  - pip install pytest-cov python-coveralls codeclimate-test-reporter
+  - pip install pytest-cov python-coveralls codeclimate-test-reporter codacy-coverage
   - pip install -r requirements.txt
 
 # command to run tests
 script:
-  # - py.test -cov coveralls --cov-report term-missing
-  # - py.test --cov=spectrum_overload spectrum_overload/ --cov-report term-missing
-  - pytest --cov=spectrum_overload --cov-report term-missing --durations 5
+  - pytest --cov=spectrum_overload --cov-report term-missing --durations 10
+  - coverage xml
 
 after_success:
   - coveralls
   - codeclimate-test-reporter
+  - python-codacy-coverage -r coverage.xml
