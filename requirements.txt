@@ -2,7 +2,7 @@ numpy==1.13.1
 astropy==2.0.2
 scipy==0.19.1
 #pyastronomy
-hypothesis
+hypothesis==3.30.1
 pytest
 pytest-cov
 python-coveralls
