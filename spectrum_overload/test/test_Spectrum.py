@@ -394,3 +394,21 @@ def test_add_noise(snr):
     spec.add_noise(snr)
 
     assert np.isclose(np.std(spec.flux), 1. / snr, atol=1e-5)
+
+
+@pytest.mark.xfail()
+def test_remove_nans():
+    return False
+
+
+@pytest.mark.xfail()
+def test_normalization():
+    return False
+
+
+@pytest.mark.xfail()
+def test_normalization_linear():
+    linear = s.normalize('linear')
+    poly_1 = s.normalize('polynomial', degree=1)  # 'linear' can be a subset of this
+    assert np.allclose(linear.flux, poly_1.flux)
+    return False

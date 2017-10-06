@@ -509,6 +509,16 @@ class Spectrum(object):
         s.xaxis = s.xaxis[~np.isnan(self.flux)]
         return s
 
+    # s = Spectrum(flux, xaxis=wavelength)
+    # s.normalize('linear')
+    # s.normalize('polynomial', degree=n)  # 'linear' kan be a subset of this
+    # s.normalize('spline')
+    def normalize(self, method, degree=1):
+        s=self.copy()
+        # Something like this
+        s.flux = normalize(s.xaxis, s.flux, method)
+        s.header["normalize"] = ""
+        return normalize(s.xaxis, s.flux)
 
     # ######################################################
     # Overloading Operators
