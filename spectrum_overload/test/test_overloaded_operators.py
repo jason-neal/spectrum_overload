@@ -16,7 +16,6 @@ from hypothesis import given
 # sys.path.append('../')
 from spectrum_overload.Spectrum import Spectrum, SpectrumError
 
-
 #######################################################
 #    Overloading Operators
 #######################################################

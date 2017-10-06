@@ -194,12 +194,12 @@ class Spectrum(object):
                 mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
                 self.flux = self.flux[mask]    # change flux first
                 self.xaxis = self.xaxis[mask]
-        except TypeError:
+        except TypeError as e:
             print("Spectrum has no xaxis to select wavelength from")
             # Return to original values iscase were changed
             self.flux = flux_org           # Fix flux first
             self.xaxis = x_org
-            raise
+            raise e
 
     def add_noise(self, snr):
         """Add noise level of snr to the flux of the spectrum."""
@@ -207,7 +207,7 @@ class Spectrum(object):
         # Add normal distributed noise at the SNR level.
         self.flux += np.random.normal(0, sigma)
 
-    def doppler_shift(self, RV):
+    def doppler_shift(self, rv):
         r"""Doopler shift wavelength by a given Radial Velocity.
 
         Apply doopler shift to the wavlength values of the spectrum
@@ -240,27 +240,27 @@ class Spectrum(object):
         shift, :math:`(\lambda_{shift} - \lambda_0)`
 
         """
-        if RV == 0:
+        if rv == 0:
             """Do nothing."""
             pass
-        elif abs(RV) < 1e-7:
+        elif abs(rv) < 1e-7:
             """RV smaller then 0.1 mm/s"""
             logging.warning(("The RV value given is very small ({0} < 0.1 mm/s) .\n "
-                             "Not performing the doppler shift").format(abs(RV)))
+                             "Not performing the doppler shift").format(abs(rv)))
 
-        elif np.isnan(RV) or np.isinf(RV):
+        elif np.isnan(rv) or np.isinf(rv):
             print("Warning RV is infinity or Nan."
                   "Not performing the doppler shift")
 
         elif self.calibrated:
             c = 299792.458
-            lambda_shift = self.xaxis * (RV / c)
+            lambda_shift = self.xaxis * (rv / c)
             self.xaxis = self.xaxis + lambda_shift
         else:
             print("Attribute xaxis is not wavelength calibrated."
                   " Cannot perform doppler shift")
 
-    def crosscorrRV(self, spectrum, rvmin, rvmax, drv, **params):
+    def crosscorr_rv(self, spectrum, rvmin, rvmax, drv, **params):
         """Perform pyasl.crosscorrRV with another spectrum.
 
         Parameters
@@ -276,7 +276,7 @@ class Spectrum(object):
         drv: float
             The width of the radial-velocity steps to be applied in the calculation
             of the cross-correlation function [km/s].
-        kwargs: dict
+        params: dict
             Cross-correlation parameters.
 
         Returns
@@ -337,7 +337,7 @@ class Spectrum(object):
 
     def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
                          fill_value=np.nan):
-        u"""Interpolate wavelength solution to the reference wavelength.
+        """Interpolate wavelength solution to the reference wavelength.
 
         This uses the scipy's interp1d interpolation. The optional
         parameters are passed to scipy's interp1d. This interpolates
@@ -410,7 +410,7 @@ class Spectrum(object):
 
     def spline_interpolate_to(self, reference, w=None, bbox=[None, None], k=3,
                               ext=0, check_finite=False, bounds_error=False):
-        """Interpolate wavelength solution using scipy's
+        r"""Interpolate wavelength solution using scipy's
                 InterpolatedUnivariateSpline.
 
         The optional parameters are for scipy's InterpolatedUnivariateSpline
