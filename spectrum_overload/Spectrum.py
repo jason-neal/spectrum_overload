@@ -9,6 +9,8 @@ import numpy as np
 from PyAstronomy import pyasl
 from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
 
+import spectrum_overload.norm as norm
+
 """Spectrum Class."""
 
 # Begun August 2016
