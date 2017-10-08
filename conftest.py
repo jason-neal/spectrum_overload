@@ -1,5 +1,5 @@
 import os
-from hypothesis import settings
+from hypothesis import settings, Verbosity
 settings.register_profile("ci", settings(max_examples=1000))
 settings.register_profile("rpi", settings(max_examples=2))
 settings.register_profile("dev", settings(max_examples=10))
