@@ -21,6 +21,15 @@ from pkg_resources import resource_filename
 from spectrum_overload.Spectrum import Spectrum, SpectrumError
 
 
+
+@pytest.mark.fixture
+def ones_spectrum():
+    x = np.linspace(2000, 2200, 1000)
+    y = np.ones_like(x)
+    spec = Spectrum(xaxis=x, flux=y)
+    return spec
+
+
 @given(st.lists(st.floats(allow_infinity=False, allow_nan=False)),
        st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
@@ -385,15 +394,13 @@ def test_spline_interpolation_when_given_a_ndarray():
 
 
 # test_doppler_shift_with_hypothesis()
-@pytest.mark.parametrize('snr', [50, 100, 200, 1000])
-def test_add_noise(snr):
+@pytest.mark.parametrize('snr', [50, 100])
+def test_add_noise(ones_spectrum, snr):
     """Test addition of noise."""
-    x = np.linspace(2000, 2200, 10000000)
-    y = np.ones_like(x)
-    spec = Spectrum(xaxis=x, flux=y)
-    spec.add_noise(snr)
+    np.random.seed(3)
+    ones_spectrum.add_noise(snr)
 
-    assert np.isclose(np.std(spec.flux), 1. / snr, atol=1e-5)
+    assert np.isclose(np.std(ones_spectrum.flux), 1. / snr, atol=1e-3)
 
 
 @pytest.mark.xfail()
