@@ -21,7 +21,7 @@ from pkg_resources import resource_filename
 from spectrum_overload.Spectrum import Spectrum, SpectrumError
 
 
-@pytest.mark.fixture
+@pytest.fixture
 def phoenix_spectrum():
     # Get a phoenix spectrum in test data to load in and get th
     spec_1 = resource_filename('spectrum_overload', 'data/spec_1.fits')
@@ -34,7 +34,7 @@ def phoenix_spectrum():
     return Spectrum(xaxis=wave, flux=flux, header=header)
 
 
-@pytest.mark.fixture
+@pytest.fixture
 def ones_spectrum():
     x = np.linspace(2000, 2200, 1000)
     y = np.ones_like(x)
@@ -425,12 +425,10 @@ def test_remove_nans():
     assert len(s.xaxis) == 3 and len(s.flux) == 3
     
 
-@pytest.mark.xfail()
 def test_normalization():
     return False
 
 
-#@pytest.mark.xfail()
 @pytest.mark.parametrize("method, degree", [
     ("scalar", 0),
     ("linear", 1),
