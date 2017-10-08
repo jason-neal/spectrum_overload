@@ -419,9 +419,17 @@ def test_normalization():
     return False
 
 
-@pytest.mark.xfail()
-def test_normalization_linear():
-    linear = s.normalize('linear')
-    poly_1 = s.normalize('polynomial', degree=1)  # 'linear' can be a subset of this
-    assert np.allclose(linear.flux, poly_1.flux)
-    return False
+#@pytest.mark.xfail()
+@pytest.mark.parametrize("method, degree", [
+    ("scalar", 0),
+    ("linear", 1),
+    ("quadratic", 2),
+    ("cubic", 3)])
+def test_normalization_method_match_degree(method, degree):
+    "Eventually call phoenix_spectrum to do this"
+    x = np.arange(1000)
+    y = np.arange(1000)
+    s = Spectrum(xaxis=x, flux=y)
+    named_method = s.normalize(method=method)
+    poly_deg = s.normalize(method='poly', degree=degree)
+    assert np.allclose(named_method.flux, poly_deg.flux)

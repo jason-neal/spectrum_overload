@@ -516,13 +516,28 @@ class Spectrum(object):
     # s.normalize('linear')
     # s.normalize('polynomial', degree=n)  # 'linear' kan be a subset of this
     # s.normalize('spline')
-    def normalize(self, method, degree=1):
-        s=self.copy()
-        # Something like this
-        s.flux = normalize(s.xaxis, s.flux, method)
-        s.header["normalize"] = ""
-        return normalize(s.xaxis, s.flux)
 
+
+    def continuum(self, method="scalar", degree=0, **kwargs):
+        """Get continuum of spectrum.
+
+        kwargs are for the continuum splits and top parameters."""
+        s = self.copy()
+
+        s.flux = norm.continuum(s.xaxis, s.flux, method=method, degree=degree, **kwargs)
+        return s
+
+    def normalize(self, method="scalar", degree=None, **kwargs):
+        """Normalize spectrum by dividing by the continuum.
+
+        Valid methods
+        scalar, linear, quadratic, cubic, poly, exponential.
+        poly method uses the degree value provided"""
+        
+        s = self.copy()
+        s = s / self.continuum(method, degree, **kwargs)
+        s.header["normalized"] = "{0} with degree {1}".format(method, degree)
+        return s
     # ######################################################
     # Overloading Operators
     # ######################################################
