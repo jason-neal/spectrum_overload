@@ -403,10 +403,16 @@ def test_add_noise(ones_spectrum, snr):
     assert np.isclose(np.std(ones_spectrum.flux), 1. / snr, atol=1e-3)
 
 
-@pytest.mark.xfail()
 def test_remove_nans():
-    return False
-
+    s = Spectrum(xaxis=np.arange(5), flux=[3, 2,np.nan, 4, np.nan])
+    assert len(s.xaxis) == 5 and len(s.flux) == 5
+    
+    s = s.remove_nans()
+    
+    assert np.all(s.xaxis == np.array([0, 1, 3]))
+    assert np.all(s.flux == np.array([3, 2, 4]))
+    assert len(s.xaxis) == 3 and len(s.flux) == 3
+    
 
 @pytest.mark.xfail()
 def test_normalization():
