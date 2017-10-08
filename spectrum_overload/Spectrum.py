@@ -23,19 +23,17 @@ class Spectrum(object):
     Attributes
     ----------
     xaxis:np.ndarray
-        The wavlength or pixel position values.
+        The wavelength or pixel position values.
     flux: np.ndarray, array-like, list
-        The extracted flux (measured intesity of light).
+        The extracted flux (measured intensity of light).
     calibrated: bool
         Flag to indicate calibration state. (Default = True.)
     header: astropy.Header, dict-like
         Header information of observation.
 
-
     """
-
     def __init__(self, flux=None, xaxis=None, calibrated=True, header=None):
-        """Initalise a Spectrum object."""
+        """Initialise a Spectrum object."""
         # Some checks before creating class
         if isinstance(flux, str):
             raise TypeError("Cannot assign {} to the flux attribute".format(
@@ -57,12 +55,12 @@ class Spectrum(object):
                 try:
                     self._xaxis = np.arange(len(flux))
                 except TypeError:
-                    print("TypeError caught becasue flux has no length")
+                    print("TypeError caught because flux has no length")
                     self._xaxis = None
         else:
             self._xaxis = np.asarray(xaxis)  # Setter not used - need asarray
 
-        # Check assigned lenghts
+        # Check assigned lengths
         self.length_check()
         self.calibrated = calibrated
         if header is None:
@@ -80,7 +78,7 @@ class Spectrum(object):
     def xaxis(self, value):
         """Setter for xaxis attribute.
 
-        Turns value intp a numpy array if it is not.
+        Turns value into a numpy array if it is not.
 
         Parameters
         ----------
@@ -107,7 +105,7 @@ class Spectrum(object):
         # Add any other checks in here if necessary
         elif self._flux is not None:
             if len(value) != len(self._flux):
-                raise ValueError("Lenght of xaxis does not match flux length")
+                raise ValueError("Length of xaxis does not match flux length")
             else:
                 self._xaxis = np.asarray(value)
         else:
@@ -148,7 +146,7 @@ class Spectrum(object):
     def length_check(self):
         """Check length of xaxis and flux are equal.
 
-        If everyting is ok then there is no response/output.
+        If everything is ok then there is no response/output.
 
         Raises
         ------
@@ -157,7 +155,7 @@ class Spectrum(object):
 
         """
         if (self._flux is None) and (self._xaxis is None):
-            # Can't measure lenght of none
+            # Can't measure length of none
             pass
         elif (self._flux is None) or (self._xaxis is None):
             pass
@@ -213,16 +211,16 @@ class Spectrum(object):
         self.flux += np.random.normal(0, sigma)
 
     def doppler_shift(self, rv):
-        r"""Doopler shift wavelength by a given Radial Velocity.
+        r"""Doppler shift wavelength by a given Radial Velocity.
 
-        Apply doopler shift to the wavlength values of the spectrum
+        Apply Doppler shift to the wavelength values of the spectrum
         using the radial velocity value provided and the relation
         RV/c = :math:`\Delta\lambda/\lambda`.
 
         Parameters
         ----------
-        RV : float
-            Radial Velocity to doopler shift by in km/s.
+        rv : float
+            Radial Velocity to Doppler shift by in km/s.
 
         Warnings
         --------
@@ -231,11 +229,11 @@ class Spectrum(object):
             shifts much smaller than wavelength accuracy.
         Uncalibrated xaxis :
             When the xaxis is uncalibrated there is no wavelength to
-            doopler shift. A message is printed and no shift is done.
+            Doppler shift. A message is printed and no shift is done.
 
         Notes
         -----
-        The Doopler shift is calculated using the relation
+        The Doppler shift is calculated using the relation
 
         .. math::
             RV / c = \Delta\lambda / \lambda
@@ -311,7 +309,7 @@ class Spectrum(object):
         Parameters
         ----------
         wl_map :
-            Polynomial cooeficients of the form expected by np.poylval().
+            Polynomial coefficients of the form expected by np.poylval().
             [p0, p1, p2 ...]
 
         Returns
@@ -514,12 +512,6 @@ class Spectrum(object):
         s.xaxis = s.xaxis[~np.isnan(self.flux)]
         return s
 
-    # s = Spectrum(flux, xaxis=wavelength)
-    # s.normalize('linear')
-    # s.normalize('polynomial', degree=n)  # 'linear' kan be a subset of this
-    # s.normalize('spline')
-
-
     def continuum(self, method="scalar", degree=0, **kwargs):
         """Get continuum of spectrum.
 
@@ -540,6 +532,7 @@ class Spectrum(object):
         s = s / self.continuum(method, degree, **kwargs)
         s.header["normalized"] = "{0} with degree {1}".format(method, degree)
         return s
+
     # ######################################################
     # Overloading Operators
     # ######################################################
@@ -548,7 +541,7 @@ class Spectrum(object):
 
         If there is addition between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
-        to the xaxis of the first Spectum
+        to the xaxis of the first Spectrum
 
         e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
         then if len(a + b) = 10 and len(b + a) = 15.
@@ -574,7 +567,7 @@ class Spectrum(object):
 
         If there is subtraction between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
-        to the xaxis of the first Spectum.
+        to the xaxis of the first Spectrum.
 
         e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
         then if len(a - b) = 10 and len(b - a) = 15.
@@ -593,7 +586,7 @@ class Spectrum(object):
 
         If there is multiplication between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
-        to the xaxis of the first Spectum.
+        to the xaxis of the first Spectrum.
 
         e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
         then if len(a * b) = 10 and len(b * a) = 15.
@@ -608,11 +601,11 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __truediv__(self, other):
-        """Overloaded truedivision (/) method for Spectrum.
+        """Overloaded true division (/) method for Spectrum.
 
-        If there is truedivision between two Spectrum objects which have
+        If there is true division between two Spectrum objects which have
         difference xaxis values then the second Spectrum is interpolated
-        to the xaxis of the first Spectum.
+        to the xaxis of the first Spectrum.
 
         e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
         then if len(a / b) = 10 and len(b / a) = 15.
@@ -630,8 +623,8 @@ class Spectrum(object):
                         calibrated=self.calibrated)
 
     def __pow__(self, other):
-        """Exponetial magic method."""
-        # Overlaod to use power to scale the flux of the spectra
+        """Exponential magic method."""
+        # Overload to use power to scale the flux of the spectra
         # if len(other) > 1 :
         #    raise ValueError("Spectrum can only be raised to the power of
         # one number not {}".format(len(other)))
@@ -697,5 +690,5 @@ class Spectrum(object):
 
 
 class SpectrumError(Exception):
-    """An errorclass for specturm errors."""
+    """An error class for spectrum errors."""
     pass
