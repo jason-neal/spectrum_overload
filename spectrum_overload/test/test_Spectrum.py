@@ -425,8 +425,29 @@ def test_remove_nans():
     assert len(s.xaxis) == 3 and len(s.flux) == 3
     
 
-def test_normalization():
-    return False
+def test_scalar_normalization():
+    """Test normalization is close to unity."""
+    x = np.arange(50)
+    y = 5 * np.ones_like(x)
+    s = Spectrum(xaxis=x, flux=y)
+    sn = s.normalize(method="scalar")
+
+    assert np.allclose(sn.flux, np.ones_like(x))
+
+
+@pytest.mark.xfail()
+def test_exponential_normalization():
+    """Test normalization is close to unity."""
+    # test flux /continuum is close to normalized
+    # assert top values are close to 1.
+    x = (np.arange(10, 50) * 0.01) + 2
+    y = 0.1 * np.exp(x) + 5
+    s = Spectrum(xaxis=x, flux=y)
+    print("s.flux", s.flux)
+    sn = s.normalize(method="exponential")
+    print("sn.flux", sn.flux)
+    expected = np.ones_like(x)
+    assert np.allclose(sn.flux, np.ones_like(x))
 
 
 @pytest.mark.parametrize("method, degree", [
@@ -435,7 +456,7 @@ def test_normalization():
     ("quadratic", 2),
     ("cubic", 3)])
 def test_normalization_method_match_degree(method, degree):
-    "Eventually call phoenix_spectrum to do this"
+    # TODO: Eventually call phoenix_spectrum to do this.
     x = np.arange(1000)
     y = np.arange(1000)
     s = Spectrum(xaxis=x, flux=y)
