@@ -63,7 +63,10 @@ class Spectrum(object):
         # Check assigned lenghts
         self.length_check()
         self.calibrated = calibrated
-        self.header = header   # Access header with a dictionary call.
+        if header is None:
+            self.header = {}
+        else:
+            self.header = header   # Access header with a dictionary call.
 
     @property
     def xaxis(self):

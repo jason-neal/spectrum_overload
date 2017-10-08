@@ -55,7 +55,7 @@ def test_empty_call_is_nones():
     s = Spectrum()
     assert s.flux is None
     assert s.xaxis is None
-    assert s.header is None
+    assert s.header == {}  # empty header dict
     assert s.calibrated is True
 
     s2 = Spectrum(calibrated=False)
@@ -268,7 +268,7 @@ def test_header_attribute():
     assert spec2.header["OBJECT"] == fitshdr["OBJECT"]
     assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
-    assert Spectrum().header is None  # unassign header is None
+    assert Spectrum().header == {}  # unassigned header is empty dict
 
 
 def test_interpolation():
