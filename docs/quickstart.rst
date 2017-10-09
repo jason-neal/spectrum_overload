@@ -17,7 +17,7 @@ Then to create a spectrum object, and exponentially scale it by 2 use:
 
     s = Spectrum(flux=f, xaxis=x)
 
-    # exponential scaling
+    # power law scaling
     s = s ** 2
 
 where ``f`` and ``x`` are 1D lists or numpy arrays.
