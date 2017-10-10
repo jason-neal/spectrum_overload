@@ -11,7 +11,7 @@ Import the Spectrum class into your code.
 
     from spectrum_overload.Spectrum import Spectrum
 
-Then to create a spectrum object, and exponentially scale it by 2 use:
+Then to create a spectrum object, and raise to the power of 2 use:
 
 ::
 
@@ -26,7 +26,7 @@ where ``f`` and ``x`` are 1D lists or numpy arrays.
 
 	Flux is the first kwarg. Be careful not to switch the order of flux and xaxis when not specifying the kwarg names.
 
-By default the spectrum is "calibrated". If the xaxis is only the pixel values of your spectra you can pass
+By default the spectrum is "calibrated". If the xaxis is only the pixel values of your spectra you can pass:
 
 ::
 
@@ -42,6 +42,7 @@ You can calibrate the spectra with a polynomial using the ``calibrate_with`` met
 
     s.calibrate_with([p0, p1, p2 ...])
 
+Some methods are only available when you have a wavelength calibrated spectra, such as Doppler shifting with ``Spectrum.doppler_shift()``.
 
 .. _normalization:
 

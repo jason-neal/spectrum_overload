@@ -100,7 +100,7 @@ class Spectrum(object):
             except TypeError:
                 # if self._flux is None then it has no length.
                 self._xaxis = None
-            # print("assigning xaxis the same length of _flux")
+                # print("assigning xaxis the same length of _flux")
 
         # Add any other checks in here if necessary
         elif self._flux is not None:
