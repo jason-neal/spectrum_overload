@@ -31,11 +31,23 @@ def get_continuum_points(wave, flux, nbins=50, ntop=20):
     return wave_points, flux_points
 
 
-def continuum(wave, flux, nbins=50, method='scalar', ntop=20, degree=None):
+def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
     """Fit continuum of flux.
 
-    ntop: is number of top points to take median of continuum.
-    """
+    Parameters
+    ----------
+    method: str ("scalar")
+        The function type, valid functions are "scalar", "linear",
+        "quadratic", "cubic", "poly", and "exponential".
+        Default "scalar".
+    degree: int, None
+       Degree of polynomial when method="poly". Default = None.
+    nbins: int
+        Number of bins to separate the spectrum into.
+    ntop: int
+        Number of highest points in bin to take median of.
+"""
+    if method not in ("scalar", "linear", "quadratic", "cubic", "poly", "exponential"):
     if method == "poly" and degree is None:
         raise ValueError("No degree specified for continuum method 'poly'.")
 

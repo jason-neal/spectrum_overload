@@ -512,10 +512,31 @@ class Spectrum(object):
         s.xaxis = s.xaxis[~np.isnan(self.flux)]
         return s
 
-    def continuum(self, method="scalar", degree=0, **kwargs):
-        """Get continuum of spectrum.
+    def continuum(self, method="scalar", degree=None, **kwargs):
+        """Fit the continuum of the spectrum.
 
-        kwargs are for the continuum splits and top parameters."""
+        Fit a function of ``method`` to the median of the highest
+        ``ntop`` points of ``nbins`` bins of the spectrum.``
+
+        Parameters
+        ----------
+        method: str ("scalar")
+            The function type, valid functions are "scalar", "linear",
+            "quadratic", "cubic", "poly", and "exponential".
+            Default "scalar".
+        degree: int, None
+            Degree of polynomial when method="poly". Default = None.
+        nbins: int
+            Number of bins to separate the spectrum into.
+        ntop: int
+            Number of highest points in bin to take median of.
+
+        Returns
+        -------
+        s: Spectrum
+           Spectrum of the continuum.
+
+        """
         s = self.copy()
 
         s.flux = norm.continuum(s.xaxis, s.flux, method=method, degree=degree, **kwargs)
@@ -526,8 +547,25 @@ class Spectrum(object):
 
         Valid methods
         scalar, linear, quadratic, cubic, poly, exponential.
-        poly method uses the degree value provided"""
-        
+        poly method uses the degree value provided
+
+        Parameters
+        ----------
+        method: str ("scalar")
+            The function type, valid functions are "scalar", "linear",
+            "quadratic", "cubic", "poly", and "exponential".
+            Default "scalar".
+        degree: int, None
+            Degree of polynomial when method="poly". Default = None.
+        kwargs:
+            Extra parameters ntop and nbin for the ``continuum`` method.
+
+        Returns
+        -------
+        s: Spectrum
+           Normalized Spectrum.
+
+        """
         s = self.copy()
         s = s / self.continuum(method, degree, **kwargs)
         s.header["normalized"] = "{0} with degree {1}".format(method, degree)
