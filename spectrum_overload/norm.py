@@ -1,6 +1,6 @@
 
 import numpy as np
-
+import logging
 
 def get_continuum_points(wave, flux, nbins=50, ntop=20):
     """Get continuum points along a spectrum.
@@ -48,11 +48,14 @@ def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
         Number of highest points in bin to take median of.
 """
     if method not in ("scalar", "linear", "quadratic", "cubic", "poly", "exponential"):
+        raise ValueError("Incorrect method for polynomial fit.")
+
+    if method != "poly" and degree is not None:
+        logging.warning("The degree={0} is not used with method={1} in continuum fitting.".format(degree, method))
+
     if method == "poly" and degree is None:
         raise ValueError("No degree specified for continuum method 'poly'.")
 
-    if method not in ("scalar", "linear", "quadratic", "cubic", "poly", "exponential"):
-        raise ValueError("Incorrect method for polynomial fit.")
 
     org_wave = wave[:]
 
