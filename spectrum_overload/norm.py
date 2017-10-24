@@ -56,6 +56,8 @@ def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
     if method == "poly" and degree is None:
         raise ValueError("No degree specified for continuum method 'poly'.")
 
+    if np.any(np.isnan(wave)) or  np.any(np.isnan(flux)):
+        raise ValueError("There are Nan values in spectrum. Please remove first.")
 
     org_wave = wave[:]
 
