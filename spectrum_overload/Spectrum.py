@@ -6,6 +6,7 @@ import copy
 import logging
 
 import numpy as np
+import matplotlib.pyplot as plt
 from PyAstronomy import pyasl
 from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
 
@@ -209,6 +210,15 @@ class Spectrum(object):
         sigma = self.flux / snr
         # Add normal distributed noise at the SNR level.
         self.flux += np.random.normal(0, sigma)
+
+    def plot(self, **kwargs):
+        """Plot spectrum with maplotlib."""
+        plt.plot(self.xaxis, self.flux, **kwargs)
+        if self.calibrated:
+             plt.xlabel("Wavelength")
+        else:
+            plt.xlabel("Pixels")
+        plt.ylabel("Flux")
 
     def doppler_shift(self, rv):
         r"""Doppler shift wavelength by a given Radial Velocity.
