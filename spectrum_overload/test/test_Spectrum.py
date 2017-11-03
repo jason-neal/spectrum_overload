@@ -18,7 +18,7 @@ from pkg_resources import resource_filename
 # import sys
 # Add Spectrum location to path
 # sys.path.append('../')
-from spectrum_overload.Spectrum import Spectrum, SpectrumError
+from spectrum_overload import Spectrum, SpectrumError
 
 
 @pytest.fixture
@@ -417,13 +417,13 @@ def test_add_noise(ones_spectrum, snr):
 def test_remove_nans():
     s = Spectrum(xaxis=np.arange(5), flux=[3, 2,np.nan, 4, np.nan])
     assert len(s.xaxis) == 5 and len(s.flux) == 5
-    
+
     s = s.remove_nans()
-    
+
     assert np.all(s.xaxis == np.array([0, 1, 3]))
     assert np.all(s.flux == np.array([3, 2, 4]))
     assert len(s.xaxis) == 3 and len(s.flux) == 3
-    
+
 
 def test_scalar_normalization():
     """Test normalization is close to unity."""
@@ -464,4 +464,3 @@ def test_normalization_method_match_degree(method, degree):
     poly_deg = s.normalize(method='poly', degree=degree)
 
     assert np.allclose(named_method.flux, poly_deg.flux)
-

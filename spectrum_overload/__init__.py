@@ -1,3 +1,3 @@
 
-from spectrum_overload import Spectrum
-from spectrum_overload import Differential
+from spectrum_overload.spectrum import Spectrum, SpectrumError
+from spectrum_overload.differential import DifferentialSpectrum
