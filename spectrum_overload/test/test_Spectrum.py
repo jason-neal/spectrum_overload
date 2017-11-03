@@ -18,14 +18,35 @@ from pkg_resources import resource_filename
 # import sys
 # Add Spectrum location to path
 # sys.path.append('../')
-from spectrum_overload.Spectrum import Spectrum, SpectrumError
+from spectrum_overload import Spectrum, SpectrumError
+
+
+@pytest.fixture
+def phoenix_spectrum():
+    # Get a phoenix spectrum in test data to load in and get th
+    spec_1 = resource_filename('spectrum_overload', 'data/spec_1.fits')
+    # phoenix_file = resource_filename('spectrum_overload', 'data/spec_1.fits')
+
+    flux = fits.getdata(spec_1)
+    # wave = fits.getdata("")
+    wave = np.arange(len(flux))
+    header = fits.getheader(spec_1)
+    return Spectrum(xaxis=wave, flux=flux, header=header)
+
+
+@pytest.fixture
+def ones_spectrum():
+    x = np.linspace(2000, 2200, 1000)
+    y = np.ones_like(x)
+    spec = Spectrum(xaxis=x, flux=y)
+    return spec
 
 
 @given(st.lists(st.floats(allow_infinity=False, allow_nan=False)),
        st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes."""
-    # Use one hypotheseis list they need to have the same lenght
+    # Use one hypothesis list they need to have the same length
     # multiply by a random int to mix it up a little.
     x = x * np.array(y)
     spec = Spectrum(y, x, calibrated=z)
@@ -37,7 +58,7 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
 def test_spectrum_assigns_data():
     """Test a manual example.
 
-    Lenghts of x and y need to be the same.
+    Lengths of x and y need to be the same.
     """
     x = [1, 2, 3, 4, 5, 6]
     y = [1, 1, 0.9, 0.95, 1, 1]
@@ -50,12 +71,12 @@ def test_spectrum_assigns_data():
 
 
 def test_empty_call_is_nones():
-    # Check empty Spectrum is implmented with Nones
+    # Check empty Spectrum is implemented with Nones
     # and not Nones in an array (!=None)
     s = Spectrum()
     assert s.flux is None
     assert s.xaxis is None
-    assert s.header is None
+    assert s.header == {}  # empty header dict
     assert s.calibrated is True
 
     s2 = Spectrum(calibrated=False)
@@ -139,7 +160,7 @@ def test_length_of_flux_and_xaxis_equal():
 @given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
 def test_wav_select(x, calib, wav_min, wav_max):
     """Test some properties of wavelength selection."""
-    # Create specturm
+    # Create spectrum
     y = np.copy(x)
     spec = Spectrum(y, xaxis=x, calibrated=calib)
     # Select wavelength values
@@ -153,7 +174,7 @@ def test_wav_select(x, calib, wav_min, wav_max):
 
 def test_wav_select_example():
     """Manual test of a wavelength selection."""
-    # Create specturm
+    # Create spectrum
     y = 2 * np.random.random(20)
     x = np.arange(20)
     calib = False
@@ -167,7 +188,7 @@ def test_wav_select_example():
     assert all(spec.xaxis <= 11)
     assert all(spec.xaxis == np.arange(6, 11))
     assert all(spec.flux == y[np.arange(6, 11)])
-    # Also need to test asignment!
+    # Also need to test assignment!
     # spec2 = spec.wav_selector()
 
 
@@ -178,7 +199,7 @@ def test_wav_select_example():
 def test_doppler_shift_with_hypothesis(x, rv, calib, rv_dir):
     """Test doppler shift properties.
 
-    Need to check values against pyastronomy separately.
+    Need to check values against PyAstronomy separately.
     Calib is sampled with a 1/8 chance being uncalibrated.
 
     """
@@ -235,7 +256,7 @@ def test_cant_calibrate_calibrated_spectrum():
 
 def test_calibration_wavelength_only_positive():
     """Not quite sure what is happening here."""
-    # Can't have a wavelenght of zero or negative.
+    # Can't have a wavelength of zero or negative.
     # So raise a SpectrumError before calibrating
     s = Spectrum([1, 2, 3, 4], [-4, -3, -2, -1], calibrated=False)
     with pytest.raises(SpectrumError):
@@ -253,7 +274,7 @@ def test_calibration_wavelength_only_positive():
 
 
 def test_header_attribute():
-    """Test header attribute is accessable as a dict."""
+    """Test header attribute is accessible as a dict."""
     header = {"Date": "20120601", "Exptime": 180}
     spec = Spectrum(header=header)
     # Some simple assignment tests
@@ -268,7 +289,7 @@ def test_header_attribute():
     assert spec2.header["OBJECT"] == fitshdr["OBJECT"]
     assert spec2.header["EXPTIME"] == fitshdr["EXPTIME"]
 
-    assert Spectrum().header is None  # unassign header is None
+    assert Spectrum().header == {}  # unassigned header is empty dict
 
 
 def test_interpolation():
@@ -286,7 +307,7 @@ def test_interpolation():
     s_lin.interpolate1d_to(s2, kind='cubic')
 
     assert np.allclose(s_lin.flux, [3., 4., 7., 8.])
-    # test linear interpoation matches numpy interp
+    # test linear interpolation matches numpy interp
     assert np.allclose(s_lin.flux, np.interp(x2, x1, y1))
 
     s_same = copy.copy(s1)
@@ -327,8 +348,8 @@ def test_interpolation_when_given_a_ndarray():
     assert np.allclose(s_lin.flux, np.interp(x2, x1, y1))
 
 
-def test_sline_interpolation():
-    """Test spline interpoilation."""
+def test_spline_interpolation():
+    """Test spline interpolation."""
     # Test the interpolation function some how
     # simple examples?
     # simple linear case
@@ -351,7 +372,7 @@ def test_sline_interpolation():
     assert np.allclose(s_same.flux, s1.flux)
     assert np.allclose(s_same.xaxis, s1.xaxis)
 
-    # Need to test that if boundserror is True a ValueError is raised
+    # Need to test that if bounds error is True a ValueError is raised
     with pytest.raises(ValueError):
         s2.spline_interpolate_to(s1, bounds_error=True)
     with pytest.raises(ValueError):
@@ -384,13 +405,62 @@ def test_spline_interpolation_when_given_a_ndarray():
     assert np.allclose(s_lin.flux, np.interp(x2, x1, y1))
 
 
-# test_doppler_shift_with_hypothesis()
-@pytest.mark.parametrize('snr', [50, 100, 200, 1000])
-def test_add_noise(snr):
+@pytest.mark.parametrize('snr', [50, 100])
+def test_add_noise(ones_spectrum, snr):
     """Test addition of noise."""
-    x = np.linspace(2000, 2200, 10000000)
-    y = np.ones_like(x)
-    spec = Spectrum(xaxis=x, flux=y)
-    spec.add_noise(snr)
+    np.random.seed(3)
+    ones_spectrum.add_noise(snr)
 
-    assert np.isclose(np.std(spec.flux), 1. / snr, atol=1e-5)
+    assert np.isclose(np.std(ones_spectrum.flux), 1. / snr, atol=1e-3)
+
+
+def test_remove_nans():
+    s = Spectrum(xaxis=np.arange(5), flux=[3, 2,np.nan, 4, np.nan])
+    assert len(s.xaxis) == 5 and len(s.flux) == 5
+
+    s = s.remove_nans()
+
+    assert np.all(s.xaxis == np.array([0, 1, 3]))
+    assert np.all(s.flux == np.array([3, 2, 4]))
+    assert len(s.xaxis) == 3 and len(s.flux) == 3
+
+
+def test_scalar_normalization():
+    """Test normalization is close to unity."""
+    x = np.arange(50)
+    y = 5 * np.ones_like(x)
+    s = Spectrum(xaxis=x, flux=y)
+    sn = s.normalize(method="scalar")
+
+    assert np.allclose(sn.flux, np.ones_like(x))
+
+
+@pytest.mark.xfail()
+def test_exponential_normalization():
+    """Test normalization is close to unity."""
+    # test flux /continuum is close to normalized
+    # assert top values are close to 1.
+    x = (np.arange(10, 50) * 0.01) + 2
+    y = 0.1 * np.exp(x) + 5
+    s = Spectrum(xaxis=x, flux=y)
+    print("s.flux", s.flux)
+    sn = s.normalize(method="exponential")
+    print("sn.flux", sn.flux)
+    expected = np.ones_like(x)
+    assert np.allclose(sn.flux, np.ones_like(x))
+
+
+@pytest.mark.parametrize("method, degree", [
+    ("scalar", 0),
+    ("linear", 1),
+    ("quadratic", 2),
+    ("cubic", 3)])
+def test_normalization_method_match_degree(method, degree):
+    # TODO: Eventually call phoenix_spectrum to do this.
+    x = np.arange(1000)
+    y = np.arange(1000)
+    s = Spectrum(xaxis=x, flux=y)
+    named_method = s.normalize(method=method)
+    poly_deg = s.normalize(method='poly', degree=degree)
+
+    assert np.allclose(named_method.flux, poly_deg.flux)
