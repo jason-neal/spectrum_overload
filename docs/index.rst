@@ -100,6 +100,16 @@ Badges
     :alt: Code Issues
 
 
+.. note::
+    To build the documentation locally go to the root `spectrum_overload` directory then run::
+
+        pip install -e .[docs]   # editable installation, install docs dependencies.
+        cd docs
+        make html
+
+    The documentation pages will be docs/.build/index.html.
+
+
 Indices and tables
 ==================
 

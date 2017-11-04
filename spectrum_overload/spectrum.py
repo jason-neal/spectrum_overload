@@ -1,12 +1,17 @@
 #!/usr/bin/python
 
-from __future__ import print_function, division
-import numpy as np
+from __future__ import division, print_function
+
 import copy
-from scipy.interpolate import interp1d
-from scipy.interpolate import InterpolatedUnivariateSpline
-from PyAstronomy import pyasl
 import logging
+
+import numpy as np
+import matplotlib.pyplot as plt
+from PyAstronomy import pyasl
+from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
+
+import spectrum_overload.norm as norm
+
 """Spectrum Class."""
 
 # Begun August 2016
@@ -19,19 +24,18 @@ class Spectrum(object):
     Attributes
     ----------
     xaxis:np.ndarray
-        The wavlength or pixel position values.
+        The wavelength or pixel position values.
     flux: np.ndarray, array-like, list
-        The extracted flux (measured intesity of light).
+        The extracted flux (measured intensity of light).
     calibrated: bool
         Flag to indicate calibration state. (Default = True.)
     header: astropy.Header, dict-like
         Header information of observation.
 
-
     """
-
     def __init__(self, flux=None, xaxis=None, calibrated=True, header=None, interp_method="spline"):
         """Initalise a Spectrum object."""
+
         # Some checks before creating class
         if isinstance(flux, str):
             raise TypeError("Cannot assign {} to the flux attribute".format(
@@ -53,17 +57,18 @@ class Spectrum(object):
                 try:
                     self._xaxis = np.arange(len(flux))
                 except TypeError:
-                    print("TypeError caught becasue flux has no length")
+                    print("TypeError caught because flux has no length")
                     self._xaxis = None
         else:
             self._xaxis = np.asarray(xaxis)  # Setter not used - need asarray
 
-        # Check assigned lenghts
+        # Check assigned lengths
         self.length_check()
         self.calibrated = calibrated
-        self.header = header   # Access header with a dictionary call.
-        self._interp_method = interp_method
-
+        if header is None:
+            self.header = {}
+        else:
+            self.header = header   # Access header with a dictionary call.
 
     @property
     def interp_method(self):
@@ -94,7 +99,7 @@ class Spectrum(object):
     def xaxis(self, value):
         """Setter for xaxis attribute.
 
-        Turns value intp a numpy array if it is not.
+        Turns value into a numpy array if it is not.
 
         Parameters
         ----------
@@ -116,12 +121,12 @@ class Spectrum(object):
             except TypeError:
                 # if self._flux is None then it has no length.
                 self._xaxis = None
-            # print("assigning xaxis the same length of _flux")
+                # print("assigning xaxis the same length of _flux")
 
         # Add any other checks in here if necessary
         elif self._flux is not None:
             if len(value) != len(self._flux):
-                raise ValueError("Lenght of xaxis does not match flux length")
+                raise ValueError("Length of xaxis does not match flux length")
             else:
                 self._xaxis = np.asarray(value)
         else:
@@ -162,7 +167,7 @@ class Spectrum(object):
     def length_check(self):
         """Check length of xaxis and flux are equal.
 
-        If everyting is ok then there is no response/output.
+        If everything is ok then there is no response/output.
 
         Raises
         ------
@@ -171,6 +176,7 @@ class Spectrum(object):
 
         """
         if (self._flux is None) and (self._xaxis is None):
+            # Can't measure length of none
             pass
         elif (self._flux is None) or (self._xaxis is None):
             pass
@@ -216,12 +222,12 @@ class Spectrum(object):
                 mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
                 self.flux = self.flux[mask]    # change flux first
                 self.xaxis = self.xaxis[mask]
-        except TypeError:
+        except TypeError as e:
             print("Spectrum has no xaxis to select wavelength from")
             # Return to original values iscase were changed
             self.flux = flux_org           # Fix flux first
             self.xaxis = x_org
-            raise
+            raise e
 
     def add_noise(self, snr):
         """Add noise level of snr to the flux of the spectrum."""
@@ -229,17 +235,26 @@ class Spectrum(object):
         # Add normal distributed noise at the SNR level.
         self.flux += np.random.normal(0, sigma)
 
-    def doppler_shift(self, RV):
-        """Doopler shift wavelength by a given Radial Velocity.
+    def plot(self, **kwargs):
+        """Plot spectrum with maplotlib."""
+        plt.plot(self.xaxis, self.flux, **kwargs)
+        if self.calibrated:
+             plt.xlabel("Wavelength")
+        else:
+            plt.xlabel("Pixels")
+        plt.ylabel("Flux")
 
-        Apply doopler shift to the wavlength values of the spectrum
+    def doppler_shift(self, rv):
+        r"""Doppler shift wavelength by a given Radial Velocity.
+
+        Apply Doppler shift to the wavelength values of the spectrum
         using the radial velocity value provided and the relation
         RV/c = :math:`\Delta\lambda/\lambda`.
 
         Parameters
         ----------
-        RV : float
-            Radial Velocity to doopler shift by in km/s.
+        rv : float
+            Radial Velocity to Doppler shift by in km/s.
 
         Warnings
         --------
@@ -248,11 +263,11 @@ class Spectrum(object):
             shifts much smaller than wavelength accuracy.
         Uncalibrated xaxis :
             When the xaxis is uncalibrated there is no wavelength to
-            doopler shift. A message is printed and no shift is done.
+            Doppler shift. A message is printed and no shift is done.
 
         Notes
         -----
-        The Doopler shift is calculated using the relation
+        The Doppler shift is calculated using the relation
 
         .. math::
             RV / c = \Delta\lambda / \lambda
@@ -262,27 +277,27 @@ class Spectrum(object):
         shift, :math:`(\lambda_{shift} - \lambda_0)`
 
         """
-        if RV == 0:
+        if rv == 0:
             """Do nothing."""
             pass
-        elif abs(RV) < 1e-7:
+        elif abs(rv) < 1e-7:
             """RV smaller then 0.1 mm/s"""
             logging.warning(("The RV value given is very small ({0} < 0.1 mm/s) .\n "
-                             "Not performing the doppler shift").format(abs(RV)))
+                             "Not performing the doppler shift").format(abs(rv)))
 
-        elif np.isnan(RV) or np.isinf(RV):
+        elif np.isnan(rv) or np.isinf(rv):
             print("Warning RV is infinity or Nan."
                   "Not performing the doppler shift")
 
         elif self.calibrated:
             c = 299792.458
-            lambda_shift = self.xaxis * (RV / c)
+            lambda_shift = self.xaxis * (rv / c)
             self.xaxis = self.xaxis + lambda_shift
         else:
             print("Attribute xaxis is not wavelength calibrated."
                   " Cannot perform doppler shift")
 
-    def crosscorrRV(self, spectrum, rvmin, rvmax, drv, **params):
+    def crosscorr_rv(self, spectrum, rvmin, rvmax, drv, **params):
         """Perform pyasl.crosscorrRV with another spectrum.
 
         Parameters
@@ -298,7 +313,7 @@ class Spectrum(object):
         drv: float
             The width of the radial-velocity steps to be applied in the calculation
             of the cross-correlation function [km/s].
-        kwargs: dict
+        params: dict
             Cross-correlation parameters.
 
         Returns
@@ -328,7 +343,7 @@ class Spectrum(object):
         Parameters
         ----------
         wl_map :
-            Polynomial cooeficients of the form expected by np.poylval().
+            Polynomial coefficients of the form expected by np.poylval().
             [p0, p1, p2 ...]
 
         Returns
@@ -359,7 +374,7 @@ class Spectrum(object):
 
     def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
                          fill_value=np.nan):
-        u"""Interpolate wavelength solution to the reference wavelength.
+        """Interpolate wavelength solution to the reference wavelength.
 
         This uses the scipy's interp1d interpolation. The optional
         parameters are passed to scipy's interp1d. This interpolates
@@ -432,7 +447,7 @@ class Spectrum(object):
 
     def spline_interpolate_to(self, reference, w=None, bbox=[None, None], k=3,
                               ext=0, check_finite=False, bounds_error=False):
-        """Interpolate wavelength solution using scipy's
+        r"""Interpolate wavelength solution using scipy's
                 InterpolatedUnivariateSpline.
 
         The optional parameters are for scipy's InterpolatedUnivariateSpline
@@ -525,10 +540,74 @@ class Spectrum(object):
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
 
+    def remove_nans(self):
+        s = self.copy()
+        s.flux = s.flux[~np.isnan(self.flux)]
+        s.xaxis = s.xaxis[~np.isnan(self.flux)]
+        return s
+
+    def continuum(self, method="scalar", degree=None, **kwargs):
+        """Fit the continuum of the spectrum.
+
+        Fit a function of ``method`` to the median of the highest
+        ``ntop`` points of ``nbins`` bins of the spectrum.``
+
+        Parameters
+        ----------
+        method: str ("scalar")
+            The function type, valid functions are "scalar", "linear",
+            "quadratic", "cubic", "poly", and "exponential".
+            Default "scalar".
+        degree: int, None
+            Degree of polynomial when method="poly". Default = None.
+        nbins: int
+            Number of bins to separate the spectrum into.
+        ntop: int
+            Number of highest points in bin to take median of.
+
+        Returns
+        -------
+        s: Spectrum
+           Spectrum of the continuum.
+
+        """
+        s = self.copy()
+
+        s.flux = norm.continuum(s.xaxis, s.flux, method=method, degree=degree, **kwargs)
+        return s
+
+    def normalize(self, method="scalar", degree=None, **kwargs):
+        """Normalize spectrum by dividing by the continuum.
+
+        Valid methods
+        scalar, linear, quadratic, cubic, poly, exponential.
+        poly method uses the degree value provided
+
+        Parameters
+        ----------
+        method: str ("scalar")
+            The function type, valid functions are "scalar", "linear",
+            "quadratic", "cubic", "poly", and "exponential".
+            Default "scalar".
+        degree: int, None
+            Degree of polynomial when method="poly". Default = None.
+        kwargs:
+            Extra parameters ntop and nbin for the ``continuum`` method.
+
+        Returns
+        -------
+        s: Spectrum
+           Normalized Spectrum.
+
+        """
+        s = self.copy()
+        s = s / self.continuum(method, degree, **kwargs)
+        s.header["normalized"] = "{0} with degree {1}".format(method, degree)
+        return s
+
     # ######################################################
     # Overloading Operators
     # ######################################################
-
     def _operation_wrapper(operation):
         """
         Perform an operation (addition, subtraction, mutiplication, division,
@@ -578,7 +657,7 @@ class Spectrum(object):
     __truediv__ = _operation_wrapper(np.divide)
 
     def __pow__(self, other):
-        """Exponetial magic method."""
+        """Exponential magic method."""
         if isinstance(other, Spectrum):
             raise TypeError("Can not preform Spectrum ** Spectrum")
         elif np.isscalar(other):
@@ -623,7 +702,7 @@ class Spectrum(object):
 
 
 class SpectrumError(Exception):
-    """An errorclass for specturm errors."""
+    """An error class for spectrum errors."""
     pass
 
 

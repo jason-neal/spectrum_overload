@@ -1,10 +1,10 @@
 """Test DifferentialSpectrum Class."""
 
-import pytest
 import numpy as np
+import pytest
 
-from spectrum_overload.Spectrum import Spectrum
-from spectrum_overload.Differential import DifferentialSpectrum
+from spectrum_overload import DifferentialSpectrum
+from spectrum_overload import Spectrum
 
 
 def test_assignment_of_differential():
