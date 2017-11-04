@@ -69,6 +69,7 @@ class Spectrum(object):
             self.header = {}
         else:
             self.header = header   # Access header with a dictionary call.
+        self.interp_method = interp_method
 
     @property
     def interp_method(self):
