@@ -612,7 +612,7 @@ class Spectrum(object):
     # ######################################################
     def _operation_wrapper(operation):
         """
-        Perform an operation (addition, subtraction, mutiplication, division,
+        Perform an operation (addition, subtraction, multiplication, division,
         etc.) after checking for shape matching.
         """
         def ofunc(self, other):
@@ -624,7 +624,7 @@ class Spectrum(object):
             # check if both are spectra (or can be treated as such)
             elif isinstance(other, np.ndarray) and not isinstance(other, Spectrum):
                     if len(other) == len(self.flux):
-                        # If the lenght is the correct lenght then assume that this is correct to perform.
+                        # If the length is the correct length then assume that this is correct to perform.
                         other_flux = other
                     else:
                         raise ValueError("Dimension mismatch in operation with lengths {} and {}.".format(len(self.flux), len(other)))
@@ -649,7 +649,6 @@ class Spectrum(object):
             return newspec
 
         return ofunc
-
 
     __add__ = _operation_wrapper(np.add)
     __radd__ = _operation_wrapper(np.add)
@@ -713,7 +712,6 @@ class Spectrum(object):
 class SpectrumError(Exception):
     """An error class for spectrum errors."""
     pass
-
 
     # def __add__(self, other):
     #     """Overloaded addition method for Spectrum.

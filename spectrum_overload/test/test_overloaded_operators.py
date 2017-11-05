@@ -384,7 +384,7 @@ def test_truedivision_with_interpolation():
         s1 / s5
 
 
-def test_valueerror_when_spectra_dont_overlap():
+def test_value_error_when_spectra_dont_overlap():
     s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
     u = Spectrum([1, 2, 1, 2], [50, 51, 52, 53])
 
@@ -481,12 +481,12 @@ def test_spectra_not_the_same_when_reassigned():
 
 
 def test_xaxis_type_error_init_check():
-    # Test that passing None to xaxis when flux doesn't have a lenght
+    # Test that passing None to xaxis when flux doesn't have a length
     # results in just setting to None
     s = Spectrum(np.nan, None)
     assert s.xaxis is None
     s.flux = [1, 1.1]   # has length
-    s.xaxis = None      # xaxis truns into range(len(s.flux))
+    s.xaxis = None      # xaxis turns into range(len(s.flux))
     assert s.xaxis is not None
     print(s.xaxis)
     assert np.all(s.xaxis == np.array([0, 1]))
@@ -534,7 +534,7 @@ def test_zero_division():
     assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
 
 
-def test_addition_perserves_header():
+def test_addition_preserves_header():
     hdr = {"this": "header", "value": 2}
     s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
     s += 1
@@ -544,7 +544,7 @@ def test_addition_perserves_header():
     assert s.header == hdr
 
 
-def test_subtraction_perserves_header():
+def test_subtraction_preserves_header():
     hdr = {"this": "header", "value": 2}
     s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
     s -= 1
@@ -554,7 +554,7 @@ def test_subtraction_perserves_header():
     assert s.header == hdr
 
 
-def test_multiplication_perserves_header():
+def test_multiplication_preserves_header():
     hdr = {"this": "header", "value": 2}
     s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
     s *= 2
@@ -564,7 +564,7 @@ def test_multiplication_perserves_header():
     assert s.header == hdr
 
 
-def test_division_perserves_header():
+def test_division_preserves_header():
     hdr = {"this": "header", "value": 2}
     s = Spectrum(xaxis=[1, 2, 3, 4], flux=[2, 4, 6, 8], header=hdr)
     s /= 2
