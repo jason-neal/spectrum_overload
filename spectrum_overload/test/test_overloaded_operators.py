@@ -398,24 +398,24 @@ def test_valueerror_when_spectra_dont_overlap():
         s * u
 
 
-def test_operators_with_bad_types():
+@pytest.mark.parametrize("badly_typed", [
+    "Test String",
+    [1, 2, 3, 4, 5],
+    [2, 3, "4", 5, 6],
+    (1, 2, "3", 6, 7),
+    {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5},
+    {1, 4, 4, 2, 5},
+])
+def test_operators_with_bad_types(badly_typed):
     s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
-    test_str = "Test String"
-    test_list = [1, 2, 3, 4, 5]
-    test_list2 = [2, 3, "4"]
-    test_tup = (1, 2, "3")
-    test_dict = {"1": 1, "2": 2, "3": 3}
-    test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
-    tests = [test_str, test_list, test_list2, test_tup, test_dict, test_set]
-    for test in tests:
-        with pytest.raises(TypeError):
-            s + test
-        with pytest.raises(TypeError):
-            s - test
-        with pytest.raises(TypeError):
-            s * test
-        with pytest.raises(TypeError):
-            s / test
+    with pytest.raises(TypeError):
+        s + badly_typed
+    with pytest.raises(TypeError):
+        s - badly_typed
+    with pytest.raises(TypeError):
+        s * badly_typed
+    with pytest.raises(TypeError):
+        s / badly_typed
 
 
 @pytest.mark.parametrize("badly_typed", [
@@ -438,10 +438,46 @@ def test_spectra_stay_the_same_after_operations():
     """After a operation of two spectra...
 
     e.g. a/b both a and b should
-    remain the same unless specifcally defined such as a = a + b
+    remain the same unless specifically defined such as a = a + b
 
     """
-    assert False    # Not implemented
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
+    b = Spectrum(xaxis=[1, 2, 3, 4], flux=[1, 2, 3, 4])
+    c = a.copy()
+    d = b.copy()
+
+    e = c + d
+    f = c - d
+    g = d * c
+    h = d / c
+    # c and d still the same
+    assert a == c
+    assert b == d
+
+
+def test_spectra_not_the_same_when_reassigned():
+    """After a operation of two spectra...
+
+    e.g. a/b both a and b should
+    remain the same unless specifically defined such as a = a + b
+
+    """
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
+    b = Spectrum(xaxis=[1, 2, 3, 4], flux=[1, 2, 3, 4])
+    c = a.copy()
+    d = b.copy()
+    e = a.copy()
+    f = b.copy()
+
+    c = c + b
+    d = d - c
+    e = e * 2
+    f /= 6
+    # changes spectra are different
+    assert c != a
+    assert d != b
+    assert e != a
+    assert f != b
 
 
 def test_xaxis_type_error_init_check():
