@@ -702,6 +702,13 @@ class Spectrum(object):
         return Spectrum(flux=absflux, xaxis=self.xaxis, header=self.header,
                         calibrated=self.calibrated)
 
+    def __eq__(self, other):
+        return (all(self.xaxis == other.xaxis) and all(self.flux == other.flux) and
+                self.calibrated == other.calibrated and self.header == other.header)
+
+    def __neq__(self, other):
+        return not self == other
+
 
 class SpectrumError(Exception):
     """An error class for spectrum errors."""
