@@ -37,10 +37,11 @@ class Spectrum(object):
         """Initalise a Spectrum object."""
 
         # Some checks before creating class
-        if isinstance(flux, str):
+        # if not isinstance(flux, (list, np.ndarray, None)):
+        if isinstance(flux, (str, dict)):
             raise TypeError("Cannot assign {} to the flux attribute".format(
                 type(flux)))
-        elif isinstance(xaxis, str):
+        elif isinstance(xaxis, (str, dict)):
             raise TypeError("Cannot assign {} to the xaxis attribute".format(
                 type(xaxis)))
 

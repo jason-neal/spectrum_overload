@@ -418,19 +418,20 @@ def test_operators_with_bad_types():
             s / test
 
 
-def test_assignment_with_bad_types():
+@pytest.mark.parametrize("badly_typed", [
+    "Test String",
+    # [1, 2, 3, 4, 5],
+    # [2, 3, "4"],
+    # (1, 2, "3"),
+    {"1": 1, "2": 2, "3": 3},
+    # {1, 2, 3, 1, 4, 4, 2, 5},  # set literal faster than set()
+])
+def test_assignment_with_bad_types(badly_typed):
     # Need to improve checking of what can pass into spectrum
-    test_str = "Test String"
-    test_tup = (1, 2, "3")
-    test_dict = {"1": 1, "2": 2, "3": 3}
-    test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
-    tests = [test_str, test_tup, test_dict, test_set]
-    for test in tests:
-        # print(test)
-        with pytest.raises(TypeError):
-            Spectrum(None, test)
-        with pytest.raises(TypeError):
-            Spectrum(test)
+    with pytest.raises(TypeError):
+        Spectrum(flux=None, xaxis=badly_typed)
+    with pytest.raises(TypeError):
+        Spectrum(flux=badly_typed)
 
 
 def test_spectra_stay_the_same_after_operations():
