@@ -517,8 +517,8 @@ def test_wave_selection_with_ill_defined_xaxis():
 
 
 def test_zero_division():
-    s = Spectrum(flux=[1, 5, 3, 16], xaxis=[1, 2, 3, 4])
-    t = Spectrum(flux=[2, 2, 0, 4], xaxis=[1, 2, 3, 4])
+    s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2, 3, 4])
+    t = Spectrum(flux=[2., 2, 0, 4], xaxis=[1., 2, 3, 4])
 
     divide = s / t
     assert np.allclose(divide.flux[[0,1,3]], [0.5, 2.5, 4])
