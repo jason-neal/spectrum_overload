@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """Test Suite for Spectrum Class.
 
 It is not perfect and can be definitely improved.

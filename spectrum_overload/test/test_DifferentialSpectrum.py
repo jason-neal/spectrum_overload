@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Test DifferentialSpectrum Class."""
 
 import numpy as np
