@@ -16,11 +16,10 @@ from hypothesis import given
 # sys.path.append('../')
 from spectrum_overload import Spectrum, SpectrumError
 
+
 #######################################################
 #    Overloading Operators
 #######################################################
-
-
 @given(st.lists(st.integers(min_value=-100000, max_value=100000), min_size=1),
        st.integers(min_value=-1000000, max_value=1000000),
        st.integers(min_value=-1000000, max_value=1000000), st.booleans())
@@ -253,7 +252,6 @@ def test_abs_operator():
     assert np.all(abs_spec.flux == abs_spec2.flux)
 
 
-# @pytest.mark.xfail
 def test_addition_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -287,7 +285,6 @@ def test_addition_with_interpolation():
         s1 + s5
 
 
-# @pytest.mark.xfail
 def test_subtraction_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -321,7 +318,6 @@ def test_subtraction_with_interpolation():
         s1 - s5
 
 
-# @pytest.mark.xfail
 def test_multiplication_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -355,7 +351,6 @@ def test_multiplication_with_interpolation():
         s1 * s5
 
 
-# @pytest.mark.xfail
 def test_truedivision_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -388,23 +383,7 @@ def test_truedivision_with_interpolation():
     with pytest.raises(ValueError):
         s1 / s5
 
-# Commented out as these are now Implemented
-# @pytest.mark.xfail
-# def test_NotImplemented_in_operators_works_atm():
-    # s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
-    # t = Spectrum([1, 2, 1, 2], [3, 5, 7, 8])
-    # Outside bounds
-    # with pytest.raises(NotImplementedError):
-    #     s + t
-    # with pytest.raises(NotImplementedError):
-    #    d = s - t
-    # with pytest.raises(NotImplementedError):
-    #     s / t
-    # with pytest.raises(NotImplementedError):
-    #     s * t
 
-
-# @pytest.mark.xfail
 def test_valueerror_when_spectra_dont_overlap():
     s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
     u = Spectrum([1, 2, 1, 2], [50, 51, 52, 53])
@@ -439,7 +418,6 @@ def test_operators_with_bad_types():
             s / test
 
 
-@pytest.mark.xfail
 def test_assignment_with_bad_types():
     # Need to improve checking of what can pass into spectrum
     test_str = "Test String"
@@ -455,7 +433,6 @@ def test_assignment_with_bad_types():
             Spectrum(test)
 
 
-@pytest.mark.xfail
 def test_spectra_stay_the_same_after_operations():
     """After a operation of two spectra...
 

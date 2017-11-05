@@ -449,17 +449,12 @@ def test_scalar_normalization():
     assert np.allclose(sn.flux, np.ones_like(x))
 
 
-@pytest.mark.xfail()
 def test_exponential_normalization():
     """Test normalization is close to unity."""
-    # test flux /continuum is close to normalized
-    # assert top values are close to 1.
-    x = (np.arange(10, 50) * 0.01) + 2
-    y = 0.1 * np.exp(x) + 5
+    x = (np.arange(10, 500) * 0.01) + 2
+    y = np.exp(x)
     s = Spectrum(xaxis=x, flux=y)
-    print("s.flux", s.flux)
     sn = s.normalize(method="exponential")
-    print("sn.flux", sn.flux)
     expected = np.ones_like(x)
     assert np.allclose(sn.flux, np.ones_like(x))
 
