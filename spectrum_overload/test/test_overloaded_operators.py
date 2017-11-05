@@ -517,20 +517,25 @@ def test_wave_selection_with_ill_defined_xaxis():
 
 
 def test_zero_division():
-    s = Spectrum(flux=[1, 2, 3, 4], xaxis=[1, 2, 3, 4])
-    t = Spectrum(flux=[1, 2, 0, 4], xaxis=[1, 2, 3, 4])
+    s = Spectrum(flux=[1, 5, 3, 16], xaxis=[1, 2, 3, 4])
+    t = Spectrum(flux=[2, 2, 0, 4], xaxis=[1, 2, 3, 4])
 
     divide = s / t
+    assert np.allclose(divide.flux[[0,1,3]], [0.5, 2.5, 4])
     print(divide.xaxis)
     print(divide.flux)
     notnan = np.invert(np.isinf(divide.flux))
     print(divide.flux[2])
     assert np.isinf(divide.flux[2])
-    assert np.all(divide.flux[notnan] == [1, 1, 1])
-    div2 = s / 0
-    assert np.all(np.isinf(div2.flux))  # div by zero goes to np.inf
-    div3 = s / np.float(0)
-    assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
+    assert np.all(divide.flux[notnan] == [0.5, 2.5, 4])
+
+
+@pytest.mark.parametrize("zero",
+                    [0, 0.0, np.int(0), np.float(0)])
+def test_zero_divison_by_number(zero):
+    s = Spectrum(flux=[1, 5, 3, 16], xaxis=[1, 2, 3, 4])
+    div = s / zero
+    assert np.all(np.isinf(div.flux))  # div by zero goes to np.inf
 
 
 def test_addition_preserves_header():
