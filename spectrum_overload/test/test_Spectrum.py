@@ -471,8 +471,8 @@ def test_normalization_method_match_degree(method, degree):
     x = np.arange(1000)
     y = np.arange(1000)
     s = Spectrum(xaxis=x, flux=y)
-    named_method = named_method = s.normalize(method=method)
-    named_method.remove_nans()  # hack for geting to run on < py34 
+    named_method = s.normalize(method=method)
+    named_method = named_method.remove_nans()  # hack for geting to run on < py34 
     poly_deg = s.normalize(method='poly', degree=degree)
     poly_deg = poly_deg.remove_nans() # hack for getting to pass on < py 34
     assert np.allclose(named_method.flux, poly_deg.flux)
