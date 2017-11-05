@@ -533,7 +533,7 @@ def test_zero_division():
 @pytest.mark.parametrize("zero",
                     [0, 0.0, np.int(0), np.float(0)])
 def test_zero_divison_by_number(zero):
-    s = Spectrum(flux=[1, 5, 3, 16], xaxis=[1, 2, 3, 4])
+    s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2., 3., 4.])
     div = s / zero
     assert np.all(np.isinf(div.flux))  # div by zero goes to np.inf
 
