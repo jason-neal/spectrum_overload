@@ -4,17 +4,10 @@
 from __future__ import division, print_function
 
 import hypothesis.strategies as st
-# import copy
 import numpy as np
 import pytest
-# Test using hypothesis
 from hypothesis import given
 
-# from astropy.io import fits
-# from pkg_resources import resource_filename
-# import sys
-# Add Spectrum location to path
-# sys.path.append('../')
 from spectrum_overload import Spectrum, SpectrumError
 
 
@@ -524,11 +517,12 @@ def test_wave_selection_with_ill_defined_xaxis():
 
 
 def test_zero_division():
-    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4])
-    t = Spectrum([1, 2, 0, 4], [1, 2, 3, 4])
+    s = Spectrum(flux=[1, 2, 3, 4], xaxis=[1, 2, 3, 4])
+    t = Spectrum(flux=[1, 2, 0, 4], xaxis=[1, 2, 3, 4])
 
     divide = s / t
-    print(divide)
+    print(divide.xaxis)
+    print(divide.flux)
     notnan = np.invert(np.isinf(divide.flux))
     print(divide.flux[2])
     assert np.isinf(divide.flux[2])
