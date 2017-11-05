@@ -63,7 +63,7 @@ def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
 
     spec3 = spec1 + spec2
     spec4 = sum([spec1, spec2])
-    # Assert the flux values are summed togther
+    # Assert the flux values are summed together
     assert np.allclose(spec3.flux, np.asarray(y1) + np.asarray(y2))
     assert np.allclose(spec3.flux, spec4.flux)
 
@@ -71,7 +71,7 @@ def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
     assert np.allclose(spec4.calibrated, spec1.calibrated)
     assert np.allclose(spec4.calibrated, spec3.calibrated)
     assert np.allclose(spec3.calibrated, spec2.calibrated)
-    # Need to also check on xaxis after the calibraion has been performed.
+    # Need to also check on xaxis after the calibration has been performed.
 
 
 @given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
@@ -181,7 +181,7 @@ def test_overload_pow():
     power = 2
     spec1 = Spectrum([1, 2, 3, 4], [2, 3, 4, 5], None, True)
     spec2 = Spectrum([1, 2, 3, 4], [1, 3, 1, 4], None, True)
-    # Can test when things are not suposed to work :)
+    # Can test when things are not supposed to work :)
     with pytest.raises(TypeError):
         spec1 ** spec2
     with pytest.raises(TypeError):
@@ -351,7 +351,7 @@ def test_multiplication_with_interpolation():
         s1 * s5
 
 
-def test_truedivision_with_interpolation():
+def test_true_division_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
     s2 = Spectrum([1, 2, 1, 2, 1], x)
@@ -384,7 +384,7 @@ def test_truedivision_with_interpolation():
         s1 / s5
 
 
-def test_value_error_when_spectra_dont_overlap():
+def test_value_error_when_spectra_do_not_overlap():
     s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
     u = Spectrum([1, 2, 1, 2], [50, 51, 52, 53])
 
@@ -453,6 +453,10 @@ def test_spectra_stay_the_same_after_operations():
     # c and d still the same
     assert a == c
     assert b == d
+    assert e != c  and e != d
+    assert f != c and f != d
+    assert g != c and g != d
+    assert h != c and h != d
 
 
 def test_spectra_not_the_same_when_reassigned():
@@ -540,7 +544,7 @@ def test_addition_preserves_header():
     s += 1
 
     assert np.all(s.flux == [2, 3, 4, 5])
-    assert not s.header is None
+    assert s.header is not None
     assert s.header == hdr
 
 
@@ -550,7 +554,7 @@ def test_subtraction_preserves_header():
     s -= 1
 
     assert np.all(s.flux == [0, 1, 2, 3])
-    assert not s.header is None
+    assert s.header is not None
     assert s.header == hdr
 
 
@@ -560,7 +564,7 @@ def test_multiplication_preserves_header():
     s *= 2
 
     assert np.all(s.flux == [2, 4, 6, 8])
-    assert not s.header is None
+    assert s.header is not None
     assert s.header == hdr
 
 
@@ -570,5 +574,5 @@ def test_division_preserves_header():
     s /= 2
 
     assert np.all(s.flux == [1, 2, 3, 4])
-    assert not s.header is None
+    assert s.header is not None
     assert s.header == hdr

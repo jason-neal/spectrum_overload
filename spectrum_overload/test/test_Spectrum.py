@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Test Suite for Spectrum Class.
 
-It is not perfect and can be definately improved.
+It is not perfect and can be definitely improved.
 """
 from __future__ import division, print_function
 
