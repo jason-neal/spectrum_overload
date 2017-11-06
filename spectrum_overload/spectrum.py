@@ -711,6 +711,15 @@ class Spectrum(object):
     def __neq__(self, other):
         return not self == other
 
+    def xmin(self):
+        return self.xaxis[0]
+
+    def xmax(self):
+        return self.xaxis[-1]
+
+    def xlimits(self):
+        return [self.xmin(), self.xmax()]
+
 
 class SpectrumError(Exception):
     """An error class for spectrum errors."""
