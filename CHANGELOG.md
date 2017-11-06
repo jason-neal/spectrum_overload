@@ -8,6 +8,9 @@ For next version
 - Change header initialization from None to and empty dict
 - Add normalization e.g.
 	-  Spectrum.normalize("poly", degree=3)
+- Add spectrum plot method.
+- Standardize operations using a operator wrapper.
+- Update documetation.
 
 
 Version 0..

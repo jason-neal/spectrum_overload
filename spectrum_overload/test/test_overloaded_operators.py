@@ -1,26 +1,19 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from __future__ import division, print_function
 
 import hypothesis.strategies as st
-# import copy
 import numpy as np
 import pytest
-# Test using hypothesis
 from hypothesis import given
 
-# from astropy.io import fits
-# from pkg_resources import resource_filename
-# import sys
-# Add Spectrum location to path
-# sys.path.append('../')
 from spectrum_overload import Spectrum, SpectrumError
+
 
 #######################################################
 #    Overloading Operators
 #######################################################
-
-
 @given(st.lists(st.integers(min_value=-100000, max_value=100000), min_size=1),
        st.integers(min_value=-1000000, max_value=1000000),
        st.integers(min_value=-1000000, max_value=1000000), st.booleans())
@@ -64,7 +57,7 @@ def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
 
     spec3 = spec1 + spec2
     spec4 = sum([spec1, spec2])
-    # Assert the flux values are summed togther
+    # Assert the flux values are summed together
     assert np.allclose(spec3.flux, np.asarray(y1) + np.asarray(y2))
     assert np.allclose(spec3.flux, spec4.flux)
 
@@ -72,7 +65,7 @@ def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
     assert np.allclose(spec4.calibrated, spec1.calibrated)
     assert np.allclose(spec4.calibrated, spec3.calibrated)
     assert np.allclose(spec3.calibrated, spec2.calibrated)
-    # Need to also check on xaxis after the calibraion has been performed.
+    # Need to also check on xaxis after the calibration has been performed.
 
 
 @given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
@@ -182,7 +175,7 @@ def test_overload_pow():
     power = 2
     spec1 = Spectrum([1, 2, 3, 4], [2, 3, 4, 5], None, True)
     spec2 = Spectrum([1, 2, 3, 4], [1, 3, 1, 4], None, True)
-    # Can test when things are not suposed to work :)
+    # Can test when things are not supposed to work :)
     with pytest.raises(TypeError):
         spec1 ** spec2
     with pytest.raises(TypeError):
@@ -253,7 +246,6 @@ def test_abs_operator():
     assert np.all(abs_spec.flux == abs_spec2.flux)
 
 
-# @pytest.mark.xfail
 def test_addition_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -287,7 +279,6 @@ def test_addition_with_interpolation():
         s1 + s5
 
 
-# @pytest.mark.xfail
 def test_subtraction_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -321,7 +312,6 @@ def test_subtraction_with_interpolation():
         s1 - s5
 
 
-# @pytest.mark.xfail
 def test_multiplication_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
@@ -355,8 +345,7 @@ def test_multiplication_with_interpolation():
         s1 * s5
 
 
-# @pytest.mark.xfail
-def test_truedivision_with_interpolation():
+def test_true_division_with_interpolation():
     s1 = Spectrum([1, 2, 2, 1], [2, 4, 8, 10])
     x = np.array([1, 5, 7, 8, 12])
     s2 = Spectrum([1, 2, 1, 2, 1], x)
@@ -388,24 +377,8 @@ def test_truedivision_with_interpolation():
     with pytest.raises(ValueError):
         s1 / s5
 
-# Commented out as these are now Implemented
-# @pytest.mark.xfail
-# def test_NotImplemented_in_operators_works_atm():
-    # s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
-    # t = Spectrum([1, 2, 1, 2], [3, 5, 7, 8])
-    # Outside bounds
-    # with pytest.raises(NotImplementedError):
-    #     s + t
-    # with pytest.raises(NotImplementedError):
-    #    d = s - t
-    # with pytest.raises(NotImplementedError):
-    #     s / t
-    # with pytest.raises(NotImplementedError):
-    #     s * t
 
-
-# @pytest.mark.xfail
-def test_valueerror_when_spectra_dont_overlap():
+def test_value_error_when_spectra_do_not_overlap():
     s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
     u = Spectrum([1, 2, 1, 2], [50, 51, 52, 53])
 
@@ -419,60 +392,99 @@ def test_valueerror_when_spectra_dont_overlap():
         s * u
 
 
-def test_operators_with_bad_types():
+@pytest.mark.parametrize("badly_typed", [
+    "Test String",
+    [1, 2, 3, 4, 5],
+    [2, 3, "4", 5, 6],
+    (1, 2, "3", 6, 7),
+    {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5},
+    {1, 4, 4, 2, 5},
+])
+def test_operators_with_bad_types(badly_typed):
     s = Spectrum([1, 2, 1, 2, 1], [2, 4, 6, 8, 10])
-    test_str = "Test String"
-    test_list = [1, 2, 3, 4, 5]
-    test_list2 = [2, 3, "4"]
-    test_tup = (1, 2, "3")
-    test_dict = {"1": 1, "2": 2, "3": 3}
-    test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
-    tests = [test_str, test_list, test_list2, test_tup, test_dict, test_set]
-    for test in tests:
-        with pytest.raises(TypeError):
-            s + test
-        with pytest.raises(TypeError):
-            s - test
-        with pytest.raises(TypeError):
-            s * test
-        with pytest.raises(TypeError):
-            s / test
+    with pytest.raises(TypeError):
+        s + badly_typed
+    with pytest.raises(TypeError):
+        s - badly_typed
+    with pytest.raises(TypeError):
+        s * badly_typed
+    with pytest.raises(TypeError):
+        s / badly_typed
 
 
-@pytest.mark.xfail
-def test_assignment_with_bad_types():
+@pytest.mark.parametrize("badly_typed", [
+    "Test String",
+    # [1, 2, 3, 4, 5],
+    # [2, 3, "4"],
+    # (1, 2, "3"),
+    {"1": 1, "2": 2, "3": 3},
+    # {1, 2, 3, 1, 4, 4, 2, 5},  # set literal faster than set()
+])
+def test_assignment_with_bad_types(badly_typed):
     # Need to improve checking of what can pass into spectrum
-    test_str = "Test String"
-    test_tup = (1, 2, "3")
-    test_dict = {"1": 1, "2": 2, "3": 3}
-    test_set = set([1, 2, 3, 1, 4, 4, 2, 5])
-    tests = [test_str, test_tup, test_dict, test_set]
-    for test in tests:
-        # print(test)
-        with pytest.raises(TypeError):
-            Spectrum(None, test)
-        with pytest.raises(TypeError):
-            Spectrum(test)
+    with pytest.raises(TypeError):
+        Spectrum(flux=None, xaxis=badly_typed)
+    with pytest.raises(TypeError):
+        Spectrum(flux=badly_typed)
 
 
-@pytest.mark.xfail
 def test_spectra_stay_the_same_after_operations():
     """After a operation of two spectra...
 
     e.g. a/b both a and b should
-    remain the same unless specifcally defined such as a = a + b
+    remain the same unless specifically defined such as a = a + b
 
     """
-    assert False    # Not implemented
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
+    b = Spectrum(xaxis=[1, 2, 3, 4], flux=[1, 2, 3, 4])
+    c = a.copy()
+    d = b.copy()
+
+    e = c + d
+    f = c - d
+    g = d * c
+    h = d / c
+    # c and d still the same
+    assert a == c
+    assert b == d
+    assert e != c  and e != d
+    assert f != c and f != d
+    assert g != c and g != d
+    assert h != c and h != d
+
+
+def test_spectra_not_the_same_when_reassigned():
+    """After a operation of two spectra...
+
+    e.g. a/b both a and b should
+    remain the same unless specifically defined such as a = a + b
+
+    """
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
+    b = Spectrum(xaxis=[1, 2, 3, 4], flux=[1, 2, 3, 4])
+    c = a.copy()
+    d = b.copy()
+    e = a.copy()
+    f = b.copy()
+
+    c = c + b
+    d = d - c
+    e = e * 2
+    f /= 6
+    # changes spectra are different
+    assert c != a
+    assert d != b
+    assert e != a
+    assert f != b
 
 
 def test_xaxis_type_error_init_check():
-    # Test that passing None to xaxis when flux doesn't have a lenght
+    # Test that passing None to xaxis when flux doesn't have a length
     # results in just setting to None
     s = Spectrum(np.nan, None)
     assert s.xaxis is None
     s.flux = [1, 1.1]   # has length
-    s.xaxis = None      # xaxis truns into range(len(s.flux))
+    s.xaxis = None      # xaxis turns into range(len(s.flux))
     assert s.xaxis is not None
     print(s.xaxis)
     assert np.all(s.xaxis == np.array([0, 1]))
@@ -505,59 +517,62 @@ def test_wave_selection_with_ill_defined_xaxis():
 
 
 def test_zero_division():
-    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4])
-    t = Spectrum([1, 2, 0, 4], [1, 2, 3, 4])
+    s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2, 3, 4])
+    t = Spectrum(flux=[2., 2, 0, 4], xaxis=[1., 2, 3, 4])
 
     divide = s / t
-    print(divide)
+    assert np.allclose(divide.flux[[0,1,3]], [0.5, 2.5, 4])
+    print(divide.xaxis)
+    print(divide.flux)
     notnan = np.invert(np.isinf(divide.flux))
     print(divide.flux[2])
     assert np.isinf(divide.flux[2])
-    assert np.all(divide.flux[notnan] == [1, 1, 1])
-
-    div2 = s / 0
-    assert np.all(np.isinf(div2.flux))  # div by zero goes to np.inf
-    div3 = s / np.asarray(0)
-    assert np.all(np.isinf(div3.flux))  # div by zero goes to np.inf
-    div4 = s / np.asarray([0])
-    assert np.all(np.isinf(div4.flux))  # div by zero goes to np.inf
+    assert np.all(divide.flux[notnan] == [0.5, 2.5, 4])
 
 
-def test_addition_perserves_header():
+@pytest.mark.parametrize("zero",
+                    [0, 0.0, np.int(0), np.float(0)])
+def test_zero_divison_by_number(zero):
+    s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2., 3., 4.])
+    div = s / zero
+    assert np.all(np.isinf(div.flux))  # div by zero goes to np.inf
+
+
+def test_addition_preserves_header():
     hdr = {"this": "header", "value": 2}
     s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
     s += 1
 
     assert np.all(s.flux == [2, 3, 4, 5])
-    assert not s.header is None
+    assert s.header is not None
     assert s.header == hdr
 
 
-def test_subtraction_perserves_header():
+def test_subtraction_preserves_header():
     hdr = {"this": "header", "value": 2}
     s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
     s -= 1
 
     assert np.all(s.flux == [0, 1, 2, 3])
-    assert not s.header is None
+    assert s.header is not None
     assert s.header == hdr
 
 
-def test_multiplication_perserves_header():
+def test_multiplication_preserves_header():
     hdr = {"this": "header", "value": 2}
     s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], header=hdr)
     s *= 2
 
-    assert np.all(s.flux == [1, 2, 3, 4])
-    assert not s.header is None
+    assert np.all(s.flux == [2, 4, 6, 8])
+    assert s.header is not None
     assert s.header == hdr
 
 
-def test_division_perserves_header():
+def test_division_preserves_header():
     hdr = {"this": "header", "value": 2}
-    s = Spectrum([1, 2, 3, 4], [2, 4, 6, 8], header=hdr)
+    s = Spectrum(xaxis=[1, 2, 3, 4], flux=[2, 4, 6, 8], header=hdr)
     s /= 2
 
     assert np.all(s.flux == [1, 2, 3, 4])
-    assert not s.header is None
+    assert s.header is not None
     assert s.header == hdr

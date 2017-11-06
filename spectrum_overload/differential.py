@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Differential Class which takes the difference between two spectra."""
 from spectrum_overload import Spectrum
 
