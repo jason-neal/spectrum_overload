@@ -238,14 +238,19 @@ class Spectrum(object):
         # Add normal distributed noise at the SNR level.
         self.flux += np.random.normal(0, sigma)
 
-    def plot(self, **kwargs):
+    def plot(self, axis=None, **kwargs):
         """Plot spectrum with maplotlib."""
-        plt.plot(self.xaxis, self.flux, **kwargs)
-        if self.calibrated:
-             plt.xlabel("Wavelength")
+        if axis is None:
+            plt.plot(self.xaxis, self.flux, **kwargs)
+            if self.calibrated:
+                 plt.xlabel("Wavelength")
+            else:
+                plt.xlabel("Pixels")
+            plt.ylabel("Flux")
         else:
-            plt.xlabel("Pixels")
-        plt.ylabel("Flux")
+            axis.plot(self.xaxis, self.flux, **kwargs)
+
+
 
     def doppler_shift(self, rv):
         r"""Doppler shift wavelength by a given Radial Velocity.
