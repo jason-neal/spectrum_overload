@@ -1,4 +1,5 @@
 # spectrum_overload
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/jason-neal)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3e9a2cf4ad914e0ebc24b6b2b83059db)](https://www.codacy.com/app/jason-neal/spectrum_overload?utm_source=github.com&utm_medium=referral&utm_content=jason-neal/spectrum_overload&utm_campaign=badger)[![Updates](https://pyup.io/repos/github/jason-neal/spectrum_overload/shield.svg)](https://pyup.io/repos/github/jason-neal/spectrum_overload/)[![Python 3](https://pyup.io/repos/github/jason-neal/spectrum_overload/python-3-shield.svg)](https://pyup.io/repos/github/jason-neal/spectrum_overload/)
 
 | Branch  | Docs | Build | Coverage | Code Climate | 
