@@ -7,8 +7,6 @@ It is not perfect and can be definitely improved.
 """
 from __future__ import division, print_function
 
-import copy
-
 import hypothesis.strategies as st
 import numpy as np
 import pytest
@@ -305,14 +303,14 @@ def test_interpolation():
     y2 = [1., 2., 1., 2.]
     s1 = Spectrum(y1, x1)
     s2 = Spectrum(y2, x2)
-    s_lin = copy.copy(s1)
+    s_lin = s1.copy()
     s_lin.interpolate1d_to(s2, kind='cubic')
 
     assert np.allclose(s_lin.flux, [3., 4., 7., 8.])
     # test linear interpolation matches numpy interp
     assert np.allclose(s_lin.flux, np.interp(x2, x1, y1))
 
-    s_same = copy.copy(s1)
+    s_same = s1.copy()
     # Interpolation to itself should be the same
     s_same.interpolate1d_to(s1)
     assert np.allclose(s_same.flux, s1.flux)
@@ -342,7 +340,7 @@ def test_interpolation_when_given_a_ndarray():
     # y2 = [1., 2., 1., 2.]
     s1 = Spectrum(y1, x1)
     # s2 = Spectrum(y2, x2)
-    s_lin = copy.copy(s1)
+    s_lin = s1.copy()
     s_lin.interpolate1d_to(np.asarray(x2), kind='linear')
 
     assert np.allclose(s_lin.flux, [3., 4., 7., 8.])
@@ -361,14 +359,14 @@ def test_spline_interpolation():
     y2 = [1., 2., 1., 2.]
     s1 = Spectrum(y1, x1)
     s2 = Spectrum(y2, x2)
-    s_lin = copy.copy(s1)
+    s_lin = s1.copy()
     s_lin.spline_interpolate_to(s2, k=1)
 
     assert np.allclose(s_lin.flux, [3., 4., 7., 8.])
     # test linear interpolation matches numpy interp
     assert np.allclose(s_lin.flux, np.interp(x2, x1, y1))
 
-    s_same = copy.copy(s1)
+    s_same = s1.copy()
     # Interpolation to itself should be the same
     s_same.spline_interpolate_to(s1)
     assert np.allclose(s_same.flux, s1.flux)
@@ -399,7 +397,7 @@ def test_spline_interpolation_when_given_a_ndarray():
     # y2 = [1., 2., 1., 2.]
     s1 = Spectrum(y1, x1)
     # s2 = Spectrum(y2, x2)
-    s_lin = copy.copy(s1)
+    s_lin = s1.copy()
     s_lin.spline_interpolate_to(np.asarray(x2), k=1)
 
     assert np.allclose(s_lin.flux, [3., 4., 7., 8.])
