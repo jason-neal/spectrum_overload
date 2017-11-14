@@ -34,7 +34,7 @@ class Spectrum(object):
         Header information of observation.
 
     """
-    def __init__(self, flux=None, xaxis=None, calibrated=True, header=None, interp_method="spline"):
+    def __init__(self, *, xaxis=None, flux=None, calibrated=True, header=None, interp_method="spline"):
         """Initalise a Spectrum object."""
 
         # Some checks before creating class

@@ -49,7 +49,7 @@ def test_spectrum_assigns_hypothesis_data(y, x, z):
     # Use one hypothesis list they need to have the same length
     # multiply by a random int to mix it up a little.
     x = x * np.array(y)
-    spec = Spectrum(y, x, calibrated=z)
+    spec = Spectrum(flux=y, xaxis=x, calibrated=z)
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == z
@@ -64,7 +64,7 @@ def test_spectrum_assigns_data():
     y = [1, 1, 0.9, 0.95, 1, 1]
     calib_val = 0
 
-    spec = Spectrum(y, x, calibrated=calib_val)
+    spec = Spectrum(flux=y, xaxis=x, calibrated=calib_val)
     assert np.all(spec.flux == y)
     assert np.all(spec.xaxis == x)
     assert spec.calibrated == calib_val
@@ -118,18 +118,18 @@ def test_length_checking():
 
     with pytest.raises(ValueError):
         # Wrong length should fail
-        Spectrum([1, 4, 5], [2, 1])
+        Spectrum(flux=[1, 4, 5], xaxis=[2, 1])
 
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError."""
     with pytest.raises(TypeError):
-        Spectrum([1, 2, 3], xaxis='bar')
+        Spectrum(flux=[1, 2, 3], xaxis='bar')
     with pytest.raises(TypeError):
-        Spectrum("foo", [1.2, 3, 4, 5])
+        Spectrum(flux="foo", xaxis=[1.2, 3, 4, 5])
     with pytest.raises(TypeError):
-        Spectrum("foo", "bar")
-    spec = Spectrum([1, 1, .5, 1])
+        Spectrum(flux="foo", xaxis="bar")
+    spec = Spectrum(flux=[1, 1, .5, 1])
     with pytest.raises(TypeError):
         spec.flux = "foo"
     with pytest.raises(TypeError):
@@ -137,22 +137,27 @@ def test_flux_and_xaxis_cannot_pass_stings():
 
 
 def test_auto_genration_of_xaxis_if_none():
-    spec = Spectrum([1, 1, .5, 1])
+    spec = Spectrum(flux=[1, 1, .5, 1])
     assert np.all(spec.xaxis == np.arange(4))
-    spec2 = Spectrum([1, 1, .5, 1], [100, 110, 160, 200])
+    spec2 = Spectrum(flux=[1, 1, .5, 1], xaxis=[100, 110, 160, 200])
     spec2.xaxis = None  # reset xaxis
     assert np.all(spec2.xaxis == np.arange(4))
 
 
-def test_length_of_flux_and_xaxis_equal():
+@pytest.mark.parametrize("xaxis, flux", [
+    ([1, 2, 3], [1, 2] ),
+    ([1, 2, 3], []),
+    ([], [1, 2, 3]),
+    ([1, 2], [1, 2, 3])
+])
+def test_length_of_flux_and_xaxis_must_be_equal(xaxis, flux):
     """Try assign a mismatched xaxis it should raise a ValueError."""
     with pytest.raises(ValueError):
-        Spectrum([1, 2, 3], [1, 2])
-    with pytest.raises(ValueError):
-        Spectrum([1, 2, 3], [])
-    with pytest.raises(ValueError):
-        Spectrum([], [1, 2])
-    spec = Spectrum([1, 2, 3], [1, 2, 3])
+        Spectrum(flux=flux, xaxis=xaxis)
+
+
+def test_resasigning_unequal_length_fails():
+    spec = Spectrum(flux=[1, 2, 3], xaxis=[1, 2, 3])
     with pytest.raises(ValueError):
         spec.xaxis = [1, 2]
 
@@ -162,7 +167,7 @@ def test_wav_select(x, calib, wav_min, wav_max):
     """Test some properties of wavelength selection."""
     # Create spectrum
     y = np.copy(x)
-    spec = Spectrum(y, xaxis=x, calibrated=calib)
+    spec = Spectrum(flux=y, xaxis=x, calibrated=calib)
     # Select wavelength values
     spec.wav_select(wav_min, wav_max)
 
@@ -178,7 +183,7 @@ def test_wav_select_example():
     y = 2 * np.random.random(20)
     x = np.arange(20)
     calib = False
-    spec = Spectrum(y, xaxis=x, calibrated=calib)
+    spec = Spectrum(flux=y, xaxis=x, calibrated=calib)
     # Select wavelength values
 
     spec.wav_select(5, 11)
@@ -210,7 +215,7 @@ def test_doppler_shift_with_hypothesis(x, rv, calib, rv_dir):
     x = np.asarray(x)
     y = np.random.random(len(x))
 
-    spec = Spectrum(y, x, calibrated=calib)
+    spec = Spectrum(flux=y, xaxis=x, calibrated=calib)
     # Apply Doppler shift of rv km/s.
     spec.doppler_shift(rv)
 
@@ -234,7 +239,7 @@ def test_x_calibration_works():
     x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     x = [float(x_i) for x_i in x]
     y = np.ones_like(x)
-    spec = Spectrum(y, x, False)
+    spec = Spectrum(flux=y, xaxis=x, calibrated=False)
 
     # Easy test
     params = np.polyfit([1, 5, 10], [3, 15, 30], 1)
@@ -247,7 +252,7 @@ def test_x_calibration_works():
 
 def test_cant_calibrate_calibrated_spectrum():
     """Check that a calibrated spectra is not calibrated a second time."""
-    s = Spectrum([1, 2, 3, 4], [1, 2, 3, 4], calibrated=True)
+    s = Spectrum(flux=[1, 2, 3, 4], xaxis=[1, 2, 3, 4], calibrated=True)
 
     with pytest.raises(SpectrumError):
         s.calibrate_with([5, 3, 2])
@@ -258,14 +263,14 @@ def test_calibration_wavelength_only_positive():
     """Not quite sure what is happening here."""
     # Can't have a wavelength of zero or negative.
     # So raise a SpectrumError before calibrating
-    s = Spectrum([1, 2, 3, 4], [-4, -3, -2, -1], calibrated=False)
+    s = Spectrum(flux=[1, 2, 3, 4], xaxis=[-4, -3, -2, -1], calibrated=False)
     with pytest.raises(SpectrumError):
         s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
     assert s.calibrated is False     # Check values stay the same
     assert np.all(s.flux == np.array([1, 2, 3, 4]))
     assert np.all(s.xaxis == np.array([-4, -3, -2, -1]))
 
-    s = Spectrum([1, 2, 3, 4], [0, 2, 3, 4], calibrated=False)
+    s = Spectrum(flux=[1, 2, 3, 4], xaxis=[0, 2, 3, 4], calibrated=False)
     with pytest.raises(SpectrumError):
         s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
     assert s.calibrated is False     # Check values stay the same
@@ -301,8 +306,8 @@ def test_interpolation():
     y1 = [2., 4., 6., 8., 10]
     x2 = [1.5, 2, 3.5, 4]
     y2 = [1., 2., 1., 2.]
-    s1 = Spectrum(y1, x1)
-    s2 = Spectrum(y2, x2)
+    s1 = Spectrum(flux=y1, xaxis=x1)
+    s2 = Spectrum(flux=y2, xaxis=x2)
     s_lin = s1.copy()
     s_lin.interpolate1d_to(s2, kind='cubic')
 
@@ -338,8 +343,8 @@ def test_interpolation_when_given_a_ndarray():
     y1 = [2., 4., 6., 8., 10]
     x2 = [1.5, 2, 3.5, 4]
     # y2 = [1., 2., 1., 2.]
-    s1 = Spectrum(y1, x1)
-    # s2 = Spectrum(y2, x2)
+    s1 = Spectrum(flux=y1, xaxis=x1)
+    # s2 = Spectrum(flux=y2, xaxis=x2)
     s_lin = s1.copy()
     s_lin.interpolate1d_to(np.asarray(x2), kind='linear')
 
@@ -357,8 +362,8 @@ def test_spline_interpolation():
     y1 = [2., 4., 6., 8., 10]
     x2 = [1.5, 2, 3.5, 4]
     y2 = [1., 2., 1., 2.]
-    s1 = Spectrum(y1, x1)
-    s2 = Spectrum(y2, x2)
+    s1 = Spectrum(flux=y1, xaxis=x1)
+    s2 = Spectrum(flux=y2, xaxis=x2)
     s_lin = s1.copy()
     s_lin.spline_interpolate_to(s2, k=1)
 
@@ -395,8 +400,8 @@ def test_spline_interpolation_when_given_a_ndarray():
     y1 = [2., 4., 6., 8., 10]
     x2 = [1.5, 2, 3.5, 4]
     # y2 = [1., 2., 1., 2.]
-    s1 = Spectrum(y1, x1)
-    # s2 = Spectrum(y2, x2)
+    s1 = Spectrum(flux=y1, xaxis=x1)
+    # s2 = Spectrum(flux=y2, xaxis=x2)
     s_lin = s1.copy()
     s_lin.spline_interpolate_to(np.asarray(x2), k=1)
 
@@ -470,8 +475,7 @@ def test_normalization_method_match_degree(method, degree):
     y = np.arange(1000)
     s = Spectrum(xaxis=x, flux=y)
     named_method = s.normalize(method=method)
-    named_method = named_method.remove_nans()  # hack for geting to run on < py34 
+    named_method = named_method.remove_nans()  # hack for geting to run on < py34
     poly_deg = s.normalize(method='poly', degree=degree)
     poly_deg = poly_deg.remove_nans() # hack for getting to pass on < py 34
     assert np.allclose(named_method.flux, poly_deg.flux)
-
