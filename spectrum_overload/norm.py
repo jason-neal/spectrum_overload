@@ -47,7 +47,7 @@ def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
         Number of bins to separate the spectrum into.
     ntop: int
         Number of highest points in bin to take median of.
-"""
+    """
     if method not in ("scalar", "linear", "quadratic", "cubic", "poly", "exponential"):
         raise ValueError("Incorrect method for polynomial fit.")
 

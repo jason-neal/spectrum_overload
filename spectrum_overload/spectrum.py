@@ -705,9 +705,9 @@ class Spectrum(object):
 
     def __abs__(self):
         """Take absolute flux."""
-        absflux = abs(self.flux)
-        return Spectrum(flux=absflux, xaxis=self.xaxis, header=self.header,
-                        calibrated=self.calibrated)
+        newspec = self.copy()
+        newspec.flux = abs(newspec.flux)
+        return newspec
 
     def __eq__(self, other):
         return (all(self.xaxis == other.xaxis) and all(self.flux == other.flux) and
