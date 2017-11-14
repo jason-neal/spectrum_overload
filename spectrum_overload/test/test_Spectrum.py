@@ -82,7 +82,7 @@ def test_empty_call_is_nones():
     s2 = Spectrum(calibrated=False)
     assert s2.calibrated is False
 
-
+@pytest.mark.xfail
 def test_setters_for_flux_and_xaxis():
     s = Spectrum()
     # Try set flux to None
@@ -95,7 +95,7 @@ def test_setters_for_flux_and_xaxis():
     # Spectrum(False, None)
     # Spectrum(False, False)
     # Spectrum(None, False)
-    pass
+    assert False
 
 
 def test_length_checking():
