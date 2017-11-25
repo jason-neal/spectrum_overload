@@ -111,8 +111,8 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    # install_requires=requirements,
-    install_requires=[],
+    install_requires=requirements,
+    # install_requires=[],
     #install_requires=["numpy", "scipy", "astropy", "pyastronomy"],
     setup_requires=['pytest-runner'],
     tests_require=['pytest', "hypothesis"],
