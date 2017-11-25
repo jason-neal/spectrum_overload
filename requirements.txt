@@ -1,7 +1,7 @@
 numpy==1.13.3
 astropy==2.0.2
 scipy==0.19.1
-#pyastronomy
+pyastronomy
 hypothesis==3.31.2
 pytest==3.2.2
 pytest-cov==2.5.1
