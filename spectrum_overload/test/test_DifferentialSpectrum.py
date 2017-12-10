@@ -10,6 +10,18 @@ from spectrum_overload import DifferentialSpectrum
 from spectrum_overload import Spectrum
 
 
+@pytest.mark.parametrize("header", [None, {}])
+def test_assignment_of_differential_invalid_headers(header):
+    """Test that differential contains two spectra."""
+    x = np.arange(2100, 2105, 0.5)
+    y = np.random.random(len(x))
+    spec_1 = Spectrum(xaxis=x, flux=y, calibrated=True, header=header)
+    spec_2 = Spectrum(xaxis=x, flux=2 * y, calibrated=True, header=header)
+
+    with pytest.raises(KeyError):
+        spec_diff = DifferentialSpectrum(spec_1, spec_2)
+        spec_diff.diff
+
 
 @pytest.mark.parametrize("key, value1, value2", [
     ("EXPTIME", 180, 200),
