@@ -4,7 +4,7 @@
 from spectrum_overload import Spectrum
 
 
-# Begin Feburary 2017
+# Begin February 2017
 # Jason Neal
 
 # TODO: Add in s-profile from
@@ -13,6 +13,7 @@ from spectrum_overload import Spectrum
 class DifferentialSpectrum(object):
     """A differential spectrum."""
 
+    @staticmethod
     def check_compatibility(spec1, spec2):
         """Check spectra are compatible to take differences.
 
