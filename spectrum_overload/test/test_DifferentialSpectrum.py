@@ -47,17 +47,30 @@ def test_compatibility_checking(key, value1, value2):
     assert not compatible  # Key parameters in headers are different
 
 
+# TODO:
+# Define a fixture that creates a differential with two spectra.
+@pytest.fixture()
+def diff_spec():
+    x = np.arange(2100, 2105, 0.5)
+    y = np.random.random(len(x))
+    header = {"EXPTIME": 180, "HIERARCH ESO INS SLIT1 WID": 0.2, "OBJECT": "HD30501"}
+    spec_1 = Spectrum(xaxis=x, flux=y, header=header, calibrated=True)
+    spec_2 = Spectrum(xaxis=x, flux=2 * y, header=header, calibrated=True)
+    return DifferentialSpectrum(spec_1, spec_2)
+
+
 def test_assignment_of_differential():
     """Test that differential contains two spectra."""
     x = np.arange(2100, 2105, 0.5)
     y = np.random.random(len(x))
-    spec_1 = Spectrum(xaxis=x, flux=y, calibrated=True)
-    spec_2 = Spectrum(xaxis=x, flux=2 * y, calibrated=True)
+    header = {"EXPTIME": 180, "HIERARCH ESO INS SLIT1 WID": 0.2, "OBJECT": "HD30501"}
+    spec_1 = Spectrum(xaxis=x, flux=y, header=header)
+    spec_2 = Spectrum(xaxis=x, flux=2 * y, header=header)
 
+    assert DifferentialSpectrum.check_compatibility(spec_1, spec_2)
     spec_diff = DifferentialSpectrum(spec_1, spec_2)
 
     assert spec_diff.spec1 == spec_1
     assert spec_diff.spec2 == spec_2
+    assert spec_diff.params is None
 
-# TODO:
-# Define a fixture that creates a differentail with two spectra.
