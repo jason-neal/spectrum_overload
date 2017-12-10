@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """Differential Class which takes the difference between two spectra."""
+import logging
+
+import ephem
+
 from spectrum_overload import Spectrum
 
 
@@ -40,8 +44,20 @@ class DifferentialSpectrum(object):
             raise ValueError("The spectra are not compatible.")
 
     def barycentric_correct(self):
-        """Barycentic correct each spectra."""
-        pass
+        """Barycentric correct each spectra.
+
+         Based off CRIRES headers.
+         """
+        if not self.spec1.header.get("BERVDONE", False):
+            self.spec1 = self.barycorr_spectrum(self.spec1)
+            self.spec1.header.update({"BERVDONE": True})
+            print("spec1 barycorrected")
+
+        if not self.spec2.header.get("BERVDONE", False):
+            self.spec2 = self.barycorr_spectrum(self.spec2)
+            self.spec1.header.update({"BERVDONE": True})
+            print("spec2 barycorrected")
+        return None
 
     def times(self):
         time = self.spec1.header["DATE-OBS"]
@@ -83,3 +99,67 @@ class DifferentialSpectrum(object):
             self.params = value
         else:
             raise TypeError("Orbital parameters need to be a dict.")
+
+
+    @staticmethod
+    def barycorr_spectrum(spectrum, extra_offset=None):
+        """Wrapper to apply barycorrection of spectra if given a Spectrum object.
+
+        Based off CRIRES headers."""
+        _, nflux = self.barycorr_crires(spectrum.xaxis, spectrum.flux,
+                                        spectrum.header, extra_offset=extra_offset)
+        new_spectrum = Spectrum(flux=nflux, xaxis=spectrum.xaxis, header=spectrum.header)
+        new_spectrum.header.update({"BERVDONE": True})
+        return new_spectrum
+
+    @staticmethod
+    def barycorr_crires(wavelength, flux, header, extra_offset=None):
+        """Calculate Heliocentric correction values and apply to spectrum.
+
+        Based off CRIRES headers.
+        """
+        if header is None:
+            logging.warning("No header information to calculate heliocentric correction.")
+            header = {}
+            if (extra_offset is None) or (extra_offset == 0):
+                return wavelength, flux
+
+        try:
+            longitude = float(header["HIERARCH ESO TEL GEOLON"])
+            latitude = float(header["HIERARCH ESO TEL GEOLAT"])
+            altitude = float(header["HIERARCH ESO TEL GEOELEV"])
+
+            ra = header["RA"]  # CRIRES RA already in degrees
+            dec = header["DEC"]  # CRIRES hdr DEC already in degrees
+
+            time = header["DATE-OBS"]  # Observing date  '2012-08-02T08:47:30.8425'
+
+            # Convert easily to julian date with ephem
+            jd = ephem.julian_date(time.replace("T", " ").split(".")[0])
+
+            # Calculate Heliocentric velocity
+            helcorr = pyasl.helcorr(longitude, latitude, altitude, ra, dec, jd,
+                                    debug=False)
+            helcorr = helcorr[0]
+        except KeyError as e:
+            logging.warning("Not a valid header so can't do automatic correction.")
+
+            helcorr = 0.0
+
+        if extra_offset is not None:
+            logging.warning("Warning!!!! have included a manual offset for testing")
+        else:
+            extra_offset = 0.0
+
+        helcorr_val = helcorr + extra_offset
+
+        if helcorr_val == 0:
+            logging.warning("Helcorr value was zero")
+            return wavelength, flux
+        else:
+            # Apply Doppler shift to the target spectra with helcorr correction velocity
+            nflux, wlprime = pyasl.dopplerShift(wavelength, flux, helcorr_val,
+                                                edgeHandling=None, fillValue=None)
+
+            logging.info("RV Size of Heliocenter correction for spectra", helcorr_val)
+            return wlprime, nflux

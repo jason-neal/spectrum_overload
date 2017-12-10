@@ -34,6 +34,7 @@ def main(spectrum1, spectrum2, params=None, plot=True):
     # params = load/parse parameter file
 
     diff = DifferentialSpectrum(spec1, spec2, params=params)
+    diff.barycentric_correct()
 
     if plot():
         diff.plot()
