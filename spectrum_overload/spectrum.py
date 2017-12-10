@@ -642,7 +642,7 @@ class Spectrum(object):
                 if np.all(self.xaxis == other.xaxis):  # Equal xaxis
                     other_flux = other.copy().flux
 
-                elif self.xaxis != other.xaxis:  # Need to Apply interpolation
+                elif np.any(self.xaxis != other.xaxis):  # Need to Apply interpolation
                     no_overlap_lower = (np.min(self.xaxis) > np.max(other.xaxis))
                     no_overlap_upper = (np.max(self.xaxis) < np.min(other.xaxis))
                     if no_overlap_lower | no_overlap_upper:
