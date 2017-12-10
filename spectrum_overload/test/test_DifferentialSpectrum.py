@@ -10,6 +10,31 @@ from spectrum_overload import DifferentialSpectrum
 from spectrum_overload import Spectrum
 
 
+
+@pytest.mark.parametrize("key, value1, value2", [
+    ("EXPTIME", 180, 200),
+    ("OBJECT", "HD30501", "Hd47474"),
+    ("HIERARCH ESO INS SLIT1 WID", 0.2, 0.4)])
+def test_compatibility_checking(key, value1, value2):
+    """Test that differential contains two spectra."""
+    header = {"EXPTIME": 180, "HIERARCH ESO INS SLIT1 WID": 0.1, "OBJECT": "HD3000"}
+
+    hdr1 = {}
+    hdr2 = {}
+    hdr1.update(header.copy())
+    hdr1.update({key: value1})
+    hdr2.update(header.copy())
+    hdr2.update({key: value2})
+    assert hdr1 != hdr2
+
+    spec_1 = Spectrum(header=hdr1)
+    spec_2 = Spectrum(header=hdr2)
+    assert spec_2.header != spec_1.header
+
+    compatible = DifferentialSpectrum.check_compatibility(spec_1, spec_2)
+    assert not compatible  # Key parameters in headers are different
+
+
 def test_assignment_of_differential():
     """Test that differential contains two spectra."""
     x = np.arange(2100, 2105, 0.5)

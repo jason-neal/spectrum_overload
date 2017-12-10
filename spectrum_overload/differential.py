@@ -19,13 +19,12 @@ class DifferentialSpectrum(object):
 
         Requires most of the setting to be the same. Have included a CRIRES only parameters also.
         """
-        compatible = True
         for check in ["EXPTIME", "HIERARCH ESO INS SLIT1 WID", "OBJECT"]:
-            if spec1.header[check] != spec1.header[check]:
+            if spec1.header[check] != spec2.header[check]:
                 print("The Spectral property '{}' are not compatible. {}, {}".format(check, spec1.header[check],
                                                                                      spec2.header[check]))
-                compatible = False
-        return compatible
+                return False
+        return True
 
     def __init__(self, spectrum1, spectrum2, params=None):
         """Initialise lass with both spectra."""
