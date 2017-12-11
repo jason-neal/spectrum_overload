@@ -3,6 +3,8 @@ import sys
 
 import matplotlib.pyplot as plt
 from astropy.io import fits
+from observationtools import RV
+from observationtools.utils.parse import parse_paramfile
 
 from spectrum_overload import Spectrum, DifferentialSpectrum
 
@@ -15,7 +17,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser(description='Spectrum Difference.')
     parser.add_argument('spectrum1', help='First Spectrum')
     parser.add_argument('spectrum2', help="Second Spectrum")
-    parser.add_argument('params', help="Orbital parameter file.")
+    parser.add_argument('param_file', help="Orbital parameter file.")
     parser.add_argument("-p", '--plot', help="Plot differential", action="store_true")
     return parser.parse_args(args)
 
@@ -27,15 +29,18 @@ def load_spectrum(fname):
     return Spectrum(xaxis=data["wavelength"], flux=data["flux"], header=header)
 
 
-def main(spectrum1, spectrum2, params=None, plot=True):
+def main(spectrum1, spectrum2, param_file=None, plot=True):
     spec1 = load_spectrum(spectrum1)
+    # for key, value in spec1.header.items():
+    #    print(key, value)
     spec2 = load_spectrum(spectrum2)
-
     # params = load/parse parameter file
-
+    params = parse_paramfile(param_file)
+    print("params", params)
     diff = DifferentialSpectrum(spec1, spec2, params=params)
     diff.barycentric_correct()
 
+    host_rv = RV.from_file(param_file)
     if plot:
         fig, axes = plt.subplots(2, 1, sharex=True)
         spec1.plot(axis=axes[0], label="spec1")

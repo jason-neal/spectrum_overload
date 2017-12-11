@@ -32,7 +32,7 @@ class DifferentialSpectrum(object):
         return True
 
     def __init__(self, spectrum1, spectrum2, params=None):
-        """Initialise lass with both spectra."""
+        """Initialise class with both spectra."""
         assert isinstance(spectrum1, Spectrum) and isinstance(spectrum2, Spectrum)
         if not (spectrum1.calibrated and spectrum2.calibrated):
             raise ValueError("Input spectra are not calibrated.")
@@ -40,9 +40,10 @@ class DifferentialSpectrum(object):
         if self.check_compatibility(spectrum1, spectrum2):
             self.spec1 = spectrum1
             self.spec2 = spectrum2
-            self.diff = None
+            self._diff = self.diff
         else:
             raise ValueError("The spectra are not compatible.")
+        self.params = params
 
     def barycentric_correct(self):
         """Barycentric correct each spectra.
@@ -67,9 +68,10 @@ class DifferentialSpectrum(object):
         return (time, time2)
 
     def rest_frame(self, frame):
-        """Change restframe to one of the spectra."""
+        """Change rest frame to one of the spectra."""
         pass
 
+    @property
     def diff(self):
         """Calculate difference between the two spectra."""
         if self.check_compatibility(self.spec1, self.spec2):
@@ -88,7 +90,7 @@ class DifferentialSpectrum(object):
 
     @property
     def params(self):
-        return self.params
+        return self._params
 
     @params.setter
     def params(self, value):
@@ -96,8 +98,8 @@ class DifferentialSpectrum(object):
 
         A dictionary of orbital parameters to use for shifting frames.
         """
-        if isinstance(value, dict):
-            self.params = value
+        if isinstance(value, dict) or (value is None):
+            self._params = value
         else:
             raise TypeError("Orbital parameters need to be a dict.")
 
