@@ -16,7 +16,7 @@ def parse_args(args):
     parser.add_argument('spectrum1', help='First Spectrum')
     parser.add_argument('spectrum2', help="Second Spectrum")
     parser.add_argument('params', help="Orbital parameter file.")
-    parser.add_argument("-p", '--plot', help="Plot differential")
+    parser.add_argument("-p", '--plot', help="Plot differential", action="store_true")
     return parser.parse_args(args)
 
 
@@ -36,8 +36,17 @@ def main(spectrum1, spectrum2, params=None, plot=True):
     diff = DifferentialSpectrum(spec1, spec2, params=params)
     diff.barycentric_correct()
 
-    if plot():
-        diff.plot()
+    if plot:
+        fig, axes = plt.subplots(2, 1, sharex=True)
+        spec1.plot(axis=axes[0], label="spec1")
+        spec2.plot(axis=axes[0], label="spec2")
+        plt.title(spec1.header["OBJECT"])
+        plt.ylabel(r"Flux")
+        diff.plot(axis=axes[1], label="difference")
+        plt.ylabel(r"\Delta Flux")
+        plt.xlabel("Wavelength")
+
+        plt.legend()
         plt.show()
 
     print("Done")

@@ -4,6 +4,7 @@
 import logging
 
 import ephem
+import matplotlib.pyplot as plt
 
 from spectrum_overload import Spectrum
 
@@ -100,6 +101,17 @@ class DifferentialSpectrum(object):
         else:
             raise TypeError("Orbital parameters need to be a dict.")
 
+    def plot(self, axis=None, **kwargs):
+        """Plot spectrum with matplotlib."""
+        if axis is None:
+            plt.plot(self.diff.xaxis, self.diff.flux, **kwargs)
+            if self.diff.calibrated:
+                plt.xlabel("Wavelength")
+            else:
+                plt.xlabel("Pixels")
+            plt.ylabel(r"\Delta Flux")
+        else:
+            axis.plot(self.diff.xaxis, self.diff.flux, **kwargs)
 
     @staticmethod
     def barycorr_spectrum(spectrum, extra_offset=None):
