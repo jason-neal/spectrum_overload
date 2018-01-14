@@ -20,8 +20,12 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
 # with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-with open(os.path.join(here, 'README.md')) as f:
-    long_description = f.read()
+try:
+    import pypandoc
+    long_description =  pypandoc.convert(os.path.join(here, 'README.md'), 'rst')
+except:
+    with open(os.path.join(here, 'README.md')) as f:
+        long_description = f.read()
 
 about = {}
 with open(os.path.join(here, "spectrum_overload", "__about__.py")) as f:
