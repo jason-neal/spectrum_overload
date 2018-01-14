@@ -85,6 +85,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     #install_requires=requirements,
     install_requires=["numpy", "scipy", "astropy", "pyastronomy", "matplotlib",],
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', "hypothesis", "pytest-cov"],
     # List additional groups of dependencies here (e.g. development
