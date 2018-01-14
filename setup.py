@@ -28,7 +28,7 @@ with open(os.path.join(here, "spectrum_overload", "__about__.py")) as f:
     exec(f.read(), about)
 
 # https://www.reddit.com/r/Python/comments/3uzl2a/setuppy_requirementstxt_or_a_combination/
-with open(os.path.join(here, 'requirements.txt') as f:
+with open(os.path.join(here, 'requirements.txt')) as f:
     requirements = f.read().splitlines()
 
 setup(
@@ -49,7 +49,7 @@ setup(
     # Author details
     author=about["__author__"],
     author_email=about["__email__"],
-    license=about["__licence__"],
+    license=about["__license__"],
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
