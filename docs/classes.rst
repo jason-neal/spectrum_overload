@@ -10,18 +10,6 @@ Currently there are two classes available.
 
 .. _spectrumclass:
 
-.. note::
-    Unfortunately the auto-documentation for these classes does not build properly yet due to the ``Pyastronomy`` install dependency `issue. <https://github.com/sczesla/PyAstronomy/issues/22>`_
-    I hope to see it here soon.
-
-    If you need you can try and build this documentation yourself from the root `spectrum_overload` directory::
-
-        pip install -e .[docs]   # editable installation, install docs dependencies.
-        cd docs
-        make html
-
-    This page will be docs/.build/classes.html
-
 Spectrum
 =========
 

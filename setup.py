@@ -1,5 +1,5 @@
 """ spectrum_overload Setup.py
-My first atempt at a setup.py file. It is based off
+My first attempt at a setup.py file. It is based off
 
 A setuptools based setup module.
 See:
@@ -22,26 +22,13 @@ here = os.path.abspath(os.path.dirname(__file__))
 # with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 with open(os.path.join(here, 'README.md')) as f:
     long_description = f.read()
-#long_description = " "
-
-# Allow "python setup.py test" to work
-# class PyTest(TestCommand):
-#     def finalize_options(self):
-#         TestCommand.finalize_options(self)
-#         self.test_args = []
-#         self.test_suite = True
-
-#     def run_tests(self):
-#         import pytest
-#         errcode = pytest.main(self.test_args)
-#         sys.exit(errcode)
 
 about = {}
 with open(os.path.join(here, "spectrum_overload", "__about__.py")) as f:
     exec(f.read(), about)
 
 # https://www.reddit.com/r/Python/comments/3uzl2a/setuppy_requirementstxt_or_a_combination/
-with open('requirements.txt') as f:
+with open(os.path.join(here, 'requirements.txt')) as f:
     requirements = f.read().splitlines()
 
 setup(
@@ -57,17 +44,17 @@ setup(
 
     # The project's main homepage.
     url='https://github.com/jason-neal/spectrum_overload',
+    download_url='https://github.com/jason-neal/spectrum_overload',
 
     # Author details
-    author='Jason Neal',
-    author_email='jason.neal@astro.up.pt',
-
-    # Choose your license
-    license='MIT',
+    author=about["__author__"],
+    author_email=about["__email__"],
+    license=about["__license__"],
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
+
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Astronomy',
         'Topic :: Scientific/Engineering :: Physics',
@@ -96,7 +83,9 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=requirements,
+    #install_requires=requirements,
+    install_requires=["numpy", "scipy", "astropy", "pyastronomy", "matplotlib",],
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', "hypothesis", "pytest-cov"],
     # List additional groups of dependencies here (e.g. development
@@ -116,6 +105,7 @@ setup(
     #    'sample': ['package_data.dat'],
     # },
     include_package_data=True,
+
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
