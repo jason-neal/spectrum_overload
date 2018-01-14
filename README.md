@@ -18,20 +18,23 @@ especially
 - Spectral subtraction (SpectrumA - SpectrumB)
 - Powers/exponents (Spectrum ** x)
 
+Further documentation can be found on [read the docs](https://spectrum-overload.readthedocs.io/en/latest/).
+
 ## Installation
+### Pip
+    
+    pip install spectrum-overload
+
+### git / manual 
 Currently to install and use Spectrum class for your own projects.
 
-clone the git repository where you want it:
+clone the git repository where you want it then type:
 
-    https://github.com/jason-neal/spectrum_overload.git
-
-cd into the downloaded directory:
-
+    git clone https://github.com/jason-neal/spectrum_overload.git
     cd spectrum_overload
-
-and install using:
-
     python setup.py install
+
+or `python setup.py develop` if you want to make changes.
 
 
 ## Usage
@@ -49,7 +52,7 @@ or :
 
 or how ever else you would like to import it.
 
-A tutorial is provided [here](Notebooks/Tutorial.ipynb) to show an example of how to use this class.
+A tutorial is provided [here](Notebooks/Tutorial.ipynb) to show an example of how to use this class. 
 
 
 ## Contributions
@@ -79,7 +82,5 @@ It turns out that astropy/specutils is very similar to what I have created but i
 
 ## TO DO
 Some tasks still to do:
-
 - Improve Documentation
 - Generate Calibration solution (outside spectrum class)?
-- Push a version to pypi
