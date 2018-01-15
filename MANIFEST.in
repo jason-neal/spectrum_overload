@@ -1,4 +1,5 @@
 include README.md
 recursive-include spectrum_overload/data *
-recursive-inlude Notebooks * 
-recursive-inlude docs * 
+recursive-include Notebooks * 
+recursive-include docs * 
+
