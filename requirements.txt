@@ -1,6 +1,6 @@
 numpy==1.14.0
 matplotlib==2.1.1
-astropy==2.0.2
+astropy==2.0.3
 scipy==0.19.1
 pyastronomy==0.11.0
 hypothesis==3.31.2
