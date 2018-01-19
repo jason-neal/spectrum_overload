@@ -13,26 +13,25 @@ https://github.com/pypa/sampleproject
 from setuptools import setup, find_packages
 # from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
-from codecs import open
+import codecs
 import os
 
 here = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
-# with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 try:
     import pypandoc
     long_description =  pypandoc.convert(os.path.join(here, 'README.md'), 'rst')
 except:
-    with open(os.path.join(here, 'README.md')) as f:
+    with codecs.open(os.path.join(here, 'README.md')) as f:
         long_description = f.read()
 
 about = {}
-with open(os.path.join(here, "spectrum_overload", "__about__.py")) as f:
+with codecs.open(os.path.join(here, "spectrum_overload", "__about__.py")) as f:
     exec(f.read(), about)
 
 # https://www.reddit.com/r/Python/comments/3uzl2a/setuppy_requirementstxt_or_a_combination/
-with open(os.path.join(here, 'requirements.txt')) as f:
+with codecs.open(os.path.join(here, 'requirements.txt')) as f:
     requirements = f.read().splitlines()
 
 setup(
