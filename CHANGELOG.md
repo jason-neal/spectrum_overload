@@ -3,12 +3,14 @@
 
 Upcoming release:
 
-Simplified oveload operator function.
+Simplified overload operator function.
 
-Handle all warnings as errorsin testing.
+Handle all warnings as errors in testing.
 
 Fix test parameters to avoid invalid values. 
 
+Drop support for python 2.7 due xaxis and flux keywords required with "*,".
+Drop testing of python 3.4 also while at it.
 
 
 0.2.1 14/01/2018
