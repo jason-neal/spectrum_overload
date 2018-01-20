@@ -13,11 +13,7 @@ import pytest
 from astropy.io import fits
 # Test using hypothesis
 from hypothesis import example, given
-
 from pkg_resources import resource_filename
-# import sys
-# Add Spectrum location to path
-# sys.path.append('../')
 from spectrum_overload import Spectrum, SpectrumError
 
 
@@ -216,7 +212,7 @@ def test_doppler_shift_with_hypothesis(x, rv, calib, rv_dir):
     """
     # Added a min value to rv shift to avoid very small rv values (1e-300).
     # Have added a flag to change rv direction to explore negative values
-    rvdir = 2 * rv_dir - 1   # True -> 1 , False -> -1
+    rvdir = 2 * rv_dir - 1  # True -> 1 , False -> -1
     rv = rv * rvdir
     x = np.asarray(x)
     y = np.random.random(len(x))
@@ -272,14 +268,14 @@ def test_calibration_wavelength_only_positive():
     s = Spectrum(flux=[1, 2, 3, 4], xaxis=[-4, -3, -2, -1], calibrated=False)
     with pytest.raises(SpectrumError):
         s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
-    assert s.calibrated is False     # Check values stay the same
+    assert s.calibrated is False  # Check values stay the same
     assert np.all(s.flux == np.array([1, 2, 3, 4]))
     assert np.all(s.xaxis == np.array([-4, -3, -2, -1]))
 
     s = Spectrum(flux=[1, 2, 3, 4], xaxis=[0, 2, 3, 4], calibrated=False)
     with pytest.raises(SpectrumError):
         s.calibrate_with([0, 1, 0])  # y = 0*x**2 + 1*x + 0
-    assert s.calibrated is False     # Check values stay the same
+    assert s.calibrated is False  # Check values stay the same
     assert np.all(s.flux == np.array([1, 2, 3, 4]))
     assert np.all(s.xaxis == np.array([0, 2, 3, 4]))
 
@@ -441,7 +437,7 @@ def test_add_noise(ones_spectrum, snr):
 
 
 def test_remove_nans():
-    s = Spectrum(xaxis=np.arange(5), flux=[3, 2,np.nan, 4, np.nan])
+    s = Spectrum(xaxis=np.arange(5), flux=[3, 2, np.nan, 4, np.nan])
     assert len(s.xaxis) == 5 and len(s.flux) == 5
 
     s = s.remove_nans()
@@ -482,7 +478,7 @@ def test_normalization_method_match_degree(method, degree):
     y = np.arange(1000)
     s = Spectrum(xaxis=x, flux=y)
     named_method = s.normalize(method=method)
-    named_method = named_method.remove_nans()  # hack for geting to run on < py34
+    named_method = named_method.remove_nans()  # hack for getting to run on < py34
     poly_deg = s.normalize(method='poly', degree=degree)
-    poly_deg = poly_deg.remove_nans() # hack for getting to pass on < py 34
+    poly_deg = poly_deg.remove_nans()  # hack for getting to pass on < py 34
     assert np.allclose(named_method.flux, poly_deg.flux)

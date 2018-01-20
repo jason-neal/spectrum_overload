@@ -7,7 +7,6 @@ import hypothesis.strategies as st
 import numpy as np
 import pytest
 from hypothesis import given
-
 from spectrum_overload import Spectrum, SpectrumError
 
 
@@ -30,7 +29,7 @@ def test_overload_add_integers_with_same_xaxis(x1, y1, y2, calib):
     spec5 = sum([spec1, spec2, spec3, spec4])
     summed = np.asarray(y1) + np.asarray(y2)
     npsummed = np.asarray(y1) + np.asarray(y2)
-    # Assert the flux values are summed togther
+    # Assert the flux values are summed together
     assert np.all(spec3.flux == summed)
     assert np.all(spec3.flux == spec4.flux)
     assert np.all(spec4.flux == summed)
@@ -90,7 +89,7 @@ def test_overload_sub_with_same_xaxis(x1, y1, y2, calib):
     assert spec_sub.calibrated == spec1.calibrated
     assert spec_sub.calibrated == spec2.calibrated
     # May want to record the transformation in the header
-    assert spec_sub.header == spec1.header     # Might not want this later.
+    assert spec_sub.header == spec1.header  # Might not want this later.
 
 
 @given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
@@ -179,14 +178,14 @@ def test_overload_pow():
         spec1 ** spec2
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** [1]                # This should fail
+        spec1 ** [1]  # This should fail
     with pytest.raises(TypeError):
-        spec1 ** [1, 2]              # This should fail also
+        spec1 ** [1, 2]  # This should fail also
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** (2,)               # This should fail as it is a tuple
+        spec1 ** (2,)  # This should fail as it is a tuple
     with pytest.raises(ValueError):
-        spec1 ** np.array([1, 2])   # too many values
+        spec1 ** np.array([1, 2])  # too many values
     # Should also test that something works
     spec4 = spec1 ** power
     assert np.all(spec4.flux == np.array([4, 9, 16, 25]))  # flux is squared
@@ -198,7 +197,7 @@ def test_overload_pow():
        st.floats(min_value=1e-7, max_value=1e10),
        st.integers(min_value=1, max_value=int(1e5)))
 def test_add_sub_mult_divide_by_numbers(x, y, float1, int1):
-    y *= np.array(x)   # turn to array for operations
+    y *= np.array(x)  # turn to array for operations
     spec = Spectrum(flux=y, xaxis=x)
     # Add by a float
     spec_add = spec + float1
@@ -253,7 +252,7 @@ def test_addition_with_interpolation():
     assert np.all(d2.xaxis == x)  # d has axis of t
     assert np.all(d1.xaxis == s1.xaxis)
     assert np.all(d2.xaxis == s2.xaxis)
-    assert len(d1) != len(d2)   # due to different length of s1 and s2
+    assert len(d1) != len(d2)  # due to different length of s1 and s2
 
     # Values in one that are outside range are filled with nans
     s3 = Spectrum(flux=[1, 3, 1, 2, 3, 2], xaxis=[3, 4, 5, 6, 7, 8])
@@ -286,7 +285,7 @@ def test_subtraction_with_interpolation():
     assert np.all(d2.xaxis == x)  # d has axis of t
     assert np.all(d1.xaxis == s1.xaxis)
     assert np.all(d2.xaxis == s2.xaxis)
-    assert len(d1) != len(d2)   # due to different length of s1 and s2
+    assert len(d1) != len(d2)  # due to different length of s1 and s2
 
     # Values in one that are outside range are filled with nans
     s3 = Spectrum(flux=[1, 2, 1, 2, 1, 2], xaxis=[3, 4, 5, 6, 7, 8])
@@ -319,7 +318,7 @@ def test_multiplication_with_interpolation():
     assert np.all(d2.xaxis == x)  # d has axis of t
     assert np.all(d1.xaxis == s1.xaxis)
     assert np.all(d2.xaxis == s2.xaxis)
-    assert len(d1) != len(d2)   # due to different length of s1 and s2
+    assert len(d1) != len(d2)  # due to different length of s1 and s2
 
     # Values in one that are outside range are filled with nans
     s3 = Spectrum(flux=[1, 3, 1, 2, 3, 2], xaxis=[3, 4, 5, 6, 7, 8])
@@ -352,7 +351,7 @@ def test_true_division_with_interpolation():
     assert np.all(d2.xaxis == x)  # d has axis of t
     assert np.all(d1.xaxis == s1.xaxis)
     assert np.all(d2.xaxis == s2.xaxis)
-    assert len(d1) != len(d2)   # due to different length of s1 and s2
+    assert len(d1) != len(d2)  # due to different length of s1 and s2
 
     # Values in one that are outside range are filled with nans
     s3 = Spectrum(flux=[1, 2, 1, 2, 1, 2], xaxis=[3, 4, 5, 6, 7, 8])
@@ -412,11 +411,7 @@ def test_operators_with_bad_types(badly_typed):
 
 @pytest.mark.parametrize("badly_typed", [
     "Test String",
-    # [1, 2, 3, 4, 5],
-    # [2, 3, "4"],
-    # (1, 2, "3"),
     {"1": 1, "2": 2, "3": 3},
-    # {1, 2, 3, 1, 4, 4, 2, 5},  # set literal faster than set()
 ])
 def test_assignment_with_bad_types(badly_typed):
     # Need to improve checking of what can pass into spectrum
@@ -445,7 +440,7 @@ def test_spectra_stay_the_same_after_operations():
     # c and d still the same
     assert a == c
     assert b == d
-    assert e != c  and e != d
+    assert e != c and e != d
     assert f != c and f != d
     assert g != c and g != d
     assert h != c and h != d
@@ -481,15 +476,15 @@ def test_xaxis_type_error_init_check():
     # results in just setting to None
     s = Spectrum(flux=np.nan, xaxis=None)
     assert s.xaxis is None
-    s.flux = [1, 1.1]   # has length
-    s.xaxis = None      # xaxis turns into range(len(s.flux))
+    s.flux = [1, 1.1]  # has length
+    s.xaxis = None  # xaxis turns into range(len(s.flux))
     assert s.xaxis is not None
     print(s.xaxis)
     assert np.all(s.xaxis == np.array([0, 1]))
-    s.flux = 1          # 1 has no length
+    s.flux = 1  # 1 has no length
     s.xaxis = None
     assert s.xaxis is None
-    s.flux = np.inf     # np.inf has no length
+    s.flux = np.inf  # np.inf has no length
     s.xaxis = None
     assert s.xaxis is None
 
@@ -505,13 +500,13 @@ def test_wave_selection_with_ill_defined_xaxis():
     s.flux = []
     s.xaxis = []
     s.wav_select(1, 8)
-    assert np.all(s.flux == np.array([]))        # s Didn't change
-    assert np.all(s.xaxis == np.array([]))       # s Didn't change
+    assert np.all(s.flux == np.array([]))  # s Didn't change
+    assert np.all(s.xaxis == np.array([]))  # s Didn't change
     new_flux = [1, 2, 3, 4]
-    s.flux = new_flux     # different flux but same xaxis
+    s.flux = new_flux  # different flux but same xaxis
     s.wav_select(1, 8)
     assert np.all(s.flux == np.array(new_flux))  # s Didn't change
-    assert np.all(s.xaxis == np.array([]))       # s Didn't change
+    assert np.all(s.xaxis == np.array([]))  # s Didn't change
 
 
 def test_zero_division():
@@ -529,7 +524,7 @@ def test_zero_division():
 
 
 @pytest.mark.parametrize("zero",
-                    [0, 0.0, np.int(0), np.float(0)])
+                         [0, 0.0, np.int(0), np.float(0)])
 def test_zero_divison_by_number(zero):
     s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2., 3., 4.])
     div = s / zero

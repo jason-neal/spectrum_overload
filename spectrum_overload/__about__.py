@@ -12,12 +12,10 @@ __all__ = [
     "__author__", "__email__", "__license__", "__copyright__",
 ]
 
-
 try:
     base_dir = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     base_dir = None
-
 
 __title__ = "spectrum_overload"
 __summary__ = "A spectrum class that overloads operators"
@@ -25,7 +23,7 @@ __summary__ = "A spectrum class that overloads operators"
 __uri__ = None
 
 # The version as used in the setup.py and the docs conf.py
-#The essence of semantic versioning is a 3-part MAJOR.MINOR.MAINTENANCE numbering scheme, where the project author increments:
+# The essence of semantic versioning is a 3-part MAJOR.MINOR.MAINTENANCE numbering scheme, where the project author increments:
 
 #    MAJOR version when they make incompatible API changes,
 #    MINOR version when they add functionality in a backwards-compatible manner, and

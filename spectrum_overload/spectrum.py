@@ -6,17 +6,13 @@ from __future__ import division, print_function
 import copy
 import logging
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import spectrum_overload.norm as norm
 from PyAstronomy import pyasl
 from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
 
-import spectrum_overload.norm as norm
-
 """Spectrum Class."""
-
-# Begun August 2016
-# Jason Neal
 
 
 class Spectrum(object):
@@ -34,6 +30,7 @@ class Spectrum(object):
         Header information of observation.
 
     """
+
     def __init__(self, *, xaxis=None, flux=None, calibrated=True, header=None, interp_method="spline"):
         """Initalise a Spectrum object."""
 
@@ -70,7 +67,7 @@ class Spectrum(object):
         if header is None:
             self.header = {}
         else:
-            self.header = header   # Access header with a dictionary call.
+            self.header = header  # Access header with a dictionary call.
         self.interp_method = interp_method
 
     @property
@@ -90,7 +87,8 @@ class Spectrum(object):
         if value in ("linear", "spline"):
             self._interp_method = value
         else:
-            raise ValueError("Warning the interpolation method was not valid. ['linear', 'spline'] are the valid options.")
+            raise ValueError(
+                "Warning the interpolation method was not valid. ['linear', 'spline'] are the valid options.")
 
     @property
     def xaxis(self):
@@ -223,12 +221,12 @@ class Spectrum(object):
                       " wavelengths from")
             else:
                 mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
-                self.flux = self.flux[mask]    # change flux first
+                self.flux = self.flux[mask]  # change flux first
                 self.xaxis = self.xaxis[mask]
         except TypeError as e:
             print("Spectrum has no xaxis to select wavelength from")
             # Return to original values iscase were changed
-            self.flux = flux_org           # Fix flux first
+            self.flux = flux_org  # Fix flux first
             self.xaxis = x_org
             raise e
 
@@ -239,18 +237,16 @@ class Spectrum(object):
         self.flux += np.random.normal(0, sigma)
 
     def plot(self, axis=None, **kwargs):
-        """Plot spectrum with maplotlib."""
+        """Plot spectrum with matplotlib."""
         if axis is None:
             plt.plot(self.xaxis, self.flux, **kwargs)
             if self.calibrated:
-                 plt.xlabel("Wavelength")
+                plt.xlabel("Wavelength")
             else:
                 plt.xlabel("Pixels")
             plt.ylabel("Flux")
         else:
             axis.plot(self.xaxis, self.flux, **kwargs)
-
-
 
     def doppler_shift(self, rv):
         r"""Doppler shift wavelength by a given Radial Velocity.
@@ -369,7 +365,7 @@ class Spectrum(object):
             raise SpectrumError("Spectrum is already calibrated"
                                 ", Not recalibrating.")
         else:
-            wavelength = np.polyval(wl_map, self.xaxis)   # Polynomial params
+            wavelength = np.polyval(wl_map, self.xaxis)  # Polynomial params
             if np.any(wavelength <= 0):
                 raise SpectrumError("Wavelength solution contains zero or "
                                     "negative values. But wavelength must "
@@ -440,13 +436,13 @@ class Spectrum(object):
                                    bounds_error=bounds_error)
 
         # Determine the flux at the new locations given by reference
-        if isinstance(reference, Spectrum):      # Spectrum type
+        if isinstance(reference, Spectrum):  # Spectrum type
             new_flux = interp_function(reference.xaxis)
-            self.flux = new_flux                 # Flux needs to change first
+            self.flux = new_flux  # Flux needs to change first
             self.xaxis = reference.xaxis
         elif isinstance(reference, np.ndarray):  # Numpy type
             new_flux = interp_function(reference)
-            self.flux = new_flux                 # Flux needs to change first
+            self.flux = new_flux  # Flux needs to change first
             self.xaxis = reference
         else:
             # print("Interpolate was not give a valid type")
@@ -525,7 +521,7 @@ class Spectrum(object):
         #                           bounds_error=bounds_error)
 
         # Determine the flux at the new locations given by reference
-        if isinstance(reference, Spectrum):      # Spectrum type
+        if isinstance(reference, Spectrum):  # Spectrum type
             new_flux = interp_spline(reference.xaxis)
             self_mask = ((reference.xaxis < np.min(self.xaxis)) |
                          (reference.xaxis > np.max(self.xaxis)))
@@ -533,7 +529,7 @@ class Spectrum(object):
                 raise ValueError("A value in reference.xaxis is outside"
                                  "the interpolation range.")
             new_flux[self_mask] = np.nan
-            self.flux = new_flux                 # Flux needs to change first
+            self.flux = new_flux  # Flux needs to change first
             self.xaxis = reference.xaxis
         elif isinstance(reference, np.ndarray):  # Numpy type
             new_flux = interp_spline(reference)
@@ -543,7 +539,7 @@ class Spectrum(object):
                 raise ValueError("A value in reference is outside the"
                                  "interpolation range.")
             new_flux[self_mask] = np.nan
-            self.flux = new_flux                 # Flux needs to change first
+            self.flux = new_flux  # Flux needs to change first
             self.xaxis = reference
         else:
             # print("Interpolate was not give a valid type")
@@ -675,14 +671,15 @@ class Spectrum(object):
             if len(other) == len(self.flux):
                 power = other
             else:
-                raise ValueError("Dimension mismatch for power operator of {} and {}".format(len(self.flux), len(other)))
+                raise ValueError(
+                    "Dimension mismatch for power operator of {} and {}".format(len(self.flux), len(other)))
         else:
             raise TypeError("Unexpected type {} given for"
                             " __pow__".format(type(other)))
         try:
-            newspec = self.copy()
-            newspec.flux = newspec.flux ** power
-            return newspec
+            result = self.copy()
+            result.flux = result.flux ** power
+            return result
         except:
             # Type error or value error are likely
             raise
@@ -693,21 +690,21 @@ class Spectrum(object):
 
     def __neg__(self):
         """Take negative flux."""
-        newspec = self.copy()
-        newspec.flux = -newspec.flux
-        return newspec
+        result = self.copy()
+        result.flux = -result.flux
+        return result
 
     def __pos__(self):
         """Take positive flux."""
-        newspec = self.copy()
-        newspec.flux = +newspec.flux
-        return newspec
+        result = self.copy()
+        result.flux = +result.flux
+        return result
 
     def __abs__(self):
         """Take absolute flux."""
-        newspec = self.copy()
-        newspec.flux = abs(newspec.flux)
-        return newspec
+        result = self.copy()
+        result.flux = abs(result.flux)
+        return result
 
     def __eq__(self, other):
         return (all(self.xaxis == other.xaxis) and all(self.flux == other.flux) and
