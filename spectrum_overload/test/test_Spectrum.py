@@ -474,8 +474,8 @@ def test_exponential_normalization():
     ("cubic", 3)])
 def test_normalization_method_match_degree(method, degree):
     # TODO: Eventually call phoenix_spectrum to do this.
-    x = np.arange(1000)
-    y = np.arange(1000)
+    x = np.arange(1, 1000)
+    y = np.arange(1, 1000)
     s = Spectrum(xaxis=x, flux=y)
     named_method = s.normalize(method=method)
     named_method = named_method.remove_nans()  # hack for getting to run on < py34

@@ -512,9 +512,9 @@ def test_wave_selection_with_ill_defined_xaxis():
 def test_zero_division():
     s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2, 3, 4])
     t = Spectrum(flux=[2., 2, 0, 4], xaxis=[1., 2, 3, 4])
-
-    divide = s / t
-    assert np.allclose(divide.flux[[0,1,3]], [0.5, 2.5, 4])
+    with pytest.warns(RuntimeWarning) as record:
+        divide = s / t
+    assert np.allclose(divide.flux[[0, 1, 3]], [0.5, 2.5, 4])
     print(divide.xaxis)
     print(divide.flux)
     notnan = np.invert(np.isinf(divide.flux))
@@ -527,7 +527,8 @@ def test_zero_division():
                          [0, 0.0, np.int(0), np.float(0)])
 def test_zero_divison_by_number(zero):
     s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2., 3., 4.])
-    div = s / zero
+    with pytest.warns(RuntimeWarning) as record:
+        div = s / zero
     assert np.all(np.isinf(div.flux))  # div by zero goes to np.inf
 
 
