@@ -150,6 +150,22 @@ def test_truediv_with_number():
     assert np.all(spec_truediv.flux == flux_arr / number)
 
 
+def test_overload_with_uneven_xaxis():
+    """Test to get this "elseif" to run
+    # elif np.all(self.xaxis != other.xaxis):
+    # other_flux = _interp_other()
+    """
+    x1 = [1, 2, 3, 4, 5]
+    x2 = [1, 2, 2.5, 4, 5]  # x1 and x2 same length but different
+    y1 = [1, 2, 3, 4, 5]
+    y2 = [1, 2, 2.5, 4, 5]
+
+    result = Spectrum(xaxis=x1, flux=y1) + Spectrum(xaxis=x2, flux=y2)
+
+    assert isinstance(result, Spectrum)
+    assert np.allclose(result.flux, [2, 4, 6, 8, 10])
+
+
 def test_len_works():
     # Test len works
     spec1 = Spectrum(xaxis=[1, 2, 3, 4, 5], flux=[1, 2, 3, 4, 5])
@@ -391,11 +407,10 @@ def test_value_error_when_spectra_do_not_overlap():
 
 @pytest.mark.parametrize("badly_typed", [
     "Test String",
-    [1, 2, 3, 4, 5],
     [2, 3, "4", 5, 6],
     (1, 2, "3", 6, 7),
     {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5},
-    {1, 4, 4, 2, 5},
+    {1, 4, 4, 2, 5, 7},
 ])
 def test_operators_with_bad_types(badly_typed):
     s = Spectrum(flux=[1, 2, 1, 2, 1], xaxis=[2, 4, 6, 8, 10])
@@ -419,6 +434,16 @@ def test_assignment_with_bad_types(badly_typed):
         Spectrum(flux=None, xaxis=badly_typed)
     with pytest.raises(TypeError):
         Spectrum(flux=badly_typed)
+
+
+@pytest.mark.parametrize("other", [
+    [1, 3, 5, 6, 7],
+    np.asarray([1, 2, 3])
+])
+def test_operate_with_list_or_numpy_array_wrong_size(other):
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
+    with pytest.raises(ValueError):
+        a + other
 
 
 def test_spectra_stay_the_same_after_operations():

@@ -619,26 +619,26 @@ class Spectrum(object):
         Perform an operation (addition, subtraction, multiplication, division,
         etc.) after checking for shape matching.
         """
+
         def ofunc(self, other):
-            """ operation function """
-            newspec = self.copy()
+            """Operation function """
+            result = self.copy()
             if np.isscalar(other):
                 other_flux = other
-
-            # check if both are spectra (or can be treated as such)
-            elif isinstance(other, np.ndarray) and not isinstance(other, Spectrum):
-                    if len(other) == len(self.flux):
-                        # If the length is the correct length then assume that this is correct to perform.
-                        other_flux = other
-                    else:
-                        raise ValueError("Dimension mismatch in operation with lengths {} and {}.".format(len(self.flux), len(other)))
-            elif isinstance(self, Spectrum) and isinstance(other, Spectrum):
+            elif not isinstance(other, Spectrum):
+                # If the length is the correct length then assume that this is correct to perform.
+                if len(other) == len(self.flux):
+                    if not isinstance(np.ndarray):
+                        other = np.asarray(other)
+                    other_flux = other
+                else:
+                    raise ValueError(
+                        "Dimension mismatch in operation with lengths {} and {}.".format(len(self.flux), len(other)))
+            else:  # other is a Spectrum
                 if self.calibrated != other.calibrated:
-                    raise SpectrumError("Spectra are not calibrated similarly.")
-                if np.all(self.xaxis == other.xaxis):  # Equal xaxis
-                    other_flux = other.copy().flux
+                    raise SpectrumError("Spectra are not consistently calibrated for {}".format(operation))
 
-                elif self.xaxis != other.xaxis:  # Need to Apply interpolation
+                def _interp_other():
                     no_overlap_lower = (np.min(self.xaxis) > np.max(other.xaxis))
                     no_overlap_upper = (np.max(self.xaxis) < np.min(other.xaxis))
                     if no_overlap_lower | no_overlap_upper:
@@ -647,10 +647,17 @@ class Spectrum(object):
                         other_copy = other.copy()
                         other_copy.spline_interpolate_to(self)
                         other_flux = other_copy.flux
-            else:
-                raise TypeError("Unexpected type {} for operation with Spectrum".format(type(other)))
-            newspec.flux = operation(newspec.flux, other_flux)  # Perform the operation
-            return newspec
+                    return other_flux
+
+                if len(self) != len(other):
+                    other_flux = _interp_other()
+                elif np.any(self.xaxis != other.xaxis):
+                    other_flux = _interp_other()
+                else:  # Equal xaxis
+                    other_flux = other.copy().flux
+
+            result.flux = operation(result.flux, other_flux)  # Perform the operation
+            return result
 
         return ofunc
 
