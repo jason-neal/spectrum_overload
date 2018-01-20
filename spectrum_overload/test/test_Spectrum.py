@@ -42,7 +42,7 @@ def ones_spectrum():
     return spec
 
 
-@given(st.lists(st.floats(allow_infinity=False, allow_nan=False)),
+@given(st.lists(st.floats(min_value=-1e5, max_value=1e5)),
        st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes."""
@@ -81,6 +81,7 @@ def test_empty_call_is_nones():
 
     s2 = Spectrum(calibrated=False)
     assert s2.calibrated is False
+
 
 @pytest.mark.xfail
 def test_setters_for_flux_and_xaxis():
@@ -136,7 +137,7 @@ def test_flux_and_xaxis_cannot_pass_stings():
         spec.xaxis = 'bar'
 
 
-def test_auto_genration_of_xaxis_if_none():
+def test_auto_generation_of_xaxis_if_none():
     spec = Spectrum(flux=[1, 1, .5, 1])
     assert np.all(spec.xaxis == np.arange(4))
     spec2 = Spectrum(flux=[1, 1, .5, 1], xaxis=[100, 110, 160, 200])
@@ -145,7 +146,7 @@ def test_auto_genration_of_xaxis_if_none():
 
 
 @pytest.mark.parametrize("xaxis, flux", [
-    ([1, 2, 3], [1, 2] ),
+    ([1, 2, 3], [1, 2]),
     ([1, 2, 3], []),
     ([], [1, 2, 3]),
     ([1, 2], [1, 2, 3])
@@ -156,13 +157,17 @@ def test_length_of_flux_and_xaxis_must_be_equal(xaxis, flux):
         Spectrum(flux=flux, xaxis=xaxis)
 
 
-def test_resasigning_unequal_length_fails():
+def test_reassigning_unequal_length_fails():
     spec = Spectrum(flux=[1, 2, 3], xaxis=[1, 2, 3])
     with pytest.raises(ValueError):
         spec.xaxis = [1, 2]
 
 
-@given(st.lists(st.floats()), st.booleans(), st.floats(), st.floats())
+@given(
+    st.lists(st.floats(min_value=-1e5, max_value=1e5)),
+    st.booleans(),
+    st.floats(min_value=-1e5, max_value=1e5),
+    st.floats(min_value=-1e5, max_value=1e5))
 def test_wav_select(x, calib, wav_min, wav_max):
     """Test some properties of wavelength selection."""
     # Create spectrum
@@ -197,8 +202,9 @@ def test_wav_select_example():
     # spec2 = spec.wav_selector()
 
 
-@given(st.lists(st.floats(min_value=1e-5, allow_infinity=False), min_size=1),
-       st.floats(min_value=1e-6), st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
+@given(st.lists(st.floats(min_value=1e-4, max_value=1e5), min_size=1),
+       st.floats(min_value=-1e5, max_value=1e5),
+       st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
        st.booleans())
 @example([1000, 2002, 2003, 2004], 1e-8, 1, 1)
 def test_doppler_shift_with_hypothesis(x, rv, calib, rv_dir):
@@ -417,6 +423,7 @@ def test_interp_method():
 
     s.interp_method = "linear"
     assert s.interp_method == "linear"
+
 
 def test_bad_interp_method():
     s = Spectrum()

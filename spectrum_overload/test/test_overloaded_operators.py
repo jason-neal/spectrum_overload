@@ -42,12 +42,14 @@ def test_overload_add_integers_with_same_xaxis(x1, y1, y2, calib):
     assert np.allclose(spec4.calibrated, spec3.calibrated)
     assert np.allclose(spec3.calibrated, spec2.calibrated)
 
+
 # Try with floats
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=1e-3),
-       st.floats(min_value=1e-3), st.booleans())
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
+       st.floats(min_value=1e-3, max_value=1e7),
+       st.floats(min_value=1e-3, max_value=1e7),
+       st.booleans())
 def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
     y1 *= x1
@@ -68,9 +70,9 @@ def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
     # Need to also check on xaxis after the calibration has been performed.
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=-1e7,
-       max_value=1e7), st.floats(min_value=-1e10, max_value=1e10),
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
+       st.floats(min_value=-1e7, max_value=1e7),
+       st.floats(min_value=-1e10, max_value=1e10),
        st.booleans())
 def test_overload_sub_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
@@ -91,9 +93,9 @@ def test_overload_sub_with_same_xaxis(x1, y1, y2, calib):
     assert spec_sub.header == spec1.header     # Might not want this later.
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=-1e7,
-       max_value=1e7), st.floats(min_value=-1e10, max_value=1e10),
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
+       st.floats(min_value=-1e7, max_value=1e7),
+       st.floats(min_value=-1e10, max_value=1e10),
        st.booleans())
 def test_overload_mul_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
@@ -111,13 +113,13 @@ def test_overload_mul_with_same_xaxis(x1, y1, y2, calib):
     assert spec_mul.calibrated == spec1.calibrated
     assert spec_mul.calibrated == spec2.calibrated
     # May want to record the transformation in the header
-    assert spec_mul.header == spec1.header   # Might not want this later.
+    assert spec_mul.header == spec1.header  # Might not want this later.
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=1e-3,
-       max_value=1e7, allow_infinity=False), st.floats(min_value=-1e10,
-       max_value=1e10, allow_infinity=False), st.booleans())
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
+       st.floats(min_value=1e-3, max_value=1e7),
+       st.floats(min_value=1e-1, max_value=1e5),
+       st.booleans())
 def test_overload_truediv_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
     y1 *= x1
@@ -191,11 +193,10 @@ def test_overload_pow():
     assert np.all(spec4.xaxis == spec1.xaxis)  # xaxis stays the same
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=1e-3,
-       max_value=1e7, allow_infinity=False), st.floats(min_value=1e-7,
-       max_value=1e10, allow_infinity=False), st.integers(min_value=1,
-       max_value=int(1e5)))
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1),
+       st.floats(min_value=1e-3, max_value=1e7),
+       st.floats(min_value=1e-7, max_value=1e10),
+       st.integers(min_value=1, max_value=int(1e5)))
 def test_add_sub_mult_divide_by_numbers(x, y, float1, int1):
     y *= np.array(x)   # turn to array for operations
     spec = Spectrum(flux=y, xaxis=x)
