@@ -613,6 +613,7 @@ class Spectrum(object):
 
     # ######################################################
     # Overloading Operators
+    # Based on code from pyspeckit.
     # ######################################################
     def _operation_wrapper(operation):
         """
