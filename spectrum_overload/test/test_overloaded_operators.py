@@ -621,3 +621,9 @@ def test_operation_by_non_Spectrum_other_same_length():
     assert len(photons) == len(host)
     assert len(photons) == len(host.xaxis)
 
+
+def test_operation_wrapper_returns_ofunc():
+    ofunc = Spectrum()._operation_wrapper()
+    # Check that the wrapper return is a function.
+    assert isinstance(ofunc, types.FunctionType)
+    assert ofunc.__name__ == "ofunc"
