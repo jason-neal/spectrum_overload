@@ -3,10 +3,13 @@
 
 from __future__ import division, print_function
 
+import types
+
 import hypothesis.strategies as st
 import numpy as np
 import pytest
 from hypothesis import given
+
 from spectrum_overload import Spectrum, SpectrumError
 
 
@@ -446,6 +449,17 @@ def test_operate_with_list_or_numpy_array_wrong_size(other):
         a + other
 
 
+@pytest.mark.parametrize("other, result", [
+    ([1, 2, 3, 4], [6, 8, 10, 12]),
+    (np.asarray([4, -3, 2, -3]), [9, 3, 9, 5])
+])
+def test_operate_with_list_or_numpy_array_right_size(other, result):
+    """This tests issue 49."""
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
+    res = a + other
+    assert np.all(res.flux == result)
+
+
 def test_spectra_stay_the_same_after_operations():
     """After a operation of two spectra...
 
@@ -595,3 +609,15 @@ def test_division_preserves_header():
     assert np.all(s.flux == [1, 2, 3, 4])
     assert s.header is not None
     assert s.header == hdr
+
+
+def test_operation_by_non_Spectrum_other_same_length():
+    """Testing issue 49. The xaxis is the same length to Spectrum."""
+    host = Spectrum(xaxis=[1, 2, 3, 4, 5, 6], flux=[1, 1, 2, 2.3, 1.7, 2.0])
+    photons = host * host.xaxis
+    photons = photons - host.xaxis
+    photons = photons / host.xaxis.tolist()
+    photons = photons + host.xaxis.tolist()
+    assert len(photons) == len(host)
+    assert len(photons) == len(host.xaxis)
+

@@ -629,7 +629,7 @@ class Spectrum(object):
             elif not isinstance(other, Spectrum):
                 # If the length is the correct length then assume that this is correct to perform.
                 if len(other) == len(self.flux):
-                    if not isinstance(np.ndarray):
+                    if not isinstance(other, np.ndarray):
                         other = np.asarray(other)
                     other_flux = other
                 else:
