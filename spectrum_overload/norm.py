@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from typing import Optional, Tuple
 
 import numpy as np
+from numpy import ndarray
 
 
-def get_continuum_points(wave, flux, nbins=50, ntop=20):
+def get_continuum_points(wave: ndarray, flux: ndarray, nbins: int = 50, ntop: int = 20) -> Tuple[ndarray, ndarray]:
     """Get continuum points along a spectrum.
 
     This splits a spectrum into "nbins" number of bins and calculates
@@ -34,7 +36,8 @@ def get_continuum_points(wave, flux, nbins=50, ntop=20):
     return wave_points, flux_points
 
 
-def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
+def continuum(wave: ndarray, flux: ndarray, method: str = 'scalar', degree: Optional[int] = None, nbins: int = 50,
+              ntop: int = 20) -> ndarray:
     """Fit continuum of flux.
 
     Parameters

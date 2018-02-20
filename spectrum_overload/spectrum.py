@@ -5,12 +5,15 @@ from __future__ import division, print_function
 
 import copy
 import logging
+from typing import Optional, Any, Dict, Union, Tuple, List
 
 import matplotlib.pyplot as plt
 import numpy as np
-import spectrum_overload.norm as norm
 from PyAstronomy import pyasl
+from numpy import ndarray
 from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
+from astropy.io.fits.header import Header
+import spectrum_overload.norm as norm
 
 """Spectrum Class."""
 
@@ -31,8 +34,9 @@ class Spectrum(object):
 
     """
 
-    def __init__(self, *, xaxis=None, flux=None, calibrated=True, header=None, interp_method="spline"):
-        """Initalise a Spectrum object."""
+    def __init__(self, *, xaxis=None, flux=None, calibrated: bool = True,
+                 header: Optional[Union[Header, Dict[str, Any]]] = None, interp_method: str = "spline") -> None:
+        """Initialise a Spectrum object."""
 
         # Some checks before creating class
         # if not isinstance(flux, (list, np.ndarray, None)):
@@ -65,7 +69,7 @@ class Spectrum(object):
         self.length_check()
         self.calibrated = calibrated
         if header is None:
-            self.header = {}
+            self.header = {}  # type: Dict[str, Any]
         else:
             self.header = header  # Access header with a dictionary call.
         self.interp_method = interp_method
@@ -140,7 +144,7 @@ class Spectrum(object):
         return self._flux
 
     @flux.setter
-    def flux(self, value):
+    def flux(self, value: Union[ndarray, List[Union[int, float]]]):
         """Setter for the flux attribute.
 
         Preforms type checking at turn into a numpy array if it is not.
@@ -192,7 +196,7 @@ class Spectrum(object):
         "Return flux shape."
         return self.flux.shape
 
-    def wav_select(self, wav_min, wav_max):
+    def wav_select(self, wav_min: float, wav_max: float):
         """Select part of the spectrum between the given wavelength bounds.
 
         Parameters
@@ -230,13 +234,13 @@ class Spectrum(object):
             self.xaxis = x_org
             raise e
 
-    def add_noise(self, snr):
+    def add_noise(self, snr: Union[float, int]):
         """Add noise level of snr to the flux of the spectrum."""
         sigma = self.flux / snr
         # Add normal distributed noise at the SNR level.
         self.flux += np.random.normal(0, sigma)
 
-    def plot(self, axis=None, **kwargs):
+    def plot(self, axis=None, **kwargs) -> None:
         """Plot spectrum with matplotlib."""
         if axis is None:
             plt.plot(self.xaxis, self.flux, **kwargs)
@@ -248,7 +252,7 @@ class Spectrum(object):
         else:
             axis.plot(self.xaxis, self.flux, **kwargs)
 
-    def doppler_shift(self, rv):
+    def doppler_shift(self, rv: float) -> None:
         r"""Doppler shift wavelength by a given Radial Velocity.
 
         Apply Doppler shift to the wavelength values of the spectrum
@@ -301,7 +305,8 @@ class Spectrum(object):
             print("Attribute xaxis is not wavelength calibrated."
                   " Cannot perform doppler shift")
 
-    def crosscorr_rv(self, spectrum, rvmin, rvmax, drv, **params):
+    def crosscorr_rv(self, spectrum, rvmin: float, rvmax: float, drv: float, **params) -> Tuple[
+        ndarray, ndarray]:
         """Perform pyasl.crosscorrRV with another spectrum.
 
         Parameters
@@ -376,8 +381,8 @@ class Spectrum(object):
                 self.xaxis = wavelength
                 self.calibrated = True  # Set calibrated Flag
 
-    def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
-                         fill_value=np.nan):
+    def interpolate1d_to(self, reference, kind: str = "linear", bounds_error: bool = False,
+                         fill_value: Union[str, ndarray] = np.nan):
         """Interpolate wavelength solution to the reference wavelength.
 
         This uses the scipy's interp1d interpolation. The optional
@@ -552,7 +557,7 @@ class Spectrum(object):
         s.xaxis = s.xaxis[~np.isnan(self.flux)]
         return s
 
-    def continuum(self, method="scalar", degree=None, **kwargs):
+    def continuum(self, method: str = "scalar", degree: Optional[int] = None, **kwargs):
         """Fit the continuum of the spectrum.
 
         Fit a function of ``method`` to the median of the highest
@@ -582,7 +587,7 @@ class Spectrum(object):
         s.flux = norm.continuum(s.xaxis, s.flux, method=method, degree=degree, **kwargs)
         return s
 
-    def normalize(self, method="scalar", degree=None, **kwargs):
+    def normalize(self, method: str = "scalar", degree: Optional[int] = None, **kwargs):
         """Normalize spectrum by dividing by the continuum.
 
         Valid methods
