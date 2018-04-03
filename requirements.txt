@@ -4,6 +4,6 @@ astropy==3.0.1
 scipy==1.0.1
 pyastronomy==0.12.0
 hypothesis==3.53.0
-pytest==3.4.2
+pytest==3.5.0
 pytest-cov==2.5.1
 python-coveralls==2.9.1
