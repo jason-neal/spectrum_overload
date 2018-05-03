@@ -238,6 +238,11 @@ class Spectrum(object):
         # Add normal distributed noise at the SNR level.
         self.flux += np.random.normal(0, sigma)
 
+    def add_noise_sigma(self, sigma):
+        """Add Gaussian noise with given sigma."""
+        # Add normal distributed noise with given sigma.
+        self.flux += np.random.normal(0, sigma)
+
     def plot(self, axis=None, **kwargs):
         """Plot spectrum with maplotlib."""
         if axis is None:
