@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
 import logging
+
+import numpy as np
+
 
 def get_continuum_points(wave, flux, nbins=50, ntop=20):
     """Get continuum points along a spectrum.
@@ -57,7 +59,7 @@ def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
     if method == "poly" and degree is None:
         raise ValueError("No degree specified for continuum method 'poly'.")
 
-    if np.any(np.isnan(wave)) or  np.any(np.isnan(flux)):
+    if np.any(np.isnan(wave)) or np.any(np.isnan(flux)):
         raise ValueError("There are Nan values in spectrum. Please remove first.")
 
     org_wave = wave[:]
@@ -70,7 +72,7 @@ def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
     if method == "exponential":
         z = np.polyfit(wave_points, np.log(flux_points), deg=1, w=np.sqrt(flux_points))
         p = np.poly1d(z)
-        continuum_fit = np.exp(p(org_wave))   # Un-log the y values.
+        continuum_fit = np.exp(p(org_wave))  # Un-log the y values.
     else:
         z = np.polyfit(wave_points, flux_points, deg=poly_degree[method])
         p = np.poly1d(z)

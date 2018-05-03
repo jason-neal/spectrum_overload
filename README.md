@@ -63,6 +63,9 @@ I would really appreciate user feedback or suggested improvements if you have an
 Feel free to submit issues or create pull requests.
 
 
+## Python 2.7
+Python 2.7 is only supported in versions <0.2.1 (also available on pip) to make use of useful python3 features.
+
 
 ## Other Spectrum Classes
 

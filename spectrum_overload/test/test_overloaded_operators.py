@@ -3,6 +3,8 @@
 
 from __future__ import division, print_function
 
+import types
+
 import hypothesis.strategies as st
 import numpy as np
 import pytest
@@ -30,7 +32,7 @@ def test_overload_add_integers_with_same_xaxis(x1, y1, y2, calib):
     spec5 = sum([spec1, spec2, spec3, spec4])
     summed = np.asarray(y1) + np.asarray(y2)
     npsummed = np.asarray(y1) + np.asarray(y2)
-    # Assert the flux values are summed togther
+    # Assert the flux values are summed together
     assert np.all(spec3.flux == summed)
     assert np.all(spec3.flux == spec4.flux)
     assert np.all(spec4.flux == summed)
@@ -42,12 +44,14 @@ def test_overload_add_integers_with_same_xaxis(x1, y1, y2, calib):
     assert np.allclose(spec4.calibrated, spec3.calibrated)
     assert np.allclose(spec3.calibrated, spec2.calibrated)
 
+
 # Try with floats
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=1e-3),
-       st.floats(min_value=1e-3), st.booleans())
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
+       st.floats(min_value=1e-3, max_value=1e7),
+       st.floats(min_value=1e-3, max_value=1e7),
+       st.booleans())
 def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
     y1 *= x1
@@ -68,9 +72,9 @@ def test_overload_add_with_same_xaxis(x1, y1, y2, calib):
     # Need to also check on xaxis after the calibration has been performed.
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=-1e7,
-       max_value=1e7), st.floats(min_value=-1e10, max_value=1e10),
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
+       st.floats(min_value=-1e7, max_value=1e7),
+       st.floats(min_value=-1e10, max_value=1e10),
        st.booleans())
 def test_overload_sub_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
@@ -88,12 +92,12 @@ def test_overload_sub_with_same_xaxis(x1, y1, y2, calib):
     assert spec_sub.calibrated == spec1.calibrated
     assert spec_sub.calibrated == spec2.calibrated
     # May want to record the transformation in the header
-    assert spec_sub.header == spec1.header     # Might not want this later.
+    assert spec_sub.header == spec1.header  # Might not want this later.
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=-1e7,
-       max_value=1e7), st.floats(min_value=-1e10, max_value=1e10),
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
+       st.floats(min_value=-1e7, max_value=1e7),
+       st.floats(min_value=-1e10, max_value=1e10),
        st.booleans())
 def test_overload_mul_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
@@ -111,13 +115,13 @@ def test_overload_mul_with_same_xaxis(x1, y1, y2, calib):
     assert spec_mul.calibrated == spec1.calibrated
     assert spec_mul.calibrated == spec2.calibrated
     # May want to record the transformation in the header
-    assert spec_mul.header == spec1.header   # Might not want this later.
+    assert spec_mul.header == spec1.header  # Might not want this later.
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=1e-3,
-       max_value=1e7, allow_infinity=False), st.floats(min_value=-1e10,
-       max_value=1e10, allow_infinity=False), st.booleans())
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1, ),
+       st.floats(min_value=1e-3, max_value=1e7),
+       st.floats(min_value=1e-1, max_value=1e5),
+       st.booleans())
 def test_overload_truediv_with_same_xaxis(x1, y1, y2, calib):
     x1 = np.asarray(x1)
     y1 *= x1
@@ -149,6 +153,22 @@ def test_truediv_with_number():
     assert np.all(spec_truediv.flux == flux_arr / number)
 
 
+def test_overload_with_uneven_xaxis():
+    """Test to get this "elseif" to run
+    # elif np.all(self.xaxis != other.xaxis):
+    # other_flux = _interp_other()
+    """
+    x1 = [1, 2, 3, 4, 5]
+    x2 = [1, 2, 2.5, 4, 5]  # x1 and x2 same length but different
+    y1 = [1, 2, 3, 4, 5]
+    y2 = [1, 2, 2.5, 4, 5]
+
+    result = Spectrum(xaxis=x1, flux=y1) + Spectrum(xaxis=x2, flux=y2)
+
+    assert isinstance(result, Spectrum)
+    assert np.allclose(result.flux, [2, 4, 6, 8, 10])
+
+
 def test_len_works():
     # Test len works
     spec1 = Spectrum(xaxis=[1, 2, 3, 4, 5], flux=[1, 2, 3, 4, 5])
@@ -177,27 +197,26 @@ def test_overload_pow():
         spec1 ** spec2
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** [1]                # This should fail
+        spec1 ** [1]  # This should fail
     with pytest.raises(TypeError):
-        spec1 ** [1, 2]              # This should fail also
+        spec1 ** [1, 2]  # This should fail also
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** (2,)               # This should fail as it is a tuple
+        spec1 ** (2,)  # This should fail as it is a tuple
     with pytest.raises(ValueError):
-        spec1 ** np.array([1, 2])   # too many values
+        spec1 ** np.array([1, 2])  # too many values
     # Should also test that something works
     spec4 = spec1 ** power
     assert np.all(spec4.flux == np.array([4, 9, 16, 25]))  # flux is squared
     assert np.all(spec4.xaxis == spec1.xaxis)  # xaxis stays the same
 
 
-@given(st.lists(st.floats(min_value=1e-3, max_value=1e7,
-       allow_infinity=False), min_size=1,), st.floats(min_value=1e-3,
-       max_value=1e7, allow_infinity=False), st.floats(min_value=1e-7,
-       max_value=1e10, allow_infinity=False), st.integers(min_value=1,
-       max_value=int(1e5)))
+@given(st.lists(st.floats(min_value=1e-3, max_value=1e7), min_size=1),
+       st.floats(min_value=1e-3, max_value=1e7),
+       st.floats(min_value=1e-7, max_value=1e10),
+       st.integers(min_value=1, max_value=int(1e5)))
 def test_add_sub_mult_divide_by_numbers(x, y, float1, int1):
-    y *= np.array(x)   # turn to array for operations
+    y *= np.array(x)  # turn to array for operations
     spec = Spectrum(flux=y, xaxis=x)
     # Add by a float
     spec_add = spec + float1
@@ -252,7 +271,7 @@ def test_addition_with_interpolation():
     assert np.all(d2.xaxis == x)  # d has axis of t
     assert np.all(d1.xaxis == s1.xaxis)
     assert np.all(d2.xaxis == s2.xaxis)
-    assert len(d1) != len(d2)   # due to different length of s1 and s2
+    assert len(d1) != len(d2)  # due to different length of s1 and s2
 
     # Values in one that are outside range are filled with nans
     s3 = Spectrum(flux=[1, 3, 1, 2, 3, 2], xaxis=[3, 4, 5, 6, 7, 8])
@@ -285,7 +304,7 @@ def test_subtraction_with_interpolation():
     assert np.all(d2.xaxis == x)  # d has axis of t
     assert np.all(d1.xaxis == s1.xaxis)
     assert np.all(d2.xaxis == s2.xaxis)
-    assert len(d1) != len(d2)   # due to different length of s1 and s2
+    assert len(d1) != len(d2)  # due to different length of s1 and s2
 
     # Values in one that are outside range are filled with nans
     s3 = Spectrum(flux=[1, 2, 1, 2, 1, 2], xaxis=[3, 4, 5, 6, 7, 8])
@@ -318,7 +337,7 @@ def test_multiplication_with_interpolation():
     assert np.all(d2.xaxis == x)  # d has axis of t
     assert np.all(d1.xaxis == s1.xaxis)
     assert np.all(d2.xaxis == s2.xaxis)
-    assert len(d1) != len(d2)   # due to different length of s1 and s2
+    assert len(d1) != len(d2)  # due to different length of s1 and s2
 
     # Values in one that are outside range are filled with nans
     s3 = Spectrum(flux=[1, 3, 1, 2, 3, 2], xaxis=[3, 4, 5, 6, 7, 8])
@@ -351,7 +370,7 @@ def test_true_division_with_interpolation():
     assert np.all(d2.xaxis == x)  # d has axis of t
     assert np.all(d1.xaxis == s1.xaxis)
     assert np.all(d2.xaxis == s2.xaxis)
-    assert len(d1) != len(d2)   # due to different length of s1 and s2
+    assert len(d1) != len(d2)  # due to different length of s1 and s2
 
     # Values in one that are outside range are filled with nans
     s3 = Spectrum(flux=[1, 2, 1, 2, 1, 2], xaxis=[3, 4, 5, 6, 7, 8])
@@ -391,11 +410,10 @@ def test_value_error_when_spectra_do_not_overlap():
 
 @pytest.mark.parametrize("badly_typed", [
     "Test String",
-    [1, 2, 3, 4, 5],
     [2, 3, "4", 5, 6],
     (1, 2, "3", 6, 7),
     {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5},
-    {1, 4, 4, 2, 5},
+    {1, 4, 4, 2, 5, 7},
 ])
 def test_operators_with_bad_types(badly_typed):
     s = Spectrum(flux=[1, 2, 1, 2, 1], xaxis=[2, 4, 6, 8, 10])
@@ -411,11 +429,7 @@ def test_operators_with_bad_types(badly_typed):
 
 @pytest.mark.parametrize("badly_typed", [
     "Test String",
-    # [1, 2, 3, 4, 5],
-    # [2, 3, "4"],
-    # (1, 2, "3"),
     {"1": 1, "2": 2, "3": 3},
-    # {1, 2, 3, 1, 4, 4, 2, 5},  # set literal faster than set()
 ])
 def test_assignment_with_bad_types(badly_typed):
     # Need to improve checking of what can pass into spectrum
@@ -423,6 +437,27 @@ def test_assignment_with_bad_types(badly_typed):
         Spectrum(flux=None, xaxis=badly_typed)
     with pytest.raises(TypeError):
         Spectrum(flux=badly_typed)
+
+
+@pytest.mark.parametrize("other", [
+    [1, 3, 5, 6, 7],
+    np.asarray([1, 2, 3])
+])
+def test_operate_with_list_or_numpy_array_wrong_size(other):
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
+    with pytest.raises(ValueError):
+        a + other
+
+
+@pytest.mark.parametrize("other, result", [
+    ([1, 2, 3, 4], [6, 8, 10, 12]),
+    (np.asarray([4, -3, 2, -3]), [9, 3, 9, 5])
+])
+def test_operate_with_list_or_numpy_array_right_size(other, result):
+    """This tests issue 49."""
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
+    res = a + other
+    assert np.all(res.flux == result)
 
 
 def test_spectra_stay_the_same_after_operations():
@@ -444,7 +479,7 @@ def test_spectra_stay_the_same_after_operations():
     # c and d still the same
     assert a == c
     assert b == d
-    assert e != c  and e != d
+    assert e != c and e != d
     assert f != c and f != d
     assert g != c and g != d
     assert h != c and h != d
@@ -480,15 +515,15 @@ def test_xaxis_type_error_init_check():
     # results in just setting to None
     s = Spectrum(flux=np.nan, xaxis=None)
     assert s.xaxis is None
-    s.flux = [1, 1.1]   # has length
-    s.xaxis = None      # xaxis turns into range(len(s.flux))
+    s.flux = [1, 1.1]  # has length
+    s.xaxis = None  # xaxis turns into range(len(s.flux))
     assert s.xaxis is not None
     print(s.xaxis)
     assert np.all(s.xaxis == np.array([0, 1]))
-    s.flux = 1          # 1 has no length
+    s.flux = 1  # 1 has no length
     s.xaxis = None
     assert s.xaxis is None
-    s.flux = np.inf     # np.inf has no length
+    s.flux = np.inf  # np.inf has no length
     s.xaxis = None
     assert s.xaxis is None
 
@@ -504,21 +539,21 @@ def test_wave_selection_with_ill_defined_xaxis():
     s.flux = []
     s.xaxis = []
     s.wav_select(1, 8)
-    assert np.all(s.flux == np.array([]))        # s Didn't change
-    assert np.all(s.xaxis == np.array([]))       # s Didn't change
+    assert np.all(s.flux == np.array([]))  # s Didn't change
+    assert np.all(s.xaxis == np.array([]))  # s Didn't change
     new_flux = [1, 2, 3, 4]
-    s.flux = new_flux     # different flux but same xaxis
+    s.flux = new_flux  # different flux but same xaxis
     s.wav_select(1, 8)
     assert np.all(s.flux == np.array(new_flux))  # s Didn't change
-    assert np.all(s.xaxis == np.array([]))       # s Didn't change
+    assert np.all(s.xaxis == np.array([]))  # s Didn't change
 
 
 def test_zero_division():
     s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2, 3, 4])
     t = Spectrum(flux=[2., 2, 0, 4], xaxis=[1., 2, 3, 4])
-
-    divide = s / t
-    assert np.allclose(divide.flux[[0,1,3]], [0.5, 2.5, 4])
+    with pytest.warns(RuntimeWarning) as record:
+        divide = s / t
+    assert np.allclose(divide.flux[[0, 1, 3]], [0.5, 2.5, 4])
     print(divide.xaxis)
     print(divide.flux)
     notnan = np.invert(np.isinf(divide.flux))
@@ -528,10 +563,11 @@ def test_zero_division():
 
 
 @pytest.mark.parametrize("zero",
-                    [0, 0.0, np.int(0), np.float(0)])
+                         [0, 0.0, np.int(0), np.float(0)])
 def test_zero_divison_by_number(zero):
     s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2., 3., 4.])
-    div = s / zero
+    with pytest.warns(RuntimeWarning) as record:
+        div = s / zero
     assert np.all(np.isinf(div.flux))  # div by zero goes to np.inf
 
 
@@ -573,3 +609,21 @@ def test_division_preserves_header():
     assert np.all(s.flux == [1, 2, 3, 4])
     assert s.header is not None
     assert s.header == hdr
+
+
+def test_operation_by_non_Spectrum_other_same_length():
+    """Testing issue 49. The xaxis is the same length to Spectrum."""
+    host = Spectrum(xaxis=[1, 2, 3, 4, 5, 6], flux=[1, 1, 2, 2.3, 1.7, 2.0])
+    photons = host * host.xaxis
+    photons = photons - host.xaxis
+    photons = photons / host.xaxis.tolist()
+    photons = photons + host.xaxis.tolist()
+    assert len(photons) == len(host)
+    assert len(photons) == len(host.xaxis)
+
+
+def test_operation_wrapper_returns_ofunc():
+    ofunc = Spectrum()._operation_wrapper()
+    # Check that the wrapper return is a function.
+    assert isinstance(ofunc, types.FunctionType)
+    assert ofunc.__name__ == "ofunc"
