@@ -454,7 +454,7 @@ class Spectrum(object):
                             " {}".format(type(reference)))
 
     def spline_interpolate_to(self, reference, w=None, bbox=None, k=3,
-                              ext=0, check_finite=False, bounds_error=False):
+                              ext=0, check_finite=True, bounds_error=False):
         r"""Interpolate wavelength solution using scipy's
                 InterpolatedUnivariateSpline.
 
@@ -518,7 +518,7 @@ class Spectrum(object):
         interp_spline = InterpolatedUnivariateSpline(self.xaxis, self.flux,
                                                      w=w, bbox=bbox, k=k,
                                                      ext=ext,
-                                                     check_finite=False)
+                                                     check_finite=check_finite)
 
         # interp_function = interp1d(self.xaxis, self.flux, kind=kind,
         #                           fill_value=fill_value,
@@ -663,7 +663,7 @@ class Spectrum(object):
                         raise ValueError("The xaxis do not overlap so cannot be interpolated")
                     else:
                         other_copy = other.copy()
-                        other_copy.spline_interpolate_to(self)
+                        other_copy.spline_interpolate_to(self, check_finite=True)
                         other_flux = other_copy.flux
             else:
                 raise TypeError("Unexpected type {} for operation with Spectrum".format(type(other)))
