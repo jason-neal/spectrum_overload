@@ -1,0 +1,39 @@
+language: python
+python:
+    - 3.5
+    - 3.6
+
+before_install:
+  - sudo apt-get update
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda config --add channels conda-forge
+  - conda update -q conda
+  - conda info -a
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+
+install:
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy astropy
+  - source activate test-environment
+  - pip install pyastronomy
+  - travis_retry pip install -r requirements.txt
+  - travis_retry pip install pytest pytest-cov
+
+  - python setup.py install
+
+build:
+  ci:
+    # Create folders for test and code coverage
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
+
+    # Run test and code coverage and output results to the right folder
+    - pytest --junitxml=shippable/testresults/nosetests.xml
+    - pytest --cov=spectrum_overload --cov-report=xml:shippable/codecoverage/coverage.xml --durations=10 -W error
+
