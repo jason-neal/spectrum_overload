@@ -74,7 +74,7 @@ class Spectrum(object):
         self.length_check()
         self.calibrated = calibrated
         if header is None:
-            self.header: Dict[str, Any] = {}
+            self.header = {}  # type: Dict[str, Any]
         else:
             self.header = header  # Access header with a dictionary call.
         self.interp_method = interp_method
@@ -243,6 +243,11 @@ class Spectrum(object):
         """Add noise level of snr to the flux of the spectrum."""
         sigma = self.flux / snr
         # Add normal distributed noise at the SNR level.
+        self.flux += np.random.normal(0, sigma)
+
+    def add_noise_sigma(self, sigma):
+        """Add Gaussian noise with given sigma."""
+        # Add normal distributed noise with given sigma.
         self.flux += np.random.normal(0, sigma)
 
     def plot(self, axis=None, **kwargs) -> None:
@@ -460,7 +465,7 @@ class Spectrum(object):
                             " {}".format(type(reference)))
 
     def spline_interpolate_to(self, reference: Union[ndarray, str, 'Spectrum', List[int], List[float]], w: None = None, bbox: Optional[Any] = None, k: int = 3,
-                              ext: int = 0, check_finite: bool = False, bounds_error: bool = False) -> None:
+                              ext: int = 0, check_finite: bool = True, bounds_error: bool = False) -> None:
         r"""Interpolate wavelength solution using scipy's
                 InterpolatedUnivariateSpline.
 
@@ -504,7 +509,7 @@ class Spectrum(object):
             but may result in problems (crashes, non-termination
             or non-sensical results) if the inputs do contain
             infinities or NaNs.
-            Default is False.
+            Default is True.
 
         Raises:
         -------
@@ -524,7 +529,7 @@ class Spectrum(object):
         interp_spline = InterpolatedUnivariateSpline(self.xaxis, self.flux,
                                                      w=w, bbox=bbox, k=k,
                                                      ext=ext,
-                                                     check_finite=False)
+                                                     check_finite=check_finite)
 
         # interp_function = interp1d(self.xaxis, self.flux, kind=kind,
         #                           fill_value=fill_value,
@@ -621,6 +626,20 @@ class Spectrum(object):
         s.header["normalized"] = "{0} with degree {1}".format(method, degree)
         return s
 
+    def instrument_broaden(self, R, **pya_kwargs):
+        """Broaden spectrum by instrumental resolution R.
+
+        Uses the pyastronomy instrBroadGaussFast function.
+
+        :param R:
+        :param pya_kwargs: kwarg parameters for pyasl.instrBroadGaussFast()
+        :return s: broadened spectrum
+        """
+        s = self.copy()
+        new_flux = pyasl.instrBroadGaussFast(s.xaxis, s.flux, 50000, **pya_kwargs)
+        s.flux = new_flux
+        return s
+
     # ######################################################
     # Overloading Operators
     # Based on code from pyspeckit.
@@ -656,7 +675,7 @@ class Spectrum(object):
                         raise ValueError("The xaxis do not overlap so cannot be interpolated")
                     else:
                         other_copy = other.copy()
-                        other_copy.spline_interpolate_to(self)
+                        other_copy.spline_interpolate_to(self, check_finite=True)
                         other_flux = other_copy.flux
                     return other_flux
 
