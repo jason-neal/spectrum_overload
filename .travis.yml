@@ -30,7 +30,7 @@ install:
 
 script:
   - pytest --cov=spectrum_overload --cov-report term-missing --durations 10 -W error
-  - coverage xml
+  - coverage xml -i
 
 after_success:
   - coveralls
