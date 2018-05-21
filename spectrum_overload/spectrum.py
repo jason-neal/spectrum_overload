@@ -74,7 +74,7 @@ class Spectrum(object):
         self.length_check()
         self.calibrated = calibrated
         if header is None:
-            self.header: Dict[str, Any] = {}
+            self.header = {}  # type: Dict[str, Any]
         else:
             self.header = header  # Access header with a dictionary call.
         self.interp_method = interp_method
