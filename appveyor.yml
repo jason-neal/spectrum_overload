@@ -22,7 +22,7 @@ build: off
 test_script:
   # Put your test command here.
   - cmd: "%PYTHON%\\python.exe -m pytest --cov=spectrum?overload --cov-report term-missing --durations 10"
-  - cmd: "coverage xml"
+  - cmd: "coverage xml -i"
 
 after_test:
   # This step builds your wheels.
