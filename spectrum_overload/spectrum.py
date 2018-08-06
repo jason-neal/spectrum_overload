@@ -629,14 +629,24 @@ class Spectrum(object):
     def instrument_broaden(self, R, **pya_kwargs):
         """Broaden spectrum by instrumental resolution R.
 
-        Uses the pyastronomy instrBroadGaussFast function.
+        Uses the PyAstronomy instrBroadGaussFast function.
 
-        :param R:
-        :param pya_kwargs: kwarg parameters for pyasl.instrBroadGaussFast()
-        :return s: broadened spectrum
+        Parameters
+        ----------
+        R: int
+           Instrumental Resolution
+        pya_kwargs: dict
+            kwarg parameters for pyasl.instrBroadGaussFast()
+
+        Returns
+        -------
+        s: ndarray
+            Broadened spectrum array.
         """
         s = self.copy()
-        new_flux = pyasl.instrBroadGaussFast(s.xaxis, s.flux, 50000, **pya_kwargs)
+        new_flux = pyasl.instrBroadGaussFast(
+            s.xaxis, s.flux, resolution=R, **pya_kwargs
+        )
         s.flux = new_flux
         return s
 

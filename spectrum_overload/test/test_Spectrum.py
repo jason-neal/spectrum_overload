@@ -7,10 +7,12 @@ It is not perfect and can be definitely improved.
 """
 from __future__ import division, print_function
 
+from PyAstronomy import pyasl
 import hypothesis.strategies as st
 import numpy as np
 import pytest
 from astropy.io import fits
+
 # Test using hypothesis
 from hypothesis import example, given
 from pkg_resources import resource_filename
@@ -19,12 +21,9 @@ from spectrum_overload import Spectrum, SpectrumError
 
 @pytest.fixture
 def phoenix_spectrum():
-    # Get a phoenix spectrum in test data to load in and get th
-    spec_1 = resource_filename('spectrum_overload', 'data/spec_1.fits')
-    # phoenix_file = resource_filename('spectrum_overload', 'data/spec_1.fits')
-
+    # Get a phoenix spectrum in test
+    spec_1 = resource_filename("spectrum_overload", "data/spec_1.fits")
     flux = fits.getdata(spec_1)
-    # wave = fits.getdata("")
     wave = np.arange(len(flux))
     header = fits.getheader(spec_1)
     return Spectrum(xaxis=wave, flux=flux, header=header)
@@ -482,3 +481,22 @@ def test_normalization_method_match_degree(method, degree):
     poly_deg = s.normalize(method='poly', degree=degree)
     poly_deg = poly_deg.remove_nans()  # hack for getting to pass on < py 34
     assert np.allclose(named_method.flux, poly_deg.flux)
+
+
+@pytest.mark.parametrize(
+    "R", [5, 10, 99, 500]
+)  # Small resolutions for easy testing (measureable differences)
+def test_instrument_broaden(phoenix_spectrum, R):
+    """Test instrument_broadening same as pyastronomy."""
+    spec = phoenix_spectrum
+
+    new_flux = pyasl.instrBroadGaussFast(spec.xaxis, spec.flux, R)
+
+    # There is a change due to broadening
+    assert not np.allclose(spec.flux, new_flux)
+    new_spec = spec.instrument_broaden(R)
+
+    # There is a change due to broadening
+    assert not np.allclose(new_spec.flux, spec.flux)
+    # Spectrum result equals correct pyasl value.
+    assert np.allclose(new_spec.flux, new_flux)
