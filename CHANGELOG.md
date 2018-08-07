@@ -10,7 +10,10 @@ Handle all warnings as errors in testing.
 Fix test parameters to avoid invalid values. 
 
 Drop support for python 2.7 due xaxis and flux keywords required with "*,".
-Drop testing of python 3.4 also while at it.
+Drop testing of python 3.4.
+
+- Add indexing/slicing spectrum with [], (Returns new spectrum)
+
 
 
 0.2.1 14/01/2018

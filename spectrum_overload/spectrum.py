@@ -561,11 +561,9 @@ class Spectrum(object):
             raise TypeError("Cannot interpolate with the given object of type"
                             " {}".format(type(reference)))
 
-    def remove_nans(self) -> 'Spectrum':
-        s = self.copy()
-        s.flux = s.flux[~np.isnan(self.flux)]
-        s.xaxis = s.xaxis[~np.isnan(self.flux)]
-        return s
+    def remove_nans(self) -> "Spectrum":
+        """Returns new spectrum. Uses slicing with isnan mask."""
+        return self[~np.isnan(self.flux)]
 
     def continuum(self, method: str = "scalar", degree: Optional[int] = None, **kwargs) -> 'Spectrum':
         """Fit the continuum of the spectrum.
@@ -770,6 +768,17 @@ class Spectrum(object):
 
     def xlimits(self):
         return [self.xmin(), self.xmax()]
+
+    def __getitem__(self, item):
+        """Be able slice the spectrum. Return new object."""
+        if isinstance(item, (type(None), str, int, float, bool)):
+            raise ValueError(
+                "Cannot slice with types of type(None),str,int,float,bool."
+            )
+        s = self.copy()
+        s.flux = self.flux[item]
+        s.xaxis = self.xaxis[item]
+        return s
 
 
 class SpectrumError(Exception):
