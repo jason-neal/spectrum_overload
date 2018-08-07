@@ -1,5 +1,5 @@
 hypothesis==3.66.30
-pytest
+pytest==3.7.1
 pytest-cov
 python-coveralls
 codeclimate-test-reporter
