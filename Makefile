@@ -14,6 +14,8 @@ help:
 	@echo "		Check style with flake8."
 	@echo "	test"
 	@echo "		Run py.test"
+	@echo "	test-warn"
+	@echo "		Run py.test with warnings errored"
 	@echo "	init"
 	@echo "		Initalize by installing requirements"
 	@echo "	init-dev"
@@ -40,7 +42,10 @@ lint:
 	flake8 --exclude=.tox
 
 test: clean-pyc
-	py.test --verbose --color=yes $(TEST_PATH)
+	pytest --verbose --color=yes $(TEST_PATH)
+
+test-warn: clean-pyc
+	pytest --verbose --color=yes $(TEST_PATH) -o "filterwarnings=error"
 
 init:
 	pip install -r requirements.txt
