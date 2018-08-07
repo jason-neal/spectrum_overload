@@ -35,5 +35,5 @@ build:
 
     # Run test and code coverage and output results to the right folder
     - pytest --junitxml=shippable/testresults/nosetests.xml
-    - pytest --cov=spectrum_overload --cov-report=xml:shippable/codecoverage/coverage.xml --durations=10 -W error
+    - pytest --cov=spectrum_overload --cov-report=xml:shippable/codecoverage/coverage.xml --durations=10
 
