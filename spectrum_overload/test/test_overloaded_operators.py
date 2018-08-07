@@ -463,8 +463,8 @@ def test_operate_with_list_or_numpy_array_right_size(other, result):
 def test_spectra_stay_the_same_after_operations():
     """After a operation of two spectra...
 
-    e.g. a/b both a and b should
-    remain the same unless specifically defined such as a = a + b
+    e.g. a/b both a and b should remain the same unless specifically defined such as
+     a = a + b
 
     """
     a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
@@ -485,11 +485,37 @@ def test_spectra_stay_the_same_after_operations():
     assert h != c and h != d
 
 
+@pytest.mark.parametrize("calib", [True, False])
+def test_copy_preseves_calib_and_header_also(phoenix_spectrum, calib):
+    """After a operation of two spectra...
+
+    e.g. a/b both a and b should remain the same unless specifically defined such as
+    a = a + b
+
+    """
+    header=phoenix_spectrum.header
+    a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8], calibrated=calib, header=header)
+    b = Spectrum(xaxis=[1, 2, 3, 4], flux=[1, 2, 3, 4], calibrated=calib, header=header)
+    c = a.copy()
+    d = b.copy()
+
+    e = c + d
+    f = c - d
+    g = d * c
+    h = d / c
+    # c and d still the same
+    assert a == c
+    assert b == d
+    assert e != c and e != d
+    assert f != c and f != d
+    assert g != c and g != d
+    assert h != c and h != d
+
 def test_spectra_not_the_same_when_reassigned():
     """After a operation of two spectra...
 
-    e.g. a/b both a and b should
-    remain the same unless specifically defined such as a = a + b
+    e.g. a/b both a and b should remain the same unless specifically defined such as
+    a = a + b
 
     """
     a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
