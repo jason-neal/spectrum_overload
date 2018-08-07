@@ -16,6 +16,7 @@ from astropy.io import fits
 # Test using hypothesis
 from hypothesis import example, given
 from pkg_resources import resource_filename
+
 from spectrum_overload import Spectrum, SpectrumError
 
 
@@ -500,3 +501,49 @@ def test_instrument_broaden(phoenix_spectrum, R):
     assert not np.allclose(new_spec.flux, spec.flux)
     # Spectrum result equals correct pyasl value.
     assert np.allclose(new_spec.flux, new_flux)
+
+
+@pytest.mark.parametrize(
+    "item",
+    [
+        [5],
+        [-60],
+        [1, 2, 5, 6, 7],
+        [-1, 2, 5, 20, -6],
+        slice(10, 100),
+        slice(0, 8),
+        slice(None),
+    ],
+)
+def test_spectrum_slicing(phoenix_spectrum, item):
+    sliced_spectrum = phoenix_spectrum[item]
+
+    assert np.all(sliced_spectrum.xaxis == phoenix_spectrum.xaxis[item])
+    assert np.all(sliced_spectrum.flux == phoenix_spectrum.flux[item])
+    assert sliced_spectrum.header == phoenix_spectrum.header
+    assert sliced_spectrum.calibrated == phoenix_spectrum.calibrated
+
+
+def test_spectrum_slicing_with_colon(phoenix_spectrum):
+    sliced_spectrum = phoenix_spectrum[:]
+    assert np.all(sliced_spectrum.xaxis == phoenix_spectrum.xaxis[:])
+    assert np.all(sliced_spectrum.flux == phoenix_spectrum.flux[:])
+
+    sliced_spectrum2 = phoenix_spectrum[:50]
+    assert np.all(sliced_spectrum2.xaxis == phoenix_spectrum.xaxis[:50])
+    assert np.all(sliced_spectrum2.flux == phoenix_spectrum.flux[:50])
+
+    sliced_spectrum3 = phoenix_spectrum[-200:]
+    assert np.all(sliced_spectrum3.xaxis == phoenix_spectrum.xaxis[-200:])
+    assert np.all(sliced_spectrum3.flux == phoenix_spectrum.flux[-200:])
+
+    sliced_spectrum4 = phoenix_spectrum[50:2:80]
+    assert np.all(sliced_spectrum4.xaxis == phoenix_spectrum.xaxis[50:2:80])
+    assert np.all(sliced_spectrum4.flux == phoenix_spectrum.flux[50:2:80])
+
+
+@pytest.mark.parametrize("item", [None, "hello", "", 7, 3.14, True, False, 0, 1.0])
+def test_specturm_slicing_invalid_types(phoenix_spectrum, item):
+    """Invalid scalars and other types."""
+    with pytest.raises(ValueError):
+        phoenix_spectrum[item]
