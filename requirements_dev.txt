@@ -1,6 +1,6 @@
 hypothesis==3.66.30
 pytest==3.7.1
-pytest-cov
+pytest-cov==2.5.1
 python-coveralls
 codeclimate-test-reporter
 codacy-coverage
