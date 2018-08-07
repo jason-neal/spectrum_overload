@@ -20,24 +20,6 @@ from pkg_resources import resource_filename
 from spectrum_overload import Spectrum, SpectrumError
 
 
-@pytest.fixture
-def phoenix_spectrum():
-    # Get a phoenix spectrum in test
-    spec_1 = resource_filename("spectrum_overload", "data/spec_1.fits")
-    flux = fits.getdata(spec_1)
-    wave = np.arange(len(flux))
-    header = fits.getheader(spec_1)
-    return Spectrum(xaxis=wave, flux=flux, header=header)
-
-
-@pytest.fixture
-def ones_spectrum():
-    x = np.linspace(2000, 2200, 1000)
-    y = np.ones_like(x)
-    spec = Spectrum(xaxis=x, flux=y)
-    return spec
-
-
 @given(st.lists(st.floats(min_value=-1e5, max_value=1e5)),
        st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
