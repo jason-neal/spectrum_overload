@@ -1,9 +1,6 @@
-numpy==1.14.5
-matplotlib==2.2.2
-astropy==3.0.3
-scipy==1.1.0
-pyastronomy==0.13.0
-hypothesis==3.66.1
-pytest==3.6.3
-pytest-cov==2.5.1
-python-coveralls==2.9.1
+numpy
+matplotlib
+astropy
+scipy
+pyastronomy
+

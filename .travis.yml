@@ -1,7 +1,10 @@
+dist: xenial
+sudo: true
 language: python
 python:
   - "3.5"
   - "3.6"
+  - "3.7"
 
 before_install:
   # http://conda.pydata.org/docs/travis.html
@@ -21,16 +24,14 @@ cache:
 install:
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy astropy
   - source activate test-environment
-  - travis_retry pip install pyastronomy
 
   - travis_retry pip install -r requirements.txt
-  - travis_retry pip install pytest-cov python-coveralls codeclimate-test-reporter codacy-coverage
+  - travis_retry pip install -r requirements_dev.txt
 
   - python setup.py install
 
 script:
   - pytest --cov=spectrum_overload --cov-report term-missing --durations 10 -W error
-  - coverage xml -i
 
 after_success:
   - coveralls

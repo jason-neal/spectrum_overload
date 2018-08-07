@@ -1,28 +1,31 @@
 environment:
-
   matrix:
     # For Python versions available on Appveyor, see
     # http://www.appveyor.com/docs/installed-software#python
     - PYTHON: "C:\\Python35"
     - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python37"
+    - PYTHON: "C:\\Python27-x64"
     - PYTHON: "C:\\Python35-x64"
     - PYTHON: "C:\\Python36-x64"
+    - PYTHON: "C:\\Python37-x64"
 
 install:
   # We need wheel installed to build wheels
   - "%PYTHON%\\python.exe -m pip install wheel"
 
-  # Installing spectrum/overload now
+  # Install spectrum_overload
   - cmd: "cd %APPVEYOR_BUILD_FOLDER%"
   - cmd: "%PYTHON%\\python.exe -m pip install -r requirements.txt"
+  - cmd: "%PYTHON%\\python.exe -m pip install -r requirements_dev.txt"
   - cmd: "%PYTHON%\\python.exe setup.py install"
-  
+
 build: off
 
 test_script:
   # Put your test command here.
   - cmd: "%PYTHON%\\python.exe -m pytest --cov=spectrum_overload --cov-report term-missing --durations 10"
-  # - cmd: "coverage xml -i"
+  - cmd: "%PYTHON%\\python.exe -m coverage xml -i"
 
 after_test:
   # This step builds your wheels.
