@@ -1,6 +1,6 @@
 numpy==1.15.0
 matplotlib==2.2.3
-astropy
+astropy==3.0.4
 scipy
 pyastronomy
 
