@@ -1,4 +1,4 @@
-hypothesis
+hypothesis==3.69.1
 pytest
 pytest-cov
 python-coveralls
