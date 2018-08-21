@@ -1,5 +1,5 @@
 numpy==1.15.0
-matplotlib
+matplotlib==2.2.3
 astropy
 scipy
 pyastronomy
