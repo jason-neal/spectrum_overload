@@ -2,6 +2,7 @@ language: python
 python:
     - 3.5
     - 3.6
+    - 3.7
 
 before_install:
   - sudo apt-get update
@@ -19,11 +20,11 @@ cache:
     - $HOME/.cache/pip
 
 install:
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy astropy
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION astropy numpy scipy
   - source activate test-environment
-  - pip install pyastronomy
+
   - travis_retry pip install -r requirements.txt
-  - travis_retry pip install pytest pytest-cov
+  - travis_retry pip install -r requirements_dev.txt
 
   - python setup.py install
 
@@ -35,4 +36,4 @@ build:
 
     # Run test and code coverage and output results to the right folder
     - pytest --junitxml=shippable/testresults/nosetests.xml
-    - pytest --cov=spectrum_overload --cov-report=xml:shippable/codecoverage/coverage.xml --durations=10
+    - pytest --cov=. --cov-report=xml:shippable/codecoverage/coverage.xml --durations=10
