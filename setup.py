@@ -45,7 +45,7 @@ setup(
 
     description='Spectrum class that overloads operators.',
     long_description=long_description,
-
+    long_description_content_type="text/markdown",
     # The project's main homepage.
     url='https://github.com/jason-neal/spectrum_overload',
     download_url='https://github.com/jason-neal/spectrum_overload',
