@@ -3,16 +3,18 @@ import os
 import numpy as np
 import pytest
 from astropy.io import fits
-from hypothesis import settings, Verbosity
 from pkg_resources import resource_filename
 
+from hypothesis import Verbosity, settings
 from spectrum_overload import Spectrum
 
 settings.register_profile("ci", settings(max_examples=1000))
 settings.register_profile("rpi", settings(max_examples=2))
 settings.register_profile("dev", settings(max_examples=10))
-settings.register_profile("debug", settings(max_examples=10, verbosity=Verbosity.verbose))
-settings.load_profile(os.getenv(u'HYPOTHESIS_PROFILE', 'default'))
+settings.register_profile(
+    "debug", settings(max_examples=10, verbosity=Verbosity.verbose)
+)
+settings.load_profile(os.getenv(u"HYPOTHESIS_PROFILE", "default"))
 
 
 @pytest.fixture

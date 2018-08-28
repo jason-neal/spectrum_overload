@@ -4,8 +4,8 @@
 from __future__ import division, print_function
 
 import numpy as np
-from spectrum_overload import DifferentialSpectrum
-from spectrum_overload import Spectrum
+
+from spectrum_overload import DifferentialSpectrum, Spectrum
 
 
 def test_assignment_of_differential():
@@ -19,6 +19,7 @@ def test_assignment_of_differential():
 
     assert spec_diff.spec1 == spec_1
     assert spec_diff.spec2 == spec_2
+
 
 # TODO:
 # Define a fixture that creates a differentail with two spectra.

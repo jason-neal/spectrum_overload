@@ -7,7 +7,9 @@ import numpy as np
 from numpy import ndarray
 
 
-def get_continuum_points(wave: ndarray, flux: ndarray, nbins: int = 50, ntop: int = 20) -> Tuple[ndarray, ndarray]:
+def get_continuum_points(
+    wave: ndarray, flux: ndarray, nbins: int = 50, ntop: int = 20
+) -> Tuple[ndarray, ndarray]:
     """Get continuum points along a spectrum.
 
     This splits a spectrum into "nbins" number of bins and calculates
@@ -36,8 +38,14 @@ def get_continuum_points(wave: ndarray, flux: ndarray, nbins: int = 50, ntop: in
     return wave_points, flux_points
 
 
-def continuum(wave: ndarray, flux: ndarray, method: str = 'scalar', degree: Optional[int] = None, nbins: int = 50,
-              ntop: int = 20) -> ndarray:
+def continuum(
+    wave: ndarray,
+    flux: ndarray,
+    method: str = "scalar",
+    degree: Optional[int] = None,
+    nbins: int = 50,
+    ntop: int = 20,
+) -> ndarray:
     """Fit continuum of flux.
 
     Parameters
@@ -57,7 +65,11 @@ def continuum(wave: ndarray, flux: ndarray, method: str = 'scalar', degree: Opti
         raise ValueError("Incorrect method for polynomial fit.")
 
     if method != "poly" and degree is not None:
-        logging.warning("The degree={0} is not used with method={1} in continuum fitting.".format(degree, method))
+        logging.warning(
+            "The degree={0} is not used with method={1} in continuum fitting.".format(
+                degree, method
+            )
+        )
 
     if method == "poly" and degree is None:
         raise ValueError("No degree specified for continuum method 'poly'.")

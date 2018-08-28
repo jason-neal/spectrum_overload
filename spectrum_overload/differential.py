@@ -5,9 +5,9 @@ from typing import Any, Dict, Optional
 
 from spectrum_overload.spectrum import Spectrum
 
-
 # TODO: Add in s-profile from
 # Ferluga 1997: Separating the spectra of binary stars-I. A simple method: Secondary reconstruction
+
 
 class DifferentialSpectrum(object):
     """A differential spectrum."""

@@ -7,21 +7,20 @@ It is not perfect and can be definitely improved.
 """
 from __future__ import division, print_function
 
-from PyAstronomy import pyasl
-import hypothesis.strategies as st
 import numpy as np
 import pytest
 from astropy.io import fits
+from pkg_resources import resource_filename
+from PyAstronomy import pyasl
+
+import hypothesis.strategies as st
 
 # Test using hypothesis
 from hypothesis import example, given
-from pkg_resources import resource_filename
-
 from spectrum_overload import Spectrum, SpectrumError
 
 
-@given(st.lists(st.floats(min_value=-1e5, max_value=1e5)),
-       st.integers(), st.booleans())
+@given(st.lists(st.floats(min_value=-1e5, max_value=1e5)), st.integers(), st.booleans())
 def test_spectrum_assigns_hypothesis_data(y, x, z):
     """Test that data was assigned to the correct attributes."""
     # Use one hypothesis list they need to have the same length
@@ -103,7 +102,7 @@ def test_length_checking():
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError."""
     with pytest.raises(TypeError):
-        Spectrum(flux=[1, 2, 3], xaxis='bar')
+        Spectrum(flux=[1, 2, 3], xaxis="bar")
     with pytest.raises(TypeError):
         Spectrum(flux="foo", xaxis=[1.2, 3, 4, 5])
     with pytest.raises(TypeError):
@@ -112,7 +111,7 @@ def test_flux_and_xaxis_cannot_pass_stings():
     with pytest.raises(TypeError):
         spec.flux = "foo"
     with pytest.raises(TypeError):
-        spec.xaxis = 'bar'
+        spec.xaxis = "bar"
 
 
 def test_auto_generation_of_xaxis_if_none():
@@ -123,12 +122,10 @@ def test_auto_generation_of_xaxis_if_none():
     assert np.all(spec2.xaxis == np.arange(4))
 
 
-@pytest.mark.parametrize("xaxis, flux", [
-    ([1, 2, 3], [1, 2]),
-    ([1, 2, 3], []),
-    ([], [1, 2, 3]),
-    ([1, 2], [1, 2, 3])
-])
+@pytest.mark.parametrize(
+    "xaxis, flux",
+    [([1, 2, 3], [1, 2]), ([1, 2, 3], []), ([], [1, 2, 3]), ([1, 2], [1, 2, 3])],
+)
 def test_length_of_flux_and_xaxis_must_be_equal(xaxis, flux):
     """Try assign a mismatched xaxis it should raise a ValueError."""
     with pytest.raises(ValueError):
@@ -145,7 +142,8 @@ def test_reassigning_unequal_length_fails():
     st.lists(st.floats(min_value=-1e5, max_value=1e5)),
     st.booleans(),
     st.floats(min_value=-1e5, max_value=1e5),
-    st.floats(min_value=-1e5, max_value=1e5))
+    st.floats(min_value=-1e5, max_value=1e5),
+)
 def test_wav_select(x, calib, wav_min, wav_max):
     """Test some properties of wavelength selection."""
     # Create spectrum
@@ -180,10 +178,12 @@ def test_wav_select_example():
     # spec2 = spec.wav_selector()
 
 
-@given(st.lists(st.floats(min_value=1e-4, max_value=1e5), min_size=1),
-       st.floats(min_value=-1e5, max_value=1e5),
-       st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
-       st.booleans())
+@given(
+    st.lists(st.floats(min_value=1e-4, max_value=1e5), min_size=1),
+    st.floats(min_value=-1e5, max_value=1e5),
+    st.sampled_from((1, 1, 1, 1, 1, 1, 1, 0)),
+    st.booleans(),
+)
 @example([1000, 2002, 2003, 2004], 1e-8, 1, 1)
 def test_doppler_shift_with_hypothesis(x, rv, calib, rv_dir):
     """Test doppler shift properties.
@@ -271,7 +271,7 @@ def test_header_attribute():
     assert spec.header["Date"] == "20120601"
 
     # Try with a Astropy header object
-    test_file = resource_filename('spectrum_overload', 'data/spec_1.fits')
+    test_file = resource_filename("spectrum_overload", "data/spec_1.fits")
     fitshdr = fits.getheader(test_file)
     spec2 = Spectrum(header=fitshdr)
 
@@ -293,7 +293,7 @@ def test_interpolation():
     s1 = Spectrum(flux=y1, xaxis=x1)
     s2 = Spectrum(flux=y2, xaxis=x2)
     s_lin = s1.copy()
-    s_lin.interpolate1d_to(s2, kind='cubic')
+    s_lin.interpolate1d_to(s2, kind="cubic")
 
     assert np.allclose(s_lin.flux, [3., 4., 7., 8.])
     # test linear interpolation matches numpy interp
@@ -309,7 +309,7 @@ def test_interpolation():
     with pytest.raises(ValueError):
         s2.interpolate1d_to(s1, bounds_error=True)
     with pytest.raises(ValueError):
-        s2.interpolate1d_to(s1, kind='cubic', bounds_error=True)
+        s2.interpolate1d_to(s1, kind="cubic", bounds_error=True)
     with pytest.raises(TypeError):
         s2.interpolate1d_to(x1, bounds_error=True)
     with pytest.raises(ValueError):
@@ -330,7 +330,7 @@ def test_interpolation_when_given_a_ndarray():
     s1 = Spectrum(flux=y1, xaxis=x1)
     # s2 = Spectrum(flux=y2, xaxis=x2)
     s_lin = s1.copy()
-    s_lin.interpolate1d_to(np.asarray(x2), kind='linear')
+    s_lin.interpolate1d_to(np.asarray(x2), kind="linear")
 
     assert np.allclose(s_lin.flux, [3., 4., 7., 8.])
     # test linear interpolation matches numpy interp
@@ -409,7 +409,7 @@ def test_bad_interp_method():
         s.interp_method = "invalid_method"
 
 
-@pytest.mark.parametrize('snr', [50, 100])
+@pytest.mark.parametrize("snr", [50, 100])
 def test_add_noise(ones_spectrum, snr):
     """Test addition of noise."""
     np.random.seed(3)
@@ -449,11 +449,9 @@ def test_exponential_normalization():
     assert np.allclose(sn.flux, np.ones_like(x))
 
 
-@pytest.mark.parametrize("method, degree", [
-    ("scalar", 0),
-    ("linear", 1),
-    ("quadratic", 2),
-    ("cubic", 3)])
+@pytest.mark.parametrize(
+    "method, degree", [("scalar", 0), ("linear", 1), ("quadratic", 2), ("cubic", 3)]
+)
 def test_normalization_method_match_degree(method, degree):
     # TODO: Eventually call phoenix_spectrum to do this.
     x = np.arange(1, 1000)
@@ -461,7 +459,7 @@ def test_normalization_method_match_degree(method, degree):
     s = Spectrum(xaxis=x, flux=y)
     named_method = s.normalize(method=method)
     named_method = named_method.remove_nans()  # hack for getting to run on < py34
-    poly_deg = s.normalize(method='poly', degree=degree)
+    poly_deg = s.normalize(method="poly", degree=degree)
     poly_deg = poly_deg.remove_nans()  # hack for getting to pass on < py 34
     assert np.allclose(named_method.flux, poly_deg.flux)
 
