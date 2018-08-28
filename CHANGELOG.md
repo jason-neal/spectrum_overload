@@ -1,4 +1,4 @@
-# Spectrum Overload 
+# Spectrum Overload
 ## Changelog
 
 Upcoming release:
@@ -10,14 +10,14 @@ Upcoming release:
 - Add indexing/slicing spectrum with [], (Returns new spectrum)
 - Add more Type hints
 - Handle all warnings as errors in testing.
-- Fix test parameters to avoid invalid values. 
+- Fix test parameters to avoid invalid values.
 - Move test fixtures
 - Test on python 3.7.
 - Add makefile
 - Add Appveyor and shippable configuration.
 - Some general cleanup
 - Update requirements to latest versions.
-
+- Add pre-commits
 
 ##### Depreciations:
 - Drop support for python 2.7
