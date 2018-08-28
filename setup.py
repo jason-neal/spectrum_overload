@@ -11,7 +11,6 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-# from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 import codecs
 import os
@@ -19,12 +18,8 @@ import os
 here = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
-try:
-    import pypandoc
-    long_description =  pypandoc.convert(os.path.join(here, 'README.md'), 'rst')
-except:
-    with codecs.open(os.path.join(here, 'README.md')) as f:
-        long_description = f.read()
+with codecs.open(os.path.join(here, 'README.md')) as f:
+    long_description = f.read()
 
 about = {}
 with codecs.open(os.path.join(here, "spectrum_overload", "__about__.py")) as f:
