@@ -4,7 +4,6 @@
 Upcoming release:
 
 
-
 ### 0.3.0
 - Simplified overload operator function.
 - Add instrument broadening
@@ -27,12 +26,15 @@ Upcoming release:
 - Remove tox.ini
 
 
+### 0.2.2 28/8/2018
+- Add styling for markdown in long description.
+- Testing on python 3.7
+
 ## 0.2.1 14/01/2018
-  Patch try resolve pypi styling
+-  Patch try resolve pypi styling
 
 
 ## 0.2.0  14/01/2018
-
 - Add hypothesis profiles for different test environments.
 - Change header initialization from None to and empty dict
 - Add normalization e.g.
@@ -44,8 +46,8 @@ Upcoming release:
 
 ## Version <0.2.0
 Before october 2017
-Many changes that were unrecorded in this change log...
-Spectrum object with interpolation and overloaded operators.
+- Many changes that were unrecorded in this change log...
+- Spectrum object with interpolation and overloaded operators.
 
 
 Project started: September 2016
