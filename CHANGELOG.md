@@ -2,6 +2,11 @@
 ## Changelog
 
 
+### 0.2.2 28/8/2018
+- Add styling for markdown in long description.
+- Testing on python 3.7
+
+
 ### October 2017 
 For next version
 - Add hypothesis profiles for different test environments.
