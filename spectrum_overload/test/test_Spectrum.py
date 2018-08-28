@@ -7,16 +7,14 @@ It is not perfect and can be definitely improved.
 """
 from __future__ import division, print_function
 
+import hypothesis.strategies as st
 import numpy as np
 import pytest
 from astropy.io import fits
+from hypothesis import example, given
 from pkg_resources import resource_filename
 from PyAstronomy import pyasl
 
-import hypothesis.strategies as st
-
-# Test using hypothesis
-from hypothesis import example, given
 from spectrum_overload import Spectrum, SpectrumError
 
 

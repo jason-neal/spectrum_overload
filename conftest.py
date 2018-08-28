@@ -3,9 +3,9 @@ import os
 import numpy as np
 import pytest
 from astropy.io import fits
+from hypothesis import Verbosity, settings
 from pkg_resources import resource_filename
 
-from hypothesis import Verbosity, settings
 from spectrum_overload import Spectrum
 
 settings.register_profile("ci", settings(max_examples=1000))

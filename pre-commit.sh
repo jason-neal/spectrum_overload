@@ -1,7 +1,7 @@
 #!/bin/sh
 # pre-commit.sh
 # GitHook for running tests before commiting
-# To use link it to 
+# To use link it to
 # ln -s pre-commit.sh .git/hooks/pre-commit
 
 git stash -q --keep-index

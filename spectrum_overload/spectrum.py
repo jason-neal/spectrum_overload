@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+"""Spectrum class to represent and manipulate astronomical spectra."""
+
 
 from __future__ import division, print_function
 
@@ -15,8 +17,6 @@ from PyAstronomy import pyasl
 from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
 
 import spectrum_overload.norm as norm
-
-"""Spectrum Class."""
 
 
 class Spectrum(object):

@@ -5,11 +5,11 @@ from __future__ import division, print_function
 
 import types
 
+import hypothesis.strategies as st
 import numpy as np
 import pytest
-
-import hypothesis.strategies as st
 from hypothesis import given
+
 from spectrum_overload import Spectrum, SpectrumError
 
 
