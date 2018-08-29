@@ -15,7 +15,7 @@ Spectrum
 
 A class to contain a spectrum. The operators have been overloaded so that you can easily manipulate spectra.
 
-.. autoclass:: spectrum_overload.Spectrum.Spectrum
+.. autoclass:: spectrum_overload.spectrum.Spectrum
    :members:
    :undoc-members:
    :show-inheritance:

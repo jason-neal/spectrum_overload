@@ -14,11 +14,16 @@ The main goals of this project are basically complete.
 - automatic interpolation
 - overloaded operators
 especially
-- Spectral division (SpectrumA / SpectrumB )
-- Spectral subtraction (SpectrumA - SpectrumB)
-- Powers/exponents (Spectrum ** x)
+- Spectral division (spectrum_A / spectrum_B )
+- Spectral subtraction (spectrum_A - spectrum_B)
+- Powers/exponents (spectrum ** x)
 
 Further documentation can be found on [read the docs](https://spectrum-overload.readthedocs.io/en/latest/).
+
+##### Note:
+    When the spectra have different wavelength vectors spectrum_overload interpolates
+    to the wavelength of the first spectrum. This may not suit your requirements.
+
 
 ## Installation
 ### Pip
@@ -42,15 +47,15 @@ To use import the class using :
 
     from spectrum_overload import Spectrum
     ...
-    my_spectrum = Spectrum.Spectrum(flux, xaxis)
+    my_spectrum = Spectrum(flux, xaxis)
 
 or :
 
-    from spectrum_overload.Spectrum import Spectrum as spec
+    from spectrum_overload.spectrum import Spectrum as spec
     ...
     my_spectrum = spec(flux, xaxis)
 
-or how ever else you would like to import it.
+or however else you would like to name it.
 
 A tutorial is provided [here](Notebooks/Tutorial.ipynb) to show an example of how to use this class. 
 
