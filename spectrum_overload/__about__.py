@@ -30,7 +30,8 @@ __summary__ = "A spectrum class that overloads operators"
 __uri__ = None
 
 # The version as used in the setup.py and the docs conf.py
-# The essence of semantic versioning is a 3-part MAJOR.MINOR.MAINTENANCE numbering scheme, where the project author increments:
+# The essence of semantic version is a 3-part MAJOR.MINOR.MAINTENANCE numbering scheme,
+# where the project author increments:
 
 #    MAJOR version when they make incompatible API changes,
 #    MINOR version when they add functionality in a backwards-compatible manner, and

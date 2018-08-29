@@ -9,7 +9,7 @@ Import the Spectrum class into your code.
 
 ::
 
-    from spectrum_overload.Spectrum import Spectrum
+    from spectrum_overload import Spectrum
 
 Then to create a spectrum object, and raise to the power of 2 use:
 
