@@ -25,6 +25,8 @@ Upcoming release:
 - Drop testing of python 3.4.
 - Remove tox.ini
 
+### 0.2.3 29/8/2018
+- Fix documented usage of Spectrum
 
 ### 0.2.2 28/8/2018
 - Add styling for markdown in long description.
