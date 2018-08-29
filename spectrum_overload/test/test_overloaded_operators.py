@@ -189,13 +189,13 @@ def test_for_raise_die_to_calibration_mismatch():
     s1 = Spectrum(flux=[1], xaxis=[2], calibrated=True)
     s2 = Spectrum(flux=[1], xaxis=[2], calibrated=False)
     with pytest.raises(SpectrumError):
-        s1 + s2
+        _ = s1 + s2
     with pytest.raises(SpectrumError):
-        s1 - s2
+        _ = s1 - s2
     with pytest.raises(SpectrumError):
-        s1 * s2
+        _ = s1 * s2
     with pytest.raises(SpectrumError):
-        s1 / s2
+        _ = s1 / s2
 
 
 def test_overload_pow():
@@ -208,17 +208,17 @@ def test_overload_pow():
     )
     # Can test when things are not supposed to work :)
     with pytest.raises(TypeError):
-        spec1 ** spec2
+        _ = spec1 ** spec2
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** [1]  # This should fail
+        _ = spec1 ** [1]  # This should fail
     with pytest.raises(TypeError):
-        spec1 ** [1, 2]  # This should fail also
+        _ = spec1 ** [1, 2]  # This should fail also
     with pytest.raises(TypeError):
         # Does not accept lists
-        spec1 ** (2,)  # This should fail as it is a tuple
+        _ = spec1 ** (2,)  # This should fail as it is a tuple
     with pytest.raises(ValueError):
-        spec1 ** np.array([1, 2])  # too many values
+        _ = spec1 ** np.array([1, 2])  # too many values
     # Should also test that something works
     spec4 = spec1 ** power
     assert np.all(spec4.flux == np.array([4, 9, 16, 25]))  # flux is squared
@@ -306,9 +306,9 @@ def test_addition_with_interpolation():
     s5 = Spectrum(flux=[1, 2, 1, 2, 1], xaxis=[50, 51, 52, 53, 54])
     # xaxis of both Spectrum do not overlap
     with pytest.raises(ValueError):
-        s5 + s1
+        _ = s5 + s1
     with pytest.raises(ValueError):
-        s1 + s5
+        _ = s1 + s5
 
 
 def test_subtraction_with_interpolation():
@@ -339,9 +339,9 @@ def test_subtraction_with_interpolation():
     s5 = Spectrum(flux=[1, 2, 1, 2, 1], xaxis=[50, 51, 52, 53, 54])
     # xaxis of both Spectrum do not overlap
     with pytest.raises(ValueError):
-        s5 - s1
+        _ = s5 - s1
     with pytest.raises(ValueError):
-        s1 - s5
+        _ = s1 - s5
 
 
 def test_multiplication_with_interpolation():
@@ -372,9 +372,9 @@ def test_multiplication_with_interpolation():
     s5 = Spectrum(flux=[1, 2, 1, 2, 1], xaxis=[50, 51, 52, 53, 54])
     # xaxis of both Spectrum do not overlap
     with pytest.raises(ValueError):
-        s5 * s1
+        _ = s5 * s1
     with pytest.raises(ValueError):
-        s1 * s5
+        _ = s1 * s5
 
 
 def test_true_division_with_interpolation():
@@ -405,9 +405,9 @@ def test_true_division_with_interpolation():
     s5 = Spectrum(flux=[1, 2, 1, 2, 1], xaxis=[50, 51, 52, 53, 54])
     # xaxis of both Spectrum do not overlap
     with pytest.raises(ValueError):
-        s5 / s1
+        _ = s5 / s1
     with pytest.raises(ValueError):
-        s1 / s5
+        _ = s1 / s5
 
 
 def test_value_error_when_spectra_do_not_overlap():
@@ -415,13 +415,13 @@ def test_value_error_when_spectra_do_not_overlap():
     u = Spectrum(flux=[1, 2, 1, 2], xaxis=[50, 51, 52, 53])
 
     with pytest.raises(ValueError):
-        s + u
+        _ = s + u
     with pytest.raises(ValueError):
-        s - u
+        _ = s - u
     with pytest.raises(ValueError):
-        s / u
+        _ = s / u
     with pytest.raises(ValueError):
-        s * u
+        _ = s * u
 
 
 @pytest.mark.parametrize(
@@ -437,29 +437,29 @@ def test_value_error_when_spectra_do_not_overlap():
 def test_operators_with_bad_types(badly_typed):
     s = Spectrum(flux=[1, 2, 1, 2, 1], xaxis=[2, 4, 6, 8, 10])
     with pytest.raises(TypeError):
-        s + badly_typed
+        _ = s + badly_typed
     with pytest.raises(TypeError):
-        s - badly_typed
+        _ = s - badly_typed
     with pytest.raises(TypeError):
-        s * badly_typed
+        _ = s * badly_typed
     with pytest.raises(TypeError):
-        s / badly_typed
+        _ = s / badly_typed
 
 
 @pytest.mark.parametrize("badly_typed", ["Test String", {"1": 1, "2": 2, "3": 3}])
 def test_assignment_with_bad_types(badly_typed):
     # Need to improve checking of what can pass into spectrum
     with pytest.raises(TypeError):
-        Spectrum(flux=None, xaxis=badly_typed)
+        _ = Spectrum(flux=None, xaxis=badly_typed)
     with pytest.raises(TypeError):
-        Spectrum(flux=badly_typed)
+        _ = Spectrum(flux=badly_typed)
 
 
 @pytest.mark.parametrize("other", [[1, 3, 5, 6, 7], np.asarray([1, 2, 3])])
 def test_operate_with_list_or_numpy_array_wrong_size(other):
     a = Spectrum(xaxis=[1, 2, 3, 4], flux=[5, 6, 7, 8])
     with pytest.raises(ValueError):
-        a + other
+        _ = a + other
 
 
 @pytest.mark.parametrize(

@@ -94,17 +94,17 @@ def test_length_checking():
 
     with pytest.raises(ValueError):
         # Wrong length should fail
-        Spectrum(flux=[1, 4, 5], xaxis=[2, 1])
+        _ = Spectrum(flux=[1, 4, 5], xaxis=[2, 1])
 
 
 def test_flux_and_xaxis_cannot_pass_stings():
     """Passing a string to flux or xaxis will raise a TypeError."""
     with pytest.raises(TypeError):
-        Spectrum(flux=[1, 2, 3], xaxis="bar")
+        _ = Spectrum(flux=[1, 2, 3], xaxis="bar")
     with pytest.raises(TypeError):
-        Spectrum(flux="foo", xaxis=[1.2, 3, 4, 5])
+        _ = Spectrum(flux="foo", xaxis=[1.2, 3, 4, 5])
     with pytest.raises(TypeError):
-        Spectrum(flux="foo", xaxis="bar")
+        _ = Spectrum(flux="foo", xaxis="bar")
     spec = Spectrum(flux=[1, 1, .5, 1])
     with pytest.raises(TypeError):
         spec.flux = "foo"
@@ -127,7 +127,7 @@ def test_auto_generation_of_xaxis_if_none():
 def test_length_of_flux_and_xaxis_must_be_equal(xaxis, flux):
     """Try assign a mismatched xaxis it should raise a ValueError."""
     with pytest.raises(ValueError):
-        Spectrum(flux=flux, xaxis=xaxis)
+        _ = Spectrum(flux=flux, xaxis=xaxis)
 
 
 def test_reassigning_unequal_length_fails():
@@ -524,4 +524,4 @@ def test_spectrum_slicing_with_colon(phoenix_spectrum):
 def test_specturm_slicing_invalid_types(phoenix_spectrum, item):
     """Invalid scalars and other types."""
     with pytest.raises(ValueError):
-        phoenix_spectrum[item]
+        _ = phoenix_spectrum[item]
