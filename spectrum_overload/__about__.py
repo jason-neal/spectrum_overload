@@ -25,12 +25,13 @@ __summary__ = "A spectrum class that overloads operators"
 __uri__ = None
 
 # The version as used in the setup.py and the docs conf.py
-#The essence of semantic versioning is a 3-part MAJOR.MINOR.MAINTENANCE numbering scheme, where the project author increments:
+# The essence of semantic version is a 3-part MAJOR.MINOR.MAINTENANCE numbering scheme,
+# where the project author increments:
 
 #    MAJOR version when they make incompatible API changes,
 #    MINOR version when they add functionality in a backwards-compatible manner, and
 #    MAINTENANCE version when they make backwards-compatible bug fixes.
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 if base_dir is not None and os.path.exists(os.path.join(base_dir, ".commit")):
     with open(os.path.join(base_dir, ".commit")) as fp:
