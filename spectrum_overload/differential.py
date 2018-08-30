@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 
 """Differential Class which takes the difference between two spectra."""
+
 import logging
+from typing import Any, Dict, Optional
 
 import ephem
 import matplotlib.pyplot as plt
+from PyAstronomy import pyasl
 
 from spectrum_overload import Spectrum
-
 
 # Begin February 2017
 # Jason Neal
 
 # TODO: Add in s-profile from
 # Ferluga 1997: Separating the spectra of binary stars-I. A simple method: Secondary reconstruction
+
 
 class DifferentialSpectrum(object):
     """A differential spectrum."""
@@ -26,12 +29,20 @@ class DifferentialSpectrum(object):
         """
         for check in ["EXPTIME", "HIERARCH ESO INS SLIT1 WID", "OBJECT"]:
             if spec1.header[check] != spec2.header[check]:
-                print("The Spectral property '{}' are not compatible. {}, {}".format(check, spec1.header[check],
-                                                                                     spec2.header[check]))
+                print(
+                    "The Spectral property '{}' are not compatible. {}, {}".format(
+                        check, spec1.header[check], spec2.header[check]
+                    )
+                )
                 return False
         return True
 
-    def __init__(self, spectrum1, spectrum2, params=None):
+    def __init__(
+        self,
+        spectrum1: Spectrum,
+        spectrum2: Spectrum,
+        params: Optional[Dict[str, Any]] = None,
+    ) -> None:
         """Initialise class with both spectra."""
         assert isinstance(spectrum1, Spectrum) and isinstance(spectrum2, Spectrum)
         if not (spectrum1.calibrated and spectrum2.calibrated):
@@ -80,7 +91,7 @@ class DifferentialSpectrum(object):
             raise ValueError("The spectra are not compatible.")
             # TODO: Access interpolations
 
-    def sort(self, method="time"):
+    def sort(self, method: str = "time"):
         """Sort spectra in specific order. e.g. time, reversed."""
         pass
 
@@ -120,9 +131,12 @@ class DifferentialSpectrum(object):
         """Wrapper to apply barycorrection of spectra if given a Spectrum object.
 
         Based off CRIRES headers."""
-        _, nflux = self.barycorr_crires(spectrum.xaxis, spectrum.flux,
-                                        spectrum.header, extra_offset=extra_offset)
-        new_spectrum = Spectrum(flux=nflux, xaxis=spectrum.xaxis, header=spectrum.header)
+        _, nflux = self.barycorr_crires(
+            spectrum.xaxis, spectrum.flux, spectrum.header, extra_offset=extra_offset
+        )
+        new_spectrum = Spectrum(
+            flux=nflux, xaxis=spectrum.xaxis, header=spectrum.header
+        )
         new_spectrum.header.update({"BERVDONE": True})
         return new_spectrum
 
@@ -133,7 +147,9 @@ class DifferentialSpectrum(object):
         Based off CRIRES headers.
         """
         if header is None:
-            logging.warning("No header information to calculate heliocentric correction.")
+            logging.warning(
+                "No header information to calculate heliocentric correction."
+            )
             header = {}
             if (extra_offset is None) or (extra_offset == 0):
                 return wavelength, flux
@@ -152,8 +168,9 @@ class DifferentialSpectrum(object):
             jd = ephem.julian_date(time.replace("T", " ").split(".")[0])
 
             # Calculate Heliocentric velocity
-            helcorr = pyasl.helcorr(longitude, latitude, altitude, ra, dec, jd,
-                                    debug=False)
+            helcorr = pyasl.helcorr(
+                longitude, latitude, altitude, ra, dec, jd, debug=False
+            )
             helcorr = helcorr[0]
         except KeyError as e:
             logging.warning("Not a valid header so can't do automatic correction.")
@@ -172,8 +189,9 @@ class DifferentialSpectrum(object):
             return wavelength, flux
         else:
             # Apply Doppler shift to the target spectra with helcorr correction velocity
-            nflux, wlprime = pyasl.dopplerShift(wavelength, flux, helcorr_val,
-                                                edgeHandling=None, fillValue=None)
+            nflux, wlprime = pyasl.dopplerShift(
+                wavelength, flux, helcorr_val, edgeHandling=None, fillValue=None
+            )
 
             logging.info("RV Size of Heliocenter correction for spectra", helcorr_val)
             return wlprime, nflux

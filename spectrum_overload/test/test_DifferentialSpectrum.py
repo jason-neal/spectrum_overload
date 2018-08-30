@@ -6,8 +6,7 @@ from __future__ import division, print_function
 import numpy as np
 import pytest
 
-from spectrum_overload import DifferentialSpectrum
-from spectrum_overload import Spectrum
+from spectrum_overload import DifferentialSpectrum, Spectrum
 
 
 @pytest.mark.parametrize("header", [None, {}])
@@ -23,10 +22,14 @@ def test_assignment_of_differential_invalid_headers(header):
         spec_diff.diff
 
 
-@pytest.mark.parametrize("key, value1, value2", [
-    ("EXPTIME", 180, 200),
-    ("OBJECT", "HD30501", "Hd47474"),
-    ("HIERARCH ESO INS SLIT1 WID", 0.2, 0.4)])
+@pytest.mark.parametrize(
+    "key, value1, value2",
+    [
+        ("EXPTIME", 180, 200),
+        ("OBJECT", "HD30501", "Hd47474"),
+        ("HIERARCH ESO INS SLIT1 WID", 0.2, 0.4),
+    ],
+)
 def test_compatibility_checking(key, value1, value2):
     """Test that differential contains two spectra."""
     header = {"EXPTIME": 180, "HIERARCH ESO INS SLIT1 WID": 0.1, "OBJECT": "HD3000"}
@@ -47,8 +50,6 @@ def test_compatibility_checking(key, value1, value2):
     assert not compatible  # Key parameters in headers are different
 
 
-# TODO:
-# Define a fixture that creates a differential with two spectra.
 @pytest.fixture()
 def diff_spec():
     x = np.arange(2100, 2105, 0.5)
@@ -73,4 +74,3 @@ def test_assignment_of_differential():
     assert spec_diff.spec1 == spec_1
     assert spec_diff.spec2 == spec_2
     assert spec_diff.params is None
-
