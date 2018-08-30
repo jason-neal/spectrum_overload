@@ -8,16 +8,21 @@
 import os.path
 
 __all__ = [
-    "__title__", "__summary__", "__uri__", "__version__", "__commit__",
-    "__author__", "__email__", "__license__", "__copyright__",
+    "__title__",
+    "__summary__",
+    "__uri__",
+    "__version__",
+    "__commit__",
+    "__author__",
+    "__email__",
+    "__license__",
+    "__copyright__",
 ]
-
 
 try:
     base_dir = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     base_dir = None
-
 
 __title__ = "spectrum_overload"
 __summary__ = "A spectrum class that overloads operators"
@@ -31,7 +36,7 @@ __uri__ = None
 #    MAJOR version when they make incompatible API changes,
 #    MINOR version when they add functionality in a backwards-compatible manner, and
 #    MAINTENANCE version when they make backwards-compatible bug fixes.
-__version__ = "0.2.3"
+__version__ = "0.3"
 
 if base_dir is not None and os.path.exists(os.path.join(base_dir, ".commit")):
     with open(os.path.join(base_dir, ".commit")) as fp:

@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
 import logging
+from typing import Optional, Tuple
 
-def get_continuum_points(wave, flux, nbins=50, ntop=20):
+import numpy as np
+from numpy import ndarray
+
+
+def get_continuum_points(
+    wave: ndarray, flux: ndarray, nbins: int = 50, ntop: int = 20
+) -> Tuple[ndarray, ndarray]:
     """Get continuum points along a spectrum.
 
     This splits a spectrum into "nbins" number of bins and calculates
@@ -32,7 +38,14 @@ def get_continuum_points(wave, flux, nbins=50, ntop=20):
     return wave_points, flux_points
 
 
-def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
+def continuum(
+    wave: ndarray,
+    flux: ndarray,
+    method: str = "scalar",
+    degree: Optional[int] = None,
+    nbins: int = 50,
+    ntop: int = 20,
+) -> ndarray:
     """Fit continuum of flux.
 
     Parameters
@@ -47,17 +60,21 @@ def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
         Number of bins to separate the spectrum into.
     ntop: int
         Number of highest points in bin to take median of.
-"""
+    """
     if method not in ("scalar", "linear", "quadratic", "cubic", "poly", "exponential"):
         raise ValueError("Incorrect method for polynomial fit.")
 
     if method != "poly" and degree is not None:
-        logging.warning("The degree={0} is not used with method={1} in continuum fitting.".format(degree, method))
+        logging.warning(
+            "The degree={0} is not used with method={1} in continuum fitting.".format(
+                degree, method
+            )
+        )
 
     if method == "poly" and degree is None:
         raise ValueError("No degree specified for continuum method 'poly'.")
 
-    if np.any(np.isnan(wave)) or  np.any(np.isnan(flux)):
+    if np.any(np.isnan(wave)) or np.any(np.isnan(flux)):
         raise ValueError("There are Nan values in spectrum. Please remove first.")
 
     org_wave = wave[:]
@@ -70,7 +87,7 @@ def continuum(wave, flux, method='scalar', degree=None, nbins=50, ntop=20):
     if method == "exponential":
         z = np.polyfit(wave_points, np.log(flux_points), deg=1, w=np.sqrt(flux_points))
         p = np.poly1d(z)
-        continuum_fit = np.exp(p(org_wave))   # Un-log the y values.
+        continuum_fit = np.exp(p(org_wave))  # Un-log the y values.
     else:
         z = np.polyfit(wave_points, flux_points, deg=poly_degree[method])
         p = np.poly1d(z)

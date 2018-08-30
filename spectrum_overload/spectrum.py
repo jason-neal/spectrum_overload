@@ -1,22 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+"""Spectrum class to represent and manipulate astronomical spectra."""
+
 
 from __future__ import division, print_function
 
 import copy
 import logging
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+from astropy.io.fits.header import Header
+from numpy import ndarray
 from PyAstronomy import pyasl
 from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
 
 import spectrum_overload.norm as norm
-
-"""Spectrum Class."""
-
-# Begun August 2016
-# Jason Neal
 
 
 class Spectrum(object):
@@ -34,17 +34,26 @@ class Spectrum(object):
         Header information of observation.
 
     """
-    def __init__(self, flux=None, xaxis=None, calibrated=True, header=None, interp_method="spline"):
-        """Initalise a Spectrum object."""
+
+    def __init__(
+        self,
+        *,
+        xaxis: Optional[Union[ndarray, List[Union[int, float]]]] = None,
+        flux: Optional[Union[ndarray, List[Union[int, float]]]] = None,
+        calibrated: bool = True,
+        header: Optional[Union[Header, Dict[str, Any]]] = None,
+        interp_method: str = "spline"
+    ) -> None:
+        """Initialise a Spectrum object."""
 
         # Some checks before creating class
         # if not isinstance(flux, (list, np.ndarray, None)):
         if isinstance(flux, (str, dict)):
-            raise TypeError("Cannot assign {} to the flux attribute".format(
-                type(flux)))
+            raise TypeError("Cannot assign {} to the flux attribute".format(type(flux)))
         elif isinstance(xaxis, (str, dict)):
-            raise TypeError("Cannot assign {} to the xaxis attribute".format(
-                type(xaxis)))
+            raise TypeError(
+                "Cannot assign {} to the xaxis attribute".format(type(xaxis))
+            )
 
         if flux is not None:
             self._flux = np.asarray(flux)
@@ -68,9 +77,9 @@ class Spectrum(object):
         self.length_check()
         self.calibrated = calibrated
         if header is None:
-            self.header = {}
+            self.header = {}  # type: Dict[str, Any]
         else:
-            self.header = header   # Access header with a dictionary call.
+            self.header = header  # Access header with a dictionary call.
         self.interp_method = interp_method
 
     @property
@@ -90,7 +99,9 @@ class Spectrum(object):
         if value in ("linear", "spline"):
             self._interp_method = value
         else:
-            raise ValueError("Warning the interpolation method was not valid. ['linear', 'spline'] are the valid options.")
+            raise ValueError(
+                "Warning the interpolation method was not valid. ['linear', 'spline'] are the valid options."
+            )
 
     @property
     def xaxis(self):
@@ -115,8 +126,9 @@ class Spectrum(object):
         if isinstance(value, str):
             # Try to catch some bad assignments
             # Yes a list of strings will not be caught
-            raise TypeError("Cannot assign {} to the xaxis attribute".format(
-                type(value)))
+            raise TypeError(
+                "Cannot assign {} to the xaxis attribute".format(type(value))
+            )
         elif value is None:
             try:
                 # Try to assign arange the length of flux
@@ -142,7 +154,7 @@ class Spectrum(object):
         return self._flux
 
     @flux.setter
-    def flux(self, value):
+    def flux(self, value: Union[ndarray, List[Union[int, float]]]):
         """Setter for the flux attribute.
 
         Preforms type checking at turn into a numpy array if it is not.
@@ -156,8 +168,9 @@ class Spectrum(object):
         if isinstance(value, str):
             # Try to catch some bad assignments
             # Yes a list of strings will not be caught
-            raise TypeError("Cannot assign {} to the flux attribute".format(
-                type(value)))
+            raise TypeError(
+                "Cannot assign {} to the flux attribute".format(type(value))
+            )
 
         if value is not None:
             # print("Turning flux input into np array")
@@ -167,7 +180,7 @@ class Spectrum(object):
         else:
             self._flux = value
 
-    def length_check(self):
+    def length_check(self) -> None:
         """Check length of xaxis and flux are equal.
 
         If everything is ok then there is no response/output.
@@ -186,7 +199,7 @@ class Spectrum(object):
         elif len(self._flux) != len(self._xaxis):
             raise ValueError("The length of xaxis and flux must be the same")
 
-    def copy(self):
+    def copy(self) -> "Spectrum":
         """Copy the spectrum."""
         return copy.copy(self)
 
@@ -194,7 +207,9 @@ class Spectrum(object):
         "Return flux shape."
         return self.flux.shape
 
-    def wav_select(self, wav_min, wav_max):
+    def wav_select(
+        self, wav_min: Union[float, int], wav_max: Union[float, int]
+    ) -> None:
         """Select part of the spectrum between the given wavelength bounds.
 
         Parameters
@@ -219,35 +234,44 @@ class Spectrum(object):
         flux_org = self.flux
         try:
             if len(self.xaxis) == 0:
-                print("Warning! Spectrum has an empty xaxis to select"
-                      " wavelengths from")
+                print(
+                    "Warning! Spectrum has an empty xaxis to select" " wavelengths from"
+                )
             else:
                 mask = (self.xaxis > wav_min) & (self.xaxis < wav_max)
-                self.flux = self.flux[mask]    # change flux first
+                self.flux = self.flux[mask]  # change flux first
                 self.xaxis = self.xaxis[mask]
         except TypeError as e:
             print("Spectrum has no xaxis to select wavelength from")
             # Return to original values iscase were changed
-            self.flux = flux_org           # Fix flux first
+            self.flux = flux_org  # Fix flux first
             self.xaxis = x_org
             raise e
 
-    def add_noise(self, snr):
+    def add_noise(self, snr: Union[float, int]) -> None:
         """Add noise level of snr to the flux of the spectrum."""
         sigma = self.flux / snr
         # Add normal distributed noise at the SNR level.
         self.flux += np.random.normal(0, sigma)
 
-    def plot(self, **kwargs):
-        """Plot spectrum with maplotlib."""
-        plt.plot(self.xaxis, self.flux, **kwargs)
-        if self.calibrated:
-             plt.xlabel("Wavelength")
-        else:
-            plt.xlabel("Pixels")
-        plt.ylabel("Flux")
+    def add_noise_sigma(self, sigma):
+        """Add Gaussian noise with given sigma."""
+        # Add normal distributed noise with given sigma.
+        self.flux += np.random.normal(0, sigma)
 
-    def doppler_shift(self, rv):
+    def plot(self, axis=None, **kwargs) -> None:
+        """Plot spectrum with matplotlib."""
+        if axis is None:
+            plt.plot(self.xaxis, self.flux, **kwargs)
+            if self.calibrated:
+                plt.xlabel("Wavelength")
+            else:
+                plt.xlabel("Pixels")
+            plt.ylabel("Flux")
+        else:
+            axis.plot(self.xaxis, self.flux, **kwargs)
+
+    def doppler_shift(self, rv: float) -> None:
         r"""Doppler shift wavelength by a given Radial Velocity.
 
         Apply Doppler shift to the wavelength values of the spectrum
@@ -285,22 +309,29 @@ class Spectrum(object):
             pass
         elif abs(rv) < 1e-7:
             """RV smaller then 0.1 mm/s"""
-            logging.warning(("The RV value given is very small ({0} < 0.1 mm/s) .\n "
-                             "Not performing the doppler shift").format(abs(rv)))
+            logging.warning(
+                (
+                    "The RV value given is very small ({0} < 0.1 mm/s) .\n "
+                    "Not performing the doppler shift"
+                ).format(abs(rv))
+            )
 
         elif np.isnan(rv) or np.isinf(rv):
-            print("Warning RV is infinity or Nan."
-                  "Not performing the doppler shift")
+            print("Warning RV is infinity or Nan." "Not performing the doppler shift")
 
         elif self.calibrated:
             c = 299792.458
             lambda_shift = self.xaxis * (rv / c)
             self.xaxis = self.xaxis + lambda_shift
         else:
-            print("Attribute xaxis is not wavelength calibrated."
-                  " Cannot perform doppler shift")
+            print(
+                "Attribute xaxis is not wavelength calibrated."
+                " Cannot perform doppler shift"
+            )
 
-    def crosscorr_rv(self, spectrum, rvmin, rvmax, drv, **params):
+    def crosscorr_rv(
+        self, spectrum: "Spectrum", rvmin: float, rvmax: float, drv: float, **params
+    ) -> Tuple[ndarray, ndarray]:
         """Perform pyasl.crosscorrRV with another spectrum.
 
         Parameters
@@ -336,11 +367,19 @@ class Spectrum(object):
         http://www.hs.uni-hamburg.de/DE/Ins/Per/Czesla/PyA/PyA/pyaslDoc/aslDoc/crosscorr.html
 
         """
-        drv, cc = pyasl.crosscorrRV(self.xaxis, self.flux, spectrum.xaxis, spectrum.flux,
-                                    rvmin, rvmax, drv, **params)
+        drv, cc = pyasl.crosscorrRV(
+            self.xaxis,
+            self.flux,
+            spectrum.xaxis,
+            spectrum.flux,
+            rvmin,
+            rvmax,
+            drv,
+            **params
+        )
         return drv, cc
 
-    def calibrate_with(self, wl_map):
+    def calibrate_with(self, wl_map: Union[ndarray, List[int]]) -> None:
         """Calibrate with a wavelength mapping polynomial.
 
         Parameters
@@ -361,22 +400,28 @@ class Spectrum(object):
         """
         if self.calibrated:
             # To bypass this could set Spectrum.calibrated = False
-            raise SpectrumError("Spectrum is already calibrated"
-                                ", Not recalibrating.")
+            raise SpectrumError("Spectrum is already calibrated" ", Not recalibrating.")
         else:
-            wavelength = np.polyval(wl_map, self.xaxis)   # Polynomial params
+            wavelength = np.polyval(wl_map, self.xaxis)  # Polynomial params
             if np.any(wavelength <= 0):
-                raise SpectrumError("Wavelength solution contains zero or "
-                                    "negative values. But wavelength must "
-                                    "be positive. This solution will not "
-                                    "doppler shift correctly. Please check "
-                                    "your calibrations")
+                raise SpectrumError(
+                    "Wavelength solution contains zero or "
+                    "negative values. But wavelength must "
+                    "be positive. This solution will not "
+                    "doppler shift correctly. Please check "
+                    "your calibrations"
+                )
             else:
                 self.xaxis = wavelength
                 self.calibrated = True  # Set calibrated Flag
 
-    def interpolate1d_to(self, reference, kind="linear", bounds_error=False,
-                         fill_value=np.nan):
+    def interpolate1d_to(
+        self,
+        reference: Union[ndarray, str, "Spectrum", List[int], List[float]],
+        kind: str = "linear",
+        bounds_error: bool = False,
+        fill_value: Union[str, ndarray] = np.nan,
+    ) -> None:
         """Interpolate wavelength solution to the reference wavelength.
 
         This uses the scipy's interp1d interpolation. The optional
@@ -426,30 +471,46 @@ class Spectrum(object):
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d
 
         """
-        if kind == 'cubic':
-            print("Warning! Cubic spline interpolation with interp1d can cause"
-                  " memory errors and crashes")
+        if kind == "cubic":
+            print(
+                "Warning! Cubic spline interpolation with interp1d can cause"
+                " memory errors and crashes"
+            )
         # Create scipy interpolation function from self
-        interp_function = interp1d(self.xaxis, self.flux, kind=kind,
-                                   fill_value=fill_value,
-                                   bounds_error=bounds_error)
+        interp_function = interp1d(
+            self.xaxis,
+            self.flux,
+            kind=kind,
+            fill_value=fill_value,
+            bounds_error=bounds_error,
+        )
 
         # Determine the flux at the new locations given by reference
-        if isinstance(reference, Spectrum):      # Spectrum type
+        if isinstance(reference, Spectrum):  # Spectrum type
             new_flux = interp_function(reference.xaxis)
-            self.flux = new_flux                 # Flux needs to change first
+            self.flux = new_flux  # Flux needs to change first
             self.xaxis = reference.xaxis
         elif isinstance(reference, np.ndarray):  # Numpy type
             new_flux = interp_function(reference)
-            self.flux = new_flux                 # Flux needs to change first
+            self.flux = new_flux  # Flux needs to change first
             self.xaxis = reference
         else:
             # print("Interpolate was not give a valid type")
-            raise TypeError("Cannot interpolate with the given object of type"
-                            " {}".format(type(reference)))
+            raise TypeError(
+                "Cannot interpolate with the given object of type"
+                " {}".format(type(reference))
+            )
 
-    def spline_interpolate_to(self, reference, w=None, bbox=None, k=3,
-                              ext=0, check_finite=False, bounds_error=False):
+    def spline_interpolate_to(
+        self,
+        reference: Union[ndarray, str, "Spectrum", List[int], List[float]],
+        w: None = None,
+        bbox: Optional[Any] = None,
+        k: int = 3,
+        ext: int = 0,
+        check_finite: bool = True,
+        bounds_error: bool = False,
+    ) -> None:
         r"""Interpolate wavelength solution using scipy's
                 InterpolatedUnivariateSpline.
 
@@ -493,7 +554,7 @@ class Spectrum(object):
             but may result in problems (crashes, non-termination
             or non-sensical results) if the inputs do contain
             infinities or NaNs.
-            Default is False.
+            Default is True.
 
         Raises:
         -------
@@ -510,48 +571,59 @@ class Spectrum(object):
         if bbox is None:
             bbox = [None, None]
         # Create scipy interpolation function from self
-        interp_spline = InterpolatedUnivariateSpline(self.xaxis, self.flux,
-                                                     w=w, bbox=bbox, k=k,
-                                                     ext=ext,
-                                                     check_finite=False)
+        interp_spline = InterpolatedUnivariateSpline(
+            self.xaxis,
+            self.flux,
+            w=w,
+            bbox=bbox,
+            k=k,
+            ext=ext,
+            check_finite=check_finite,
+        )
 
         # interp_function = interp1d(self.xaxis, self.flux, kind=kind,
         #                           fill_value=fill_value,
         #                           bounds_error=bounds_error)
 
         # Determine the flux at the new locations given by reference
-        if isinstance(reference, Spectrum):      # Spectrum type
+        if isinstance(reference, Spectrum):  # Spectrum type
             new_flux = interp_spline(reference.xaxis)
-            self_mask = ((reference.xaxis < np.min(self.xaxis)) |
-                         (reference.xaxis > np.max(self.xaxis)))
+            self_mask = (reference.xaxis < np.min(self.xaxis)) | (
+                reference.xaxis > np.max(self.xaxis)
+            )
             if np.any(self_mask) & bounds_error:
-                raise ValueError("A value in reference.xaxis is outside"
-                                 "the interpolation range.")
+                raise ValueError(
+                    "A value in reference.xaxis is outside" "the interpolation range."
+                )
             new_flux[self_mask] = np.nan
-            self.flux = new_flux                 # Flux needs to change first
+            self.flux = new_flux  # Flux needs to change first
             self.xaxis = reference.xaxis
         elif isinstance(reference, np.ndarray):  # Numpy type
             new_flux = interp_spline(reference)
-            self_mask = ((reference < np.min(self.xaxis)) |
-                         (reference > np.max(self.xaxis)))
+            self_mask = (reference < np.min(self.xaxis)) | (
+                reference > np.max(self.xaxis)
+            )
             if np.any(self_mask) & bounds_error:
-                raise ValueError("A value in reference is outside the"
-                                 "interpolation range.")
+                raise ValueError(
+                    "A value in reference is outside the" "interpolation range."
+                )
             new_flux[self_mask] = np.nan
-            self.flux = new_flux                 # Flux needs to change first
+            self.flux = new_flux  # Flux needs to change first
             self.xaxis = reference
         else:
             # print("Interpolate was not give a valid type")
-            raise TypeError("Cannot interpolate with the given object of type"
-                            " {}".format(type(reference)))
+            raise TypeError(
+                "Cannot interpolate with the given object of type"
+                " {}".format(type(reference))
+            )
 
-    def remove_nans(self):
-        s = self.copy()
-        s.flux = s.flux[~np.isnan(self.flux)]
-        s.xaxis = s.xaxis[~np.isnan(self.flux)]
-        return s
+    def remove_nans(self) -> "Spectrum":
+        """Returns new spectrum. Uses slicing with isnan mask."""
+        return self[~np.isnan(self.flux)]
 
-    def continuum(self, method="scalar", degree=None, **kwargs):
+    def continuum(
+        self, method: str = "scalar", degree: Optional[int] = None, **kwargs
+    ) -> "Spectrum":
         """Fit the continuum of the spectrum.
 
         Fit a function of ``method`` to the median of the highest
@@ -581,7 +653,9 @@ class Spectrum(object):
         s.flux = norm.continuum(s.xaxis, s.flux, method=method, degree=degree, **kwargs)
         return s
 
-    def normalize(self, method="scalar", degree=None, **kwargs):
+    def normalize(
+        self, method: str = "scalar", degree: Optional[int] = None, **kwargs
+    ) -> "Spectrum":
         """Normalize spectrum by dividing by the continuum.
 
         Valid methods
@@ -610,46 +684,87 @@ class Spectrum(object):
         s.header["normalized"] = "{0} with degree {1}".format(method, degree)
         return s
 
+    def instrument_broaden(self, R, **pya_kwargs):
+        """Broaden spectrum by instrumental resolution R.
+
+        Uses the PyAstronomy instrBroadGaussFast function.
+
+        Parameters
+        ----------
+        R: int
+           Instrumental Resolution
+        pya_kwargs: dict
+            kwarg parameters for pyasl.instrBroadGaussFast()
+
+        Returns
+        -------
+        s: ndarray
+            Broadened spectrum array.
+        """
+        s = self.copy()
+        new_flux = pyasl.instrBroadGaussFast(
+            s.xaxis, s.flux, resolution=R, **pya_kwargs
+        )
+        s.flux = new_flux
+        return s
+
     # ######################################################
     # Overloading Operators
+    # Based on code from pyspeckit.
     # ######################################################
     def _operation_wrapper(operation):
         """
         Perform an operation (addition, subtraction, multiplication, division,
         etc.) after checking for shape matching.
         """
+
         def ofunc(self, other):
-            """ operation function """
-            newspec = self.copy()
+            """Operation function """
+            result = self.copy()
             if np.isscalar(other):
                 other_flux = other
-
-            # check if both are spectra (or can be treated as such)
-            elif isinstance(other, np.ndarray) and not isinstance(other, Spectrum):
-                    if len(other) == len(self.flux):
-                        # If the length is the correct length then assume that this is correct to perform.
-                        other_flux = other
-                    else:
-                        raise ValueError("Dimension mismatch in operation with lengths {} and {}.".format(len(self.flux), len(other)))
-            elif isinstance(self, Spectrum) and isinstance(other, Spectrum):
+            elif not isinstance(other, Spectrum):
+                # If the length is the correct length then assume that this is correct to perform.
+                if len(other) == len(self.flux):
+                    if not isinstance(other, np.ndarray):
+                        other = np.asarray(other)
+                    other_flux = other
+                else:
+                    raise ValueError(
+                        "Dimension mismatch in operation with lengths {} and {}.".format(
+                            len(self.flux), len(other)
+                        )
+                    )
+            else:  # other is a Spectrum
                 if self.calibrated != other.calibrated:
-                    raise SpectrumError("Spectra are not calibrated similarly.")
-                if np.all(self.xaxis == other.xaxis):  # Equal xaxis
-                    other_flux = other.copy().flux
+                    raise SpectrumError(
+                        "Spectra are not consistently calibrated for {}".format(
+                            operation
+                        )
+                    )
 
-                elif self.xaxis != other.xaxis:  # Need to Apply interpolation
-                    no_overlap_lower = (np.min(self.xaxis) > np.max(other.xaxis))
-                    no_overlap_upper = (np.max(self.xaxis) < np.min(other.xaxis))
+                def _interp_other():
+                    no_overlap_lower = np.min(self.xaxis) > np.max(other.xaxis)
+                    no_overlap_upper = np.max(self.xaxis) < np.min(other.xaxis)
                     if no_overlap_lower | no_overlap_upper:
-                        raise ValueError("The xaxis do not overlap so cannot be interpolated")
+                        raise ValueError(
+                            "The xaxis do not overlap so cannot be interpolated"
+                        )
                     else:
                         other_copy = other.copy()
-                        other_copy.spline_interpolate_to(self)
+                        other_copy.spline_interpolate_to(self, check_finite=True)
                         other_flux = other_copy.flux
-            else:
-                raise TypeError("Unexpected type {} for operation with Spectrum".format(type(other)))
-            newspec.flux = operation(newspec.flux, other_flux)  # Perform the operation
-            return newspec
+                    return other_flux
+
+                if len(self) != len(other):
+                    other_flux = _interp_other()
+                elif np.any(self.xaxis != other.xaxis):
+                    other_flux = _interp_other()
+                else:  # Equal xaxis
+                    other_flux = other.copy().flux
+
+            result.flux = operation(result.flux, other_flux)  # Perform the operation
+            return result
 
         return ofunc
 
@@ -660,7 +775,9 @@ class Spectrum(object):
     __div__ = _operation_wrapper(np.divide)
     __truediv__ = _operation_wrapper(np.divide)
 
-    def __pow__(self, other):
+    def __pow__(
+        self, other: Union[ndarray, "Spectrum", int, Tuple[int], List[int]]
+    ) -> "Spectrum":
         """Exponential magic method."""
         if isinstance(other, Spectrum):
             raise TypeError("Can not preform Spectrum ** Spectrum")
@@ -670,162 +787,80 @@ class Spectrum(object):
             if len(other) == len(self.flux):
                 power = other
             else:
-                raise ValueError("Dimension mismatch for power operator of {} and {}".format(len(self.flux), len(other)))
+                raise ValueError(
+                    "Dimension mismatch for power operator of {} and {}".format(
+                        len(self.flux), len(other)
+                    )
+                )
         else:
-            raise TypeError("Unexpected type {} given for"
-                            " __pow__".format(type(other)))
+            raise TypeError(
+                "Unexpected type {} given for" " __pow__".format(type(other))
+            )
         try:
-            newspec = self.copy()
-            newspec.flux = newspec.flux ** power
-            return newspec
+            result = self.copy()
+            result.flux = result.flux ** power
+            return result
         except:
             # Type error or value error are likely
             raise
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return length of flux Spectrum."""
         return len(self.flux)
 
-    def __neg__(self):
+    def __neg__(self) -> "Spectrum":
         """Take negative flux."""
-        newspec = self.copy()
-        newspec.flux = -newspec.flux
-        return newspec
+        result = self.copy()
+        result.flux = -result.flux
+        return result
 
-    def __pos__(self):
+    def __pos__(self) -> "Spectrum":
         """Take positive flux."""
-        newspec = self.copy()
-        newspec.flux = +newspec.flux
-        return newspec
+        result = self.copy()
+        result.flux = +result.flux
+        return result
 
-    def __abs__(self):
+    def __abs__(self) -> "Spectrum":
         """Take absolute flux."""
-        absflux = abs(self.flux)
-        return Spectrum(flux=absflux, xaxis=self.xaxis, header=self.header,
-                        calibrated=self.calibrated)
+        result = self.copy()
+        result.flux = abs(result.flux)
+        return result
 
-    def __eq__(self, other):
-        return (all(self.xaxis == other.xaxis) and all(self.flux == other.flux) and
-                self.calibrated == other.calibrated and self.header == other.header)
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Spectrum):
+            return NotImplementedError
+        return (
+            all(self.xaxis == other.xaxis)
+            and all(self.flux == other.flux)
+            and self.calibrated == other.calibrated
+            and self.header == other.header
+        )
 
-    def __neq__(self, other):
+    def __neq__(self, other: object) -> bool:
         return not self == other
+
+    def xmin(self):
+        return self.xaxis[0]
+
+    def xmax(self):
+        return self.xaxis[-1]
+
+    def xlimits(self):
+        return [self.xmin(), self.xmax()]
+
+    def __getitem__(self, item):
+        """Be able slice the spectrum. Return new object."""
+        if isinstance(item, (type(None), str, int, float, bool)):
+            raise ValueError(
+                "Cannot slice with types of type(None),str,int,float,bool."
+            )
+        s = self.copy()
+        s.flux = self.flux[item]
+        s.xaxis = self.xaxis[item]
+        return s
 
 
 class SpectrumError(Exception):
     """An error class for spectrum errors."""
+
     pass
-
-    # def __add__(self, other):
-    #     """Overloaded addition method for Spectrum.
-    #
-    #     If there is addition between two Spectrum objects which have
-    #     difference xaxis values then the second Spectrum is interpolated
-    #     to the xaxis of the first Spectum
-    #
-    #     e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
-    #     then if len(a + b) = 10 and len(b + a) = 15.
-    #
-    #     This makes a + b != b + a
-    #
-    #     """
-    #     # Checks for type errors and size. It interpolates other if needed.
-    #     prepared_other = self._prepare_other(other)
-    #     newspec = self.copy()
-    #     newspec.flux = newspec.flux + prepared_other
-    #     return newspec
-
-    # def __radd__(self, other):
-    #     """Right addition."""
-    #     # E.g. for first Item in Sum  0  + Spectrum fails.
-    #     newspec = self.copy()
-    #     newspec.flux = newspec.flux + other
-    #     return newspec
-    #
-    # def __sub__(self, other):
-    #     """Overloaded subtraction method for Spectrum.
-    #
-    #     If there is subtraction between two Spectrum objects which have
-    #     difference xaxis values then the second Spectrum is interpolated
-    #     to the xaxis of the first Spectum.
-    #
-    #     e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
-    #     then if len(a - b) = 10 and len(b - a) = 15.
-    #
-    #     # This makes a - b != -b + a
-    #
-    #     """
-    #     # Checks for type errors and size. It interpolates other if needed.
-    #     prepared_other = self._prepare_other(other)
-    #     newspec = self.copy()
-    #     newspec.flux = newspec.flux - prepared_other
-    #     return newspec
-
-    # def __mul__(self, other):
-    #     """Overloaded multiplication method for Spectrum.
-    #
-    #     If there is multiplication between two Spectrum objects which have
-    #     difference xaxis values then the second Spectrum is interpolated
-    #     to the xaxis of the first Spectum.
-    #
-    #     e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
-    #     then if len(a * b) = 10 and len(b * a) = 15.
-    #
-    #     This makes a * b != b * a
-    #
-    #     """
-    #     # Checks for type errors and size. It interpolates other if needed.
-    #     prepared_other = self._prepare_other(other)
-    #     #new_flux = self.flux * prepared_other
-    #     newspec = self.copy()
-    #     newspec.flux = newspec.flux * prepared_other
-    #     return newspec
-    #
-    # def __truediv__(self, other):
-    #     """Overloaded truedivision (/) method for Spectrum.
-    #
-    #     If there is truedivision between two Spectrum objects which have
-    #     difference xaxis values then the second Spectrum is interpolated
-    #     to the xaxis of the first Spectum.
-    #
-    #     e.g. if len(a.xaxis) = 10 and len(b.xaxis = 15)
-    #     then if len(a / b) = 10 and len(b / a) = 15.
-    #
-    #     This makes (a / b) != (1/b) / (1/a).
-    #
-    #     """
-    #     # Checks for type errors and size. It interpolates other if needed.
-    #     prepared_other = self._prepare_other(other)
-    #     # Divide by zero only gives a runtime warning with numpy
-    #     newspec = self.copy()
-    #     newspec.flux = newspec.flux / prepared_other
-    #     # May want to change the inf to something else, nan, 0?...
-    #     # new_flux[new_flux == np.inf] = np.nan
-    #     return newspec
-    #
-    # def _prepare_other(self, other):
-    #     if isinstance(other, Spectrum):
-    #         if self.calibrated != other.calibrated:
-    #             # Checking the Spectra are of same calibration state
-    #             raise SpectrumError("Spectra are not calibrated similarly.")
-    #
-    #         if np.all(self.xaxis == other.xaxis):  # Only for equal xaxis
-    #             # Easiest condition in which xaxis of both are the same
-    #             return other.copy().flux
-    #         else:  # Uneven length xaxis need to be interpolated
-    #             no_overlap_lower = (np.min(self.xaxis) > np.max(other.xaxis))
-    #             no_overlap_upper = (np.max(self.xaxis) < np.min(other.xaxis))
-    #             if no_overlap_lower | no_overlap_upper:
-    #                 raise ValueError("The xaxis do not overlap so cannot"
-    #                                  " be interpolated")
-    #             else:
-    #                 other_copy = other.copy()
-    #                 # other_copy.interpolate_to(self)
-    #                 other_copy.spline_interpolate_to(self)
-    #                 return other_copy.flux
-    #     elif np.isscalar(other):
-    #         return other
-    #     elif isinstance(other, np.ndarray):
-    #         return copy.copy(other)
-    #     else:
-    #         raise TypeError("Unexpected type {} given".format(type(other)))
