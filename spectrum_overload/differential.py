@@ -131,7 +131,7 @@ class DifferentialSpectrum(object):
         """Wrapper to apply barycorrection of spectra if given a Spectrum object.
 
         Based off CRIRES headers."""
-        _, nflux = self.barycorr_crires(
+        _, nflux = DifferentialSpectrum.barycorr_crires(
             spectrum.xaxis, spectrum.flux, spectrum.header, extra_offset=extra_offset
         )
         new_spectrum = Spectrum(
