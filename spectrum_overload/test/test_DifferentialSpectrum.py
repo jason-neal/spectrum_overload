@@ -22,4 +22,4 @@ def test_assignment_of_differential():
 
 
 # TODO:
-# Define a fixture that creates a differentail with two spectra.
+# Define a fixture that creates a differential with two spectra.

@@ -450,11 +450,8 @@ def test_exponential_normalization():
 @pytest.mark.parametrize(
     "method, degree", [("scalar", 0), ("linear", 1), ("quadratic", 2), ("cubic", 3)]
 )
-def test_normalization_method_match_degree(method, degree):
-    # TODO: Eventually call phoenix_spectrum to do this.
-    x = np.arange(1, 1000)
-    y = np.arange(1, 1000)
-    s = Spectrum(xaxis=x, flux=y)
+def test_normalization_method_match_degree(phoenix_spectrum, method, degree):
+    s = phoenix_spectrum[:2000]
     named_method = s.normalize(method=method)
     named_method = named_method.remove_nans()  # hack for getting to run on < py34
     poly_deg = s.normalize(method="poly", degree=degree)
@@ -464,9 +461,9 @@ def test_normalization_method_match_degree(method, degree):
 
 @pytest.mark.parametrize(
     "R", [5, 10, 99, 500]
-)  # Small resolutions for easy testing (measureable differences)
+)  # Small resolutions for easy testing (measurable differences)
 def test_instrument_broaden(phoenix_spectrum, R):
-    """Test instrument_broadening same as pyastronomy."""
+    """Test instrument_broadening same as PyAstronomy."""
     spec = phoenix_spectrum
 
     new_flux = pyasl.instrBroadGaussFast(spec.xaxis, spec.flux, R)
