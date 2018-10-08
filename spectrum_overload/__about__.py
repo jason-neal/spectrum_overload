@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Licensed under the MIT Licence
+# Licensed under the MIT License
 
 # About spectrum_overload
 # Based off of the warehouse project (pip's replacement)
@@ -47,5 +47,5 @@ else:
 __author__ = "Jason Neal"
 __email__ = "jason.neal@astro.up.pt"
 
-__license__ = "MIT Licence"
-__copyright__ = "2016 {0!s}".format(__author__)
+__license__ = "MIT License"
+__copyright__ = "2016 2017 2018 {0!s}".format(__author__)
