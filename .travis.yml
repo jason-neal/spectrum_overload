@@ -35,7 +35,7 @@ install:
   - python setup.py install
 
 script:
-  - pytest --cov=spectrum_overload --cov-report term-missing --durations 10 -W error::UserWarning
+  - pytest --cov=spectrum_overload --cov-report term-missing --durations 10
   - coverage xml -i
 
 after_success:
