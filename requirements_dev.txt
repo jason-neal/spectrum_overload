@@ -1,6 +1,6 @@
 codacy-coverage==1.3.11
 codeclimate-test-reporter==0.2.3
-hypothesis==3.85.2
+hypothesis==4.14.2
 pre-commit==1.13.0
 pytest==4.0.2
 pytest-cov==2.6.0
