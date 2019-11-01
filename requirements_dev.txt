@@ -4,5 +4,5 @@ hypothesis==4.42.5
 pre-commit==1.20.0
 pytest==5.2.2
 pytest-cov==2.8.1
-python-coveralls==2.9.2
+python-coveralls==2.9.3
 pytest-remotedata>=0.3.1
