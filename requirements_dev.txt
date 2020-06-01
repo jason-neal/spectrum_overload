@@ -3,6 +3,6 @@ codeclimate-test-reporter==0.2.3
 hypothesis==5.16.0
 pre-commit==2.4.0
 pytest==5.4.2
-pytest-cov==2.8.1
+pytest-cov==2.9.0
 python-coveralls==2.9.3
 pytest-remotedata>=0.3.0
