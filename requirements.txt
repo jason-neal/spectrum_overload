@@ -3,4 +3,4 @@ Cython==0.29.23
 matplotlib==3.4.2
 numpy==1.20.3
 pyastronomy==0.16.0
-scipy==1.4.1
+scipy==1.6.3
