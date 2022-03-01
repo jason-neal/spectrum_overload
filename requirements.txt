@@ -2,5 +2,5 @@ astropy==5.0.1
 Cython==0.29.28
 matplotlib==3.5.1
 numpy==1.22.2
-pyastronomy==0.13.0
+pyastronomy==0.17.1
 scipy==1.4.1
