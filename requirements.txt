@@ -2,4 +2,4 @@ astropy==3.0.4
 matplotlib==2.2.3
 numpy==1.22.2
 pyastronomy==0.13.0
-scipy==1.1.0
+scipy==1.10.0rc1
