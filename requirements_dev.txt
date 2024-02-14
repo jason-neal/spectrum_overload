@@ -2,6 +2,6 @@ codacy-coverage
 codeclimate-test-reporter
 hypothesis
 pre-commit
-pytest
+pytest>=3.7.4
 pytest-cov
 python-coveralls
