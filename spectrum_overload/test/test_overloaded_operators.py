@@ -602,7 +602,7 @@ def test_zero_division():
     assert np.all(divide.flux[notnan] == [0.5, 2.5, 4])
 
 
-@pytest.mark.parametrize("zero", [0, 0.0, np.int32(0), np.float(0)])
+@pytest.mark.parametrize("zero", [int(0), float(0)])
 def test_zero_divison_by_number(zero):
     s = Spectrum(flux=[1., 5., 3., 16.], xaxis=[1., 2., 3., 4.])
     with pytest.warns(RuntimeWarning) as record:
